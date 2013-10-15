@@ -1,0 +1,90 @@
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+body, td, p {font-family: Arial, Helvetica, sans-serif; font-size: 10pt;}
+
+h1 {color: #E76917; font-size: 14pt;}
+h2 {color: #E76917; font-size: 12pt;}
+h4 {margin-bottom: 2px;}
+
+
+/* Additional error situations */
+span.error {
+    border-style: none; background: none; padding: 3px 0px;
+}
+
+tr.altrow1_error {
+    background-color: #FFF0F0;
+}
+
+tr.altrow2_error {
+    background-color: #FFE4E4;
+}
+
+.joiner-error {
+    border: 1px solid #FF0000; background-color: #FFF4F4; color: #900000;
+    font-size: x-small; padding: 2px; margin: 0px;
+}
+
+
+.clickable {cursor: pointer;}
+
+/* blue */
+.tree_level1_altrow1 { background-color: #EEEEFF; }
+.tree_level1_altrow2 { background-color: #DDDDEE; }
+
+/* green */
+.tree_level2_altrow1 { background-color: #EEFFEE; }
+.tree_level2_altrow2 { background-color: #DDEEDD; }
+
+/* yellow */
+.tree_level3_altrow1 { background-color: #FFFFEE; }
+.tree_level3_altrow2 { background-color: #F9F9E0; }
+
+/* red */
+.tree_level4_altrow1 { background-color: #FFEEEE; }
+.tree_level4_altrow2 { background-color: #F3DDDD; }
+
+/* grey */
+.tree_level5_altrow1 { background-color: #EEEEEE; }
+.tree_level5_altrow2 { background-color: #DDDDDD; }
+
+
+/* help links */
+a.help { font-size: 85%; font-weight: normal; }
+
+/* Add and edit table styles */
+.main_add_edit .quick_help {
+    font-size: x-small;
+}
+
+.main_add_edit .column_name {
+    display: block;
+    font-weight: bold;
+    font-family: monospace;
+    color: #602222;
+}
+
+
+.advice-box {
+    border: 1px #777 solid;
+    background-color: whitesmoke;
+    padding: 5px;
+    margin: 1em 0px;
+}
+
+a.setup_quicklink {
+    text-decoration: none;
+    color: #0000EE;
+}
+
+a.setup_quicklink:visited {
+    color: #0000EE;
+}
+
+a.setup_quicklink:hover {
+    text-decoration: underline;
+}

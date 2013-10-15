@@ -1,0 +1,8 @@
+<Files tables.xml>
+order deny,allow
+deny from all
+</Files>
+<Files .htaccess>
+order deny,allow
+deny from all
+</Files>

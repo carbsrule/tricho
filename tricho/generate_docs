@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -rdf "../docs/*"
+phpdoc -f "functions_base.php,functions_db.php,functions_time.php,functions_auth.php,functions_admin.php,constants.php,data_objects.php,custom_exceptions.php,validation_result.php,query/*.php,meta_xml/*.php,db_interface/*.php" -t "../docs" --defaultpackagename=Tricho --title="Tricho Developer Documentation" | tee generate_docs.log

@@ -1,0 +1,219 @@
+<?php
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+abstract class TemporalColumn extends Column {
+    protected $has_date = false;
+    protected $has_time = false;
+    protected $min_year = 1000;
+    protected $max_year = 9999;
+    protected $year_required = false;
+    protected $month_required = false;
+    protected $day_required = false;
+    
+    
+    static function non_neg($int) {
+        $int = (int) $int;
+        if ($int < 0) $int = 0;
+        return $int;
+    }
+    
+    function collateInput ($input, &$original_value) {
+        if (is_string($input)) {
+            $input = trim($input);
+            if ($this->has_date and $this->has_time) {
+                list($date, $time) = explode(' ', $input);
+            } else if ($this->has_date) {
+                $date = $input;
+            } else {
+                $time = $input;
+            }
+            if ($this->has_date) {
+                list($y, $m, $d) = @explode('-', $date);
+            }
+            if ($this->has_time) {
+                list($hr, $min, $sec) = @explode(':', $time);
+                $ap = 'AM';
+                $int_hr = (int) $hr;
+                if ($int_hr >= 12) {
+                    $ap = 'PM';
+                    if ($int_hr > 12) $hr -= 12;
+                } else if ($int_hr == 0) {
+                    $hr = 12;
+                }
+            }
+        } else {
+            $y = @$input['y'];
+            $m = @$input['m'];
+            $d = @$input['d'];
+            $ap = @$input['ap'];
+            list($hr, $min, $sec) = explode(':', @$input['t']);
+        }
+        $y = self::non_neg($y);
+        $m = self::non_neg($m);
+        $d = self::non_neg($d);
+        $hr = self::non_neg($hr);
+        $min = self::non_neg($min);
+        $sec = self::non_neg($sec);
+        if ($this->has_date) {
+            $date = str_pad($y, 4, '0', STR_PAD_LEFT) . '-' .
+                str_pad($m, 2, '0', STR_PAD_LEFT) . '-' .
+                str_pad($d, 2, '0', STR_PAD_LEFT);
+        }
+        if ($this->has_time) {
+            if ($ap == 'PM') {
+                if ($hr < 12) $hr += 12;
+            } else if ($ap == 'AM') {
+                if ($hr == 12) $hr = 0;
+            }
+            $time = str_pad($hr, 2, '0', STR_PAD_LEFT) . ':' .
+                str_pad($min, 2, '0', STR_PAD_LEFT) . ':' .
+                str_pad($sec, 2, '0', STR_PAD_LEFT);
+        }
+        
+        if ($this->has_date and $this->has_time) {
+            $value = "{$date} {$time}";
+        } else if ($this->has_date) {
+            $value = $date;
+        } else {
+            $value = $time;
+        }
+        $original_value = $value;
+        
+        if ($this->has_date) {
+            if ($y < $this->min_year or $y > $this->max_year) {
+                if ($y != 0 and $this->year_required) {
+                    throw new DataValidationException("Invalid year");
+                }
+            }
+            if ($m < 1 or $m > 12) {
+                if ($m != 0 and $this->month_required) {
+                    throw new DataValidationException("Invalid month");
+                }
+            }
+        }
+        if ($this->has_time) {
+            if ($ap != 'AM' and $ap != 'PM') {
+                throw new DataValidationException('AM/PM not selected');
+            }
+            if ($hr < 0 or $hr > 23) {
+                throw new DataValidationException("Invalid hour");
+            }
+            if ($min < 0 or $min > 59) {
+                throw new DataValidationException("Invalid minute");
+            }
+            if ($sec < 0 or $sec > 59) {
+                throw new DataValidationException("Invalid second");
+            }
+        }
+        
+        return array($this->name => $value);
+    }
+    
+    
+    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
+        static $months = array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep',
+            10 => 'Oct', 11 => 'Nov', 12 => 'Dec');
+        if ($this->has_date and $this->has_time) {
+            list($date, $time) = @explode(' ', $input_value);
+        } else if ($this->has_date) {
+            $date = $input_value;
+        } else {
+            $time = $input_value;
+        }
+        $fieldname = $this->getPostSafeName();
+        
+        if ($this->has_date) {
+            list($y, $m, $d) = @explode('-', $date);
+            $y = (int) $y;
+            $m = (int) $m;
+            $d = (int) $d;
+            $date = "<select name=\"{$fieldname}[d]\">\n";
+            $date .= "<option value=\"\">D</option>\n";
+            for ($i = 1; $i <= 31; ++$i) {
+                $val = str_pad($i, 2, '0', STR_PAD_LEFT);
+                $date .= '    <option value="' . $val . '"';
+                if ($i == $d) $date .= ' selected="selected"';
+                $date .= ">{$i}</option>\n";
+            }
+            $date .= "</select>\n";
+            
+            $date .= "<select name=\"{$fieldname}[m]\">\n";
+            $date .= "<option value=\"\">M</option>\n";
+            for ($i = 1; $i <= 12; ++$i) {
+                $val = str_pad($i, 2, '0', STR_PAD_LEFT);
+                $date .= '    <option value="' . $val . '"';
+                if ($i == $m) $date .= ' selected="selected"';
+                $date .= ">{$months[$i]}</option>\n";
+            }
+            $date .= "</select>\n";
+            
+            $date .= "<input type=\"text\" name=\"{$fieldname}[y]\" " .
+                'size="3" maxlength="4"';
+            if ($input_value != '') {
+                $val = str_pad($y, 4, '0', STR_PAD_LEFT);
+                $date .= " value=\"{$val}\"";
+            }
+            $date .= ">\n";
+        }
+        
+        if ($this->has_time) {
+            list($hr, $min, $sec) = @explode(':', $time);
+            $hr = (int) $hr;
+            $min = (int) $min;
+            $sec = (int) $sec;
+            
+            if ($input_value != '') {
+                $ap = 'AM';
+                if ($hr >= 12) {
+                    $ap = 'PM';
+                    if ($hr != 12) $hr -= 12;
+                } else if ($hr == 0) {
+                    $hr = 12;
+                }
+                $val = str_pad($hr, 2, '0', STR_PAD_LEFT) . ':' .
+                    str_pad($min, 2, '0', STR_PAD_LEFT) . ':' .
+                    str_pad($sec, 2, '0', STR_PAD_LEFT);
+            } else {
+                $val = '';
+                $ap = '';
+            }
+            $time = "<input type=\"text\" name=\"{$fieldname}[t]\" " .
+                " size=\"6\" value=\"{$val}\"> ";
+            foreach (array('AM', 'PM') as $half) {
+                $time .= "<label for=\"{$fieldname}_{$half}\">" .
+                    "<input type=\"radio\" name=\"{$fieldname}[ap]\" " .
+                    "id=\"{$fieldname}_{$half}\" value=\"{$half}\"";
+                if ($ap == $half) $time .= ' checked="checked"';
+                $time .= ">{$half}</label>";
+            }
+            $time .= "\n";
+        }
+        
+        if ($this->has_date) {
+            if ($this->has_time) return "{$date} at {$time}";
+            return $date;
+        } else {
+            return $time;
+        }
+    }
+    
+    
+    function hasDate() {
+        return $this->has_date;
+    }
+    
+    
+    function getMinYear() {
+        return $this->min_year;
+    }
+    
+    
+    function getMaxYear() {
+        return $this->max_year;
+    }
+}

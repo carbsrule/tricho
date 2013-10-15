@@ -1,0 +1,61 @@
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+#sql_container { width: 100%; }
+#sql_container tr { vertical-align: top; }
+#sql_container textarea { width: 99%; }
+
+#mini_struct { width: 200px; }
+
+/* SQL errors and comments */
+.sql_error {
+    border: 1px solid #FF0000; background-color: #FFF4F4; color: #900000;
+    font-weight: normal; padding: 3px 5px 3px 5px; margin-top: 0.5em;
+}
+.sql_comment {
+    border: 1px solid #505050; background-color: #F6F6F6; color: #606060;
+    font-weight: normal; padding: 3px 5px 3px 5px; margin-top: 0.5em;
+}
+
+/* divs around errors and comments */
+.sql_error div { margin: 4px 1em; font-family: monospace; font-size: 90%;}
+.sql_comment div { margin: 4px 1em; font-family: monospace; font-size: 90%;}
+
+/* sql summary */
+.sql_summary { border: 1px blue solid; padding: 1em; margin: 1em;; background-color: #EEF; }
+.sql_summary a { border: 1px #777 solid; color: black; text-decoration: none; background-color: whitesmoke; padding: 0px 2px; }
+.sql_summary h2 { color: black; margin-top: 0px; }
+
+/* sql result */
+.sql_result { border: 1px black solid; }
+.sql_result th { border: 1px black solid; }
+.sql_result td { border-right: 1px #777777 solid; border-bottom: 1px #777777 solid; }
+.sql_result .expando_link { font-size: 85%; }
+
+/* sql null */
+.sql_null {color: #777; font-size: 85%; font-family: sans-serif;}
+
+
+/* struct */
+.struct_pk { border-bottom: 1px solid #000044; font-weight: 600; }
+.struct_index { border-bottom: 1px dotted #501600; font-weight: 500; }
+
+
+/* export */
+.export_tables { border-collapse: collapse; }
+.export_tables td { padding: 2px 7px; border: 1px #EEE solid; }
+
+.export_no {background-color: #F3F3F3; color: #000000; }
+.export_struct_data {background-color: #EEC0EE; color: #0A0A0A; }
+.export_struct {background-color: #FFD0D0; color: #0A0A0A; }
+.export_data {background-color: #D0D0FF; color: #0A0A0A; }
+.export_update {background-color: #D4FFDA; color: #0A0A0A; }
+
+/* data validator tool */
+.validator h3 {margin-bottom: 0px; margin-top: 2em; border-bottom: 1px #CCCCCC solid;}
+.validator a { color: black; text-decoration: none; display: block; border: 2px transparent solid;}
+.validator a:hover { border: 2px blue solid; }
+.validator table {margin: 0px; margin-top: 5px; border-spacing: 0px;}

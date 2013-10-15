@@ -1,0 +1,177 @@
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+html, body { margin: 0 0 0 0; padding: 0 0 0 0 }
+
+#header { padding-left: 10px; }
+
+/* Main view table */
+.form-table { border-collapse: collapse; }
+.form-table td { padding: 3px 5px 3px 3px; }
+.form-table th { padding: 1px 6px 1px 3px; vertical-align: bottom; border: 1px solid #F3F3F3; }
+
+#main_container { width: 100%; border-collapse: collapse; border: 0; }
+#main_container tr { vertical-align: top; }
+
+/* Main menu */
+#area_choices {
+    width: 150px;
+    padding: 0 0 0 0;
+}
+#area_choices ul.level1 {
+    width: 140px;
+    border-right: 1px solid #D0D0D0;
+    border-top: 1px solid #D0D0D0;
+}
+#area_choices ul li {
+    border-bottom: 1px solid #D0D0D0;
+}
+#area_choices ul ul li {
+    border-top: 1px solid #D0D0D0;
+    border-bottom: none;
+}
+
+#area_choices ul li {
+    background-color: #FFFFFF;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+
+/* IE6 nasty fix -- start */
+#area_choices li a { display: inline-block; }
+#area_choices li a { display: block; }
+/* IE6 nasty fix -- end */
+
+#area_choices ul {
+    display: block;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+#area_choices ul.level1 {
+    margin-bottom: 10px;
+}
+#area_choices ul.display-none { display: none; }
+#area_choices ul ul {
+    padding-left: 20px;
+    background-color: #D0D0D0;
+}
+#area_choices li a {
+    display: block;
+    padding: 3px 3px 3px 10px;
+    margin: 0 0 0 0;
+    line-height: 1.7em;
+}
+
+#area_choices ul li.on a { background-color: #EEEEFF; }
+#area_choices ul li.on li a { background-color: #FFFFFF; }
+#area_choices ul li.on li.on a { background-color: #EEEEFF; }
+#area_choices li a:visited,
+    #area_choices ul li.on li a:visited { color: #0000EE; }
+#area_choices li a:hover,
+    #area_choices ul li.on li a:hover { background-color: #EEEEFF; }
+
+#main_data { padding-bottom: 5px; }
+#main_data h2 { margin-top: 0; }
+
+.breaker { clear: both; height: 0; width: 0; line-height: 0; }
+
+#footer { border-top: 1px solid #DDDDDD; padding-left: 10px; }
+#footer p { font-size: 10px; }
+
+/* Tabs once an individual item is selected */
+.main_edit_tabs { list-style: none; margin-left: 0; padding-left: 0; margin-top: 5px; }
+.main_edit_tabs li { display: inline; padding: 3px 3px 3px 3px; }
+.main_edit_tabs li a:visited { color: #0000EE; }
+.main_edit_tabs li.on { border: 1px solid #9999FF; background-color: #E0E0FF; }
+
+/* Candy-striping for non-tree tables */
+.altrow1 { background-color: #EEEEEE; }
+.altrow2 { background-color: #DDDDDD; }
+
+/* checkbox column (delete) */
+td.checkbox { width: 15px; }
+
+/* Records per page controls for non-tree tables */
+.rs_viewing { padding-right: 15px; }
+.rs_per_page { padding-left: 2px; padding-right: 5px; }
+
+/* Record set navigation for non-tree tables */
+#rs_nav { width: auto; }
+#rs_nav td { border: 1px #CCC solid; padding: 2px; text-align: center; vertical-align: middle;}
+#rs_nav td:hover { border-color: #777; }
+#rs_nav .current_page { border-color: #000; }
+#rs_nav a img { border-style: none; }
+
+/* Candy striping and display styling for tree tables - up to 5 levels deep by default */
+.tree_row_invisible { display: none; }
+
+/* generic tree node, used for all levels of depth */
+.tree_node {
+    display: block; height: 20px; padding: 3px 0 3px 0; margin: 0 0 0 0;
+}
+
+/* container for entire tree */
+.tree_display { margin-bottom: 10px; width: 470px; }
+
+/* Styling for item chosen as a parent of a tree node */
+.selected_row { background-color: #FF8888; height: 20px; padding: 3px 0 3px 0; margin: 0 0 0 0; }
+
+/* Empty space to the left of non-tree elements.
+   The width is defined in tree.js as levelWidth
+   - one levelWidth for 1st sub-level, two for the 2nd, and so on... */
+.tree_intro { float: left; height: 20px; margin: 0 0 0 0; }
+
+/* container for the +/- opener/closer for nodes with children */
+.tree_plus_minus { float: left; height: 20px; width: 20px; margin: 0 0 0 0; }
+
+/* the actual node itself */
+.tree_element { float: left; cursor: pointer; width: 350px; height: 20px; margin: 0 0 0 0; }
+.tree_element_nowidth { float: left; cursor: pointer; height: 20px; margin: 0 0 0 0; }
+
+/* container when a node can't be ordered */
+.tree_empty_orderer { float: left; width: 16px; height: 20px; margin: 0 0 0 0; }
+
+/* container for up and down order arrows */
+.tree_orderer { float: left; cursor: pointer; width: 16px; height: 20px; margin: 0 0 0 0; }
+
+/* borders around labels that contain an input to make it obvious to the user that they can click the text */
+.label_highlight { border: 1px solid #dddddd; background: #eeeeee; padding: 1px 1px 1px 1px; }
+.label_plain { border: 1px solid #ffffff; padding: 1px 1px 1px 1px; }
+
+.order_col { width: 20px; padding: 3px 2px 3px 2px }
+
+/* search */
+div#search div { margin: 2px 0px; }
+
+/* bordered cells */
+table.bordered { border-collapse: collapse; border-spacing: 2px; }
+table.bordered td { border: 1px #cccccc solid; padding: 3px; vertical-align: top; }
+table.bordered th { border: 1px #cccccc solid; padding: 3px; vertical-align: top; }
+table.horizonal th { text-align: left; }
+
+table.bordered .comments_top { border-top: 1px #555555 solid; }
+table.bordered .comments_bottom { border-bottom: 1px #555555 solid; }
+table.bordered .comments_left { border-top: 1px #555555 solid; border-bottom: 1px #555555 solid; border-left: 1px #555555 solid; }
+table.bordered .comments_right { border-right: 1px #555555 solid; }
+
+/* Add and edit table styles */
+.main_add_edit .col_eng_name {
+    min-width: 100px;
+}
+.main_add_edit input[type=text] { width: 228px; }
+.main_add_edit input[type=password] { width: 228px; }
+.main_add_edit textarea {
+    width: 228px;
+    height: 6em;
+}
+
+.login_field { width: 180px; }
+
+.display-none { display: none; }
+.display-table-row { display: table-row; }

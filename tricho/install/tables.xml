@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database primary_headings="n" section_headings="y" show_sub_record_count="n" show_search="n" help_table="help_data">
+  <table name="help_data" name_single="Help Item" access="admin" engname="On-Line Help" display="n" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="n" confirm_del="n" disable_parent_edit="n" allow="add,edit,del">
+    <column name="HelpTable" engname="Table Name" class="CharColumn" sql_defn="VARCHAR (100) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="HelpColumn" engname="Column Name" class="CharColumn" sql_defn="VARCHAR (100) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="HelpText" engname="Help Text" class="TextColumn" sql_defn="TEXT NOT NULL" mandatory="n">
+      <param name="filters" value=""/>
+    </column>
+    <column name="QuickHelp" engname="Quick help" class="TextColumn" sql_defn="TEXT NOT NULL" mandatory="n">
+      <param name="filters" value=""/>
+    </column>
+    <list>
+      <item type="col" name="HelpTable"/>
+      <item type="col" name="HelpColumn"/>
+    </list>
+    <add_edit>
+      <item type="col" name="HelpTable" add="y" edit="y"/>
+      <item type="col" name="HelpColumn" add="y" edit="y"/>
+      <item type="col" name="QuickHelp" add="y" edit="y"/>
+      <item type="col" name="HelpText" add="y" edit="y"/>
+    </add_edit>
+    <export>
+      <item type="col" name="HelpTable"/>
+      <item type="col" name="HelpColumn"/>
+    </export>
+    <vieworder>
+      <orderitem type="column" name="HelpTable" dir="ASC"/>
+    </vieworder>
+    <indices>
+      <index name="PRIMARY KEY" columns="HelpTable, HelpColumn"/>
+    </indices>
+    <row_identifier>
+      <id_item type="col" data="HelpTable"/>
+      <id_item type="sep" data="."/>
+      <id_item type="col" data="HelpColumn"/>
+    </row_identifier>
+  </table>
+  <table name="_tricho_users" name_single="User" access="setup-full" engname="Tricho users" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="n" allow="add,edit,del" static="y">
+    <column name="User" engname="User" class="CharColumn" sql_defn="VARCHAR (30) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="Pass" engname="Pass" class="PasswordColumn" sql_defn="CHAR (106) NOT NULL COLLATE latin1_general_cs" mandatory="y">
+      <param name="require_existing" value="n"/>
+      <param name="encryption" value="sha512"/>
+    </column>
+    <column name="AccessLevel" engname="Access level" class="CharColumn" sql_defn="TINYINT (3) UNSIGNED NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <list>
+      <item type="col" name="User"/>
+      <item type="col" name="AccessLevel"/>
+    </list>
+    <add_edit>
+      <item type="col" name="User" add="y" edit="y"/>
+      <item type="col" name="Pass" add="y" edit="y"/>
+      <item type="col" name="AccessLevel" add="y" edit="y"/>
+    </add_edit>
+    <export>
+      <item type="col" name="Pass"/>
+      <item type="col" name="AccessLevel"/>
+    </export>
+    <vieworder>
+      <orderitem type="column" name="User" dir="ASC"/>
+    </vieworder>
+    <indices>
+      <index name="PRIMARY KEY" columns="User"/>
+    </indices>
+    <row_identifier>
+      <id_item type="col" data="User"/>
+    </row_identifier>
+  </table>
+  <table name="_tricho_log" name_single="Action" access="setup-full" engname="Action log" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="del,export">
+    <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
+    <column name="DateLogged" engname="Date" class="DatetimeColumn" sql_defn="DATETIME NOT NULL" mandatory="y"/>
+    <column name="User" engname="User" class="CharColumn" sql_defn="VARCHAR (30) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="Action" engname="Action" class="CharColumn" sql_defn="VARCHAR (255) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="SQL" engname="SQL" class="TextColumn" sql_defn="TEXT NOT NULL" mandatory="n">
+      <param name="filters" value=""/>
+    </column>
+    <list>
+      <item type="col" name="DateLogged"/>
+      <item type="col" name="User"/>
+      <item type="col" name="Action"/>
+      <item type="col" name="SQL"/>
+    </list>
+    <add_edit>
+      <item type="col" name="DateLogged" add="y" edit="y"/>
+      <item type="col" name="User" add="y" edit="y"/>
+      <item type="col" name="Action" add="y" edit="y"/>
+      <item type="col" name="SQL" add="y" edit="y"/>
+    </add_edit>
+    <export>
+      <item type="col" name="DateLogged"/>
+      <item type="col" name="User"/>
+      <item type="col" name="Action"/>
+      <item type="col" name="SQL"/>
+    </export>
+    <vieworder>
+      <orderitem type="column" name="ID" dir="ASC"/>
+    </vieworder>
+    <searchparams>
+      <orderitem type="column" name="DateLogged"/>
+      <orderitem type="column" name="User"/>
+      <orderitem type="column" name="Action"/>
+    </searchparams>
+    <indices>
+      <index name="PRIMARY KEY" columns="ID"/>
+    </indices>
+    <row_identifier>
+      <id_item type="col" data="DateLogged"/>
+      <id_item type="sep" data=", "/>
+      <id_item type="col" data="User"/>
+      <id_item type="sep" data=", "/>
+      <id_item type="col" data="Action"/>
+    </row_identifier>
+  </table>
+  <table name="_tricho_login_failures" name_single="Failure" access="setup-full" engname="Login failures" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="edit,del">
+    <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
+    <column name="Time" engname="Time" class="DatetimeColumn" sql_defn="DATETIME NOT NULL" mandatory="y"/>
+    <column name="User" engname="User" class="CharColumn" sql_defn="VARCHAR (255) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="IP" engname="IP" class="CharColumn" sql_defn="VARCHAR (15) NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="Active" engname="Active" class="BooleanColumn" sql_defn="TINYINT (1) UNSIGNED NOT NULL DEFAULT 1" mandatory="n"/>
+    <column name="LockedUntil" engname="Locked until" class="DatetimeColumn" sql_defn="DATETIME" mandatory="n"/>
+    <list>
+      <item type="col" name="Time"/>
+      <item type="col" name="User"/>
+      <item type="col" name="IP"/>
+      <item type="col" name="Active"/>
+      <item type="col" name="LockedUntil"/>
+    </list>
+    <add_edit>
+      <item type="col" name="User" add="n" edit="v"/>
+      <item type="col" name="IP" add="n" edit="v"/>
+      <item type="col" name="Active" add="y" edit="y"/>
+      <item type="col" name="LockedUntil" add="n" edit="v"/>
+    </add_edit>
+    <vieworder>
+      <orderitem type="column" name="ID" dir="ASC"/>
+    </vieworder>
+    <searchparams>
+      <orderitem type="column" name="Time"/>
+      <orderitem type="column" name="User"/>
+      <orderitem type="column" name="IP"/>
+      <orderitem type="column" name="Active"/>
+    </searchparams>
+    <indices>
+      <index name="PRIMARY KEY" columns="ID"/>
+    </indices>
+    <row_identifier>
+      <id_item type="col" data="User"/>
+      <id_item type="sep" data=", "/>
+      <id_item type="col" data="Time"/>
+    </row_identifier>
+  </table>
+  <table name="_tricho_tlds" name_single="TLD" access="admin" engname="TLDs" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="add,edit,del">
+    <column name="Domain" engname="Domain" class="CharColumn" sql_defn="VARCHAR (6) NOT NULL COLLATE latin1_general_ci" mandatory="n">
+      <param name="filters" value="trim,tabs,multispace,nl,tags,br"/>
+    </column>
+    <list>
+      <item type="col" name="Domain"/>
+    </list>
+    <add_edit>
+      <item type="col" name="Domain" add="y" edit="y"/>
+    </add_edit>
+    <vieworder>
+      <orderitem type="column" name="Domain" dir="ASC"/>
+    </vieworder>
+    <searchparams>
+      <orderitem type="column" name="Domain"/>
+    </searchparams>
+    <indices>
+      <index name="PRIMARY KEY" columns="Domain"/>
+    </indices>
+  </table>
+  <table name="_tricho_failed_queries" name_single="Failure" access="setup-full" engname="Failed queries" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="n" allow="add,edit,del">
+    <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
+    <column name="DateOccurred" engname="Date occurred" class="DatetimeColumn" sql_defn="DATETIME NOT NULL" mandatory="y"/>
+    <column name="Query" engname="Query" class="TextColumn" sql_defn="TEXT NOT NULL COLLATE utf8_unicode_ci" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="Error" engname="Error" class="TextColumn" sql_defn="TEXT NOT NULL COLLATE utf8_unicode_ci" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="MailSent" engname="Mail sent" class="BooleanColumn" sql_defn="TINYINT (1) UNSIGNED NOT NULL DEFAULT 0" mandatory="n"/>
+    <list>
+      <item type="col" name="ID"/>
+      <item type="col" name="DateOccurred"/>
+    </list>
+    <add_edit>
+      <item type="col" name="DateOccurred" add="y" edit="v"/>
+      <item type="col" name="Query" add="y" edit="v"/>
+      <item type="col" name="Error" add="y" edit="v"/>
+      <item type="col" name="MailSent" add="y" edit="y"/>
+    </add_edit>
+    <vieworder>
+      <orderitem type="column" name="ID" dir="ASC"/>
+    </vieworder>
+    <searchparams>
+      <orderitem type="column" name="DateOccurred"/>
+      <orderitem type="column" name="Query"/>
+      <orderitem type="column" name="Error"/>
+    </searchparams>
+    <indices>
+      <index name="PRIMARY KEY" columns="ID"/>
+    </indices>
+  </table>
+  <table name="_tricho_slow_queries" name_single="Slow query" access="admin" engname="Slow queries" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="add,edit,del">
+    <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
+    <column name="DateOccurred" engname="Date occurred" class="DatetimeColumn" sql_defn="DATETIME NOT NULL" mandatory="y"/>
+    <column name="Query" engname="Query" class="TextColumn" sql_defn="TEXT NOT NULL" mandatory="y">
+      <param name="filters" value=""/>
+    </column>
+    <column name="TimeTaken" engname="Time taken" class="FloatColumn" sql_defn="DOUBLE UNSIGNED NOT NULL" mandatory="y"/>
+    <column name="MailSent" engname="Mail sent" class="BooleanColumn" sql_defn="TINYINT (1) UNSIGNED NOT NULL DEFAULT 0" mandatory="n"/>
+    <list>
+      <item type="col" name="DateOccurred"/>
+      <item type="col" name="TimeTaken"/>
+      <item type="col" name="MailSent"/>
+    </list>
+    <add_edit>
+      <item type="col" name="DateOccurred" add="y" edit="y"/>
+      <item type="col" name="Query" add="y" edit="y"/>
+      <item type="col" name="TimeTaken" add="y" edit="y"/>
+      <item type="col" name="MailSent" add="y" edit="y"/>
+    </add_edit>
+    <vieworder>
+      <orderitem type="column" name="ID" dir="ASC"/>
+    </vieworder>
+    <searchparams>
+      <orderitem type="column" name="DateOccurred"/>
+      <orderitem type="column" name="Query"/>
+      <orderitem type="column" name="TimeTaken"/>
+    </searchparams>
+    <indices>
+      <index name="PRIMARY KEY" columns="ID"/>
+    </indices>
+  </table>
+</database>

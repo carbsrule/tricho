@@ -1,0 +1,68 @@
+<?php
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+/**
+ * @package meta_xml
+ */
+
+/**
+ * Stores meta-data about a column that stores a boolean value (0 or 1)
+ * @package meta_xml
+ */
+class BooleanColumn extends Column {
+    
+    function __construct ($name, $table = null) {
+        parent::__construct ($name, $table);
+        $this->sql_attributes = array ('UNSIGNED', 'NOT NULL');
+    }
+    
+    static function getAllowedSqlTypes () {
+        return array ('TINYINT', 'BIT');
+    }
+    
+    static function getDefaultSqlType () {
+        return 'TINYINT';
+    }
+    
+    // TODO: remove old SQL_TYPE_* constants
+    function setSqlType ($type) {
+        if (!is_int ($type)) $type = strtoupper ($type);
+        if ($type == 'BIT' or $type == SQL_TYPE_BIT) {
+            array_remove ('UNSIGNED', $this->sql_attributes);
+        }
+        parent::setSqlType ($type);
+    }
+    
+    
+    /**
+    * @author benno, 2011-12-28
+    */
+    function getInputField (Form $form, $input_value, $primary_key = null) {
+        // TODO: support other representations, e.g. radio buttons 'Yes' and 'No'
+        $field = '<input type="checkbox" name="'. $this->name. '" value="1"';
+        
+        $default = $this->getDefault ();
+        if ($input_value === '' and $default != '') $input_value = $default;
+        if ($input_value != '' and $input_value != '0') $input_value = '1';
+        if ($input_value == '1') {
+            $field .= ' checked="checked"';
+        }
+        
+        // TODO: add onchange event
+        $field .= "/>";
+        return $field;
+    }
+    
+    
+    function collateInput($input, &$original_value) {
+        $value = (int) $input;
+        if ($value != 1) $value = 0;
+        $original_value = $value;
+        return array($this->name => $value);
+    }
+}
+?>
