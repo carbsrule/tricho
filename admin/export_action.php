@@ -196,19 +196,13 @@ foreach ($_POST['tables'] as $table => $val) {
             // null
             if (strtolower ($row['Null']) == 'yes') {
                 $null = true;
-                if ($row['Default'] == '' and !in_array ($raw_type, $text_blob_types)) {
-                    $col_defn .= ' default NULL';
-                }
             } else {
                 $null = false;
                 $col_defn .= ' NOT NULL';
             }
             
             // default
-            $include_default = false;
-            if ($row['Default'] != '') $include_default = true;
-            if (!$null and in_array ($raw_type, $varstring_types)) $include_default = true;
-            if ($include_default) {
+            if ($null or $row['Default'] !== null) {
                 $col_defn .= " default " . sql_enclose($row['Default']);
             }
             
