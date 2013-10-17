@@ -262,7 +262,7 @@ foreach ($_POST['tables'] as $table => $val) {
                     // There doesn't seem to be a lot of point specifying this - mysqldump doesn't
                     //$col_defn .= " USING {$index['algorithm']}";
                 }
-                $col_defn .= "    (";
+                $col_defn .= " (";
                 $cols = 0;
                 foreach ($index['cols'] as $index_defn) {
                     if (++$cols > 1) {
