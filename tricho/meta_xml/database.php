@@ -528,6 +528,10 @@ class Database {
     function getOrderedTables () {
         $tables = $this->tables;
         usort($tables, function($a, $b) {
+            $a_name = $a->getName();
+            $b_name = $b->getName();
+            if ($a_name[0] == '_' and $b_name[0] != '_') return 1;
+            if ($a_name[0] != '_' and $b_name[0] == '_') return -1;
             return strcmp($a->getName(), $b->getName());
         });
         return $tables;
