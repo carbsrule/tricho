@@ -264,19 +264,57 @@ class Form {
             
             // TODO: this is nasty. If the end goal is to use DOM, then
             // columns need their own methods to create DOMNodes
-            $inner_doc->loadHTML($col->getInputField($this, $value));
-            $node = $inner_doc->getElementsByTagName('body')->item(0)
-                ->firstChild;
-            $node = $doc->importNode($node, true);
-            $node->setAttribute('id', $id);
-            if (strcasecmp($node->tagName, 'textarea') == 0) {
-                $blank = $doc->createTextNode('');
-                $node->appendChild($blank);
+            if (method_exists($col, 'getMultiInputs')) {
+                $inputs = $col->getMultiInputs($this, $value);
+            } else {
+                $inputs = array(array(
+                    'label' => 'N/A',
+                    'field' => $col->getInputField($this, $value),
+                    'suffix' => ''
+                ));
             }
-            $p = $doc->createElement('p');
-            $p->setAttribute('class', 'input');
-            $form->appendChild($p);
-            $p->appendChild($node);
+            
+            $field_num = 0;
+            foreach ($inputs as $input) {
+                if (++$field_num != 1) {
+                    $id = $id_base . $field_num . '-' . $field_num;
+                    $p = $doc->createElement('p');
+                    $p->setAttribute('class', 'label');
+                    $form->appendChild($p);
+                    $label = $doc->createElement('label');
+                    $label->setAttribute('for', $id);
+                    $p->appendChild($label);
+                    
+                    // nasty hack :(
+                    // TODO: remove this once admin add/edit pages use Forms
+                    $input_label = $input['label'];
+                    if ($col instanceof PasswordColumn) {
+                        $lt_pos = strpos($input_label, '<');
+                        if ($lt_pos > 0) {
+                            $input_label = substr($input_label, 0, $lt_pos);
+                            $input_label = rtrim($input_label);
+                        }
+                    }
+                    
+                    $text = $doc->createTextNode($input_label);
+                    $label->appendChild($text);
+                }
+                $input = $input['field'];
+                
+                $inner_doc->loadHTML($input);
+                $node = $inner_doc->getElementsByTagName('body')->item(0)
+                    ->firstChild;
+                $node = $doc->importNode($node, true);
+                $node->setAttribute('id', $id);
+                if (strcasecmp($node->tagName, 'textarea') == 0) {
+                    $blank = $doc->createTextNode('');
+                    $node->appendChild($blank);
+                }
+                $p = $doc->createElement('p');
+                $p->setAttribute('class', 'input');
+                $form->appendChild($p);
+                $p->appendChild($node);
+            }
         }
         $p = $doc->createElement('p');
         $p->setAttribute('class', 'submit');
