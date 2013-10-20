@@ -282,10 +282,10 @@ class Form {
                 ));
             }
             
-            $field_num = 0;
+            $input_num = 0;
             foreach ($inputs as $input) {
-                if (++$field_num != 1) {
-                    $id = $id_base . $field_num . '-' . $field_num;
+                if (++$input_num != 1) {
+                    $id = $id_base . $field_num . '-' . $input_num;
                     $p = $doc->createElement('p');
                     $p->setAttribute('class', 'label');
                     $form->appendChild($p);
