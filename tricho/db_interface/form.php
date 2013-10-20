@@ -189,30 +189,33 @@ class Form {
         }
         
         $presets = $form->getElementsByTagName('presets')->item(0);
-        foreach ($presets->childNodes as $node) {
-            if (!($node instanceof DOMElement)) continue;
-            $type = $node->getAttribute('type');
-            $value = $node->getAttribute('value');
-            switch ($type) {
-            case '':
-            case 'string':
-                $preset = new QueryFieldLiteral($value);
-                break;
-            
-            case 'literal':
-                $preset = new QueryFieldLiteral($value, false);
-                break;
-            
-            case 'random':
-                $preset = new RandomString($value);
-                break;
-            
-            default:
-                throw new Exception('No idea what to do here');
+        if ($presets) {
+            foreach ($presets->childNodes as $node) {
+                if (!($node instanceof DOMElement)) continue;
+                $type = $node->getAttribute('type');
+                $value = $node->getAttribute('value');
+                switch ($type) {
+                case '':
+                case 'string':
+                    $preset = new QueryFieldLiteral($value);
+                    break;
+                
+                case 'literal':
+                    $preset = new QueryFieldLiteral($value, false);
+                    break;
+                
+                case 'random':
+                    $preset = new RandomString($value);
+                    break;
+                
+                default:
+                    throw new Exception('No idea what to do here');
+                }
+                $field_name = $node->getAttribute('field');
+                $this->presets[$field_name] = $preset;
             }
-            $field_name = $node->getAttribute('field');
-            $this->presets[$field_name] = $preset;
         }
+            
         
         if ($this->modifier) {
             $this->modifier->postLoad($this);
