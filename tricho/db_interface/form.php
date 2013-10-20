@@ -174,9 +174,14 @@ class Form {
             if ($node instanceof DOMComment) continue;
             $type = $node->tagName;
             if ($type == 'field') {
+                if ($node->hasAttribute('label')) {
+                    $label = (string) $node->getAttribute('label');
+                } else {
+                    $label = null;
+                }
                 $item = array(
                     $table->get($node->getAttribute('name')),
-                    $node->getAttribute('label'),
+                    $label,
                     $node->getAttribute('value')
                 );
             }
@@ -243,17 +248,20 @@ class Form {
             list($col, $label, $value) = $item;
             $col_name = $col->getName();
             if (isset($values[$col_name])) $value = $values[$col_name];
-            if ($label != '') $col->setEngName($label);
             
-            $p = $doc->createElement('p');
-            $p->setAttribute('class', 'label');
-            $form->appendChild($p);
-            $label = $doc->createElement('label');
-            $label->setAttribute('for', $id);
-            $p->appendChild($label);
-            $text = $doc->createTextNode($col->getEngName());
-            $label->appendChild($text);
-            
+            if ($label === null) {
+                $label = $col->getEngName();
+            }
+            if ($label != '') {
+                $p = $doc->createElement('p');
+                $p->setAttribute('class', 'label');
+                $form->appendChild($p);
+                $label_node = $doc->createElement('label');
+                $label_node->setAttribute('for', $id);
+                $p->appendChild($label_node);
+                $text = $doc->createTextNode($label);
+                $label_node->appendChild($text);
+            }
             if (isset($errors[$col_name])) {
                 $p = $doc->createElement('p');
                 $p->setAttribute('class', 'error');
