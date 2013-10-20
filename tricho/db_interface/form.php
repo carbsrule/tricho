@@ -312,6 +312,10 @@ class Form {
                 }
                 $input = $input['field'];
                 
+                // Need to wrap in HTML to specify UTF-8 encoding
+                $input = '<html><head><meta http-equiv="Content-Type" ' .
+                    'content="text/html; charset=UTF-8"></head><body>' .
+                    $input . '</body></html>';
                 $inner_doc->loadHTML($input);
                 $node = $inner_doc->getElementsByTagName('body')->item(0)
                     ->firstChild;
