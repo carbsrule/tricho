@@ -296,7 +296,7 @@ class MainTable {
             
         } else {
             $this->concat_func = new QueryFunction ('CONCAT');
-            $this->concat_func->setAlias ($column->getName ());
+            $this->concat_func->setAlias ($column->getEngName ());
             
             if ($column->getTable ()->isColumnInView ($this->view_type, $column)) {
                 $view = true;
