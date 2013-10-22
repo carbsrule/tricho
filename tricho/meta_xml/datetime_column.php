@@ -11,11 +11,32 @@ class DatetimeColumn extends TemporalColumn {
     
     
     static function getAllowedSqlTypes() {
-        return array('DATETIME');
+        return array('DATETIME', 'INT');
     }
     
     
     static function getDefaultSqlType() {
         return 'DATETIME';
+    }
+    
+    function identify($context) {
+        if ($context == 'row') return $this->name;
+        if ($this->sqltype == SQL_TYPE_INT) {
+            return 'FROM_UNIXTIME(`' .
+                $this->table->getName() . '`.`' . $this->name . '`' .
+                ') AS `' . $this->name . '`';
+        }
+        return parent::identify($context);
+    }
+    
+    
+    function displayValue($input_value = '') {
+        if ($this->sqltype == SQL_TYPE_INT) {
+            if ($input_value > 0) {
+                return date('Y-m-d H:i:s', $input_value);
+            }
+            return '';
+        }
+        return parent::displayValue($input_value);
     }
 }

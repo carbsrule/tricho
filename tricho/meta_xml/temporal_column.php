@@ -110,6 +110,11 @@ abstract class TemporalColumn extends Column {
             }
         }
         
+        // Un*x timestamp (only valid for DatetimeColumn)
+        if ($this->sqltype == SQL_TYPE_INT) {
+            $value = mktime($hr, $min, $sec, $m, $d, $y);
+        }
+        
         return array($this->name => $value);
     }
     
@@ -118,6 +123,12 @@ abstract class TemporalColumn extends Column {
         static $months = array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
             5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep',
             10 => 'Oct', 11 => 'Nov', 12 => 'Dec');
+        
+        // Only applies to DatetimeColumns
+        if ($this->sqltype == SQL_TYPE_INT and $input_value > 0) {
+            $input_value = date('Y-m-d H:i:s', $input_value);
+        }
+        
         if ($this->has_date and $this->has_time) {
             list($date, $time) = @explode(' ', $input_value);
         } else if ($this->has_date) {
