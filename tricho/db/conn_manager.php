@@ -89,7 +89,8 @@ class ConnManager {
     
     
     static function get_default_config_id() {
-        return reset(array_keys(self::$configs));
+        $keys = array_keys(self::$configs);
+        return reset($keys);
     }
     
     
