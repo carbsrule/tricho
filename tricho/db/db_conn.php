@@ -6,7 +6,16 @@
  */
 
 use tricho\Runtime;
-abstract class DbConn {
+
+interface DbConnValidator {
+    /**
+     * Validates the config for a connection
+     * @throws InvalidArgumentException
+     */
+    static function validate_config(array $config);
+}
+
+abstract class DbConn implements DbConnValidator {
     protected $conn = null;
     protected $params = array();
     
@@ -260,13 +269,6 @@ abstract class DbConn {
         }
         return $this->conn->quote($datum);
     }
-    
-    
-    /**
-     * Validates the config for a connection
-     * @throws InvalidArgumentException
-     */
-    abstract static function validate_config(array $config);
     
     
     /**
