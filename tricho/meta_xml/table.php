@@ -325,17 +325,17 @@ class Table implements QueryTable {
      * @author benno 2011-08-15
      * @return Table the meta-data store
      */
-    static function fromXMLNode (DOMElement $node) {
-        $attribs = HtmlDom::getAttribArray ($node);
-        $table = new Table ($attribs['name']);
-        $table->setEngName ($attribs['engname']);
-        $table->setNameSingle ($attribs['name_single']);
-        $table->setComments ($attribs['comment']);
-        $table->setDisplay (to_bool ($attribs['display']));
-        $table->setMask ($attribs['mask']);
-        $table->setCascadeDel (to_bool ($attribs['cascade_del']));
-        $table->setStatic (to_bool ($attribs['static']));
-        $table->setTreeNodeChars ($attribs['tree_node_chars']);
+    static function fromXMLNode(DOMElement $node) {
+        $attribs = HtmlDom::getAttribArray($node);
+        $table = new Table($attribs['name']);
+        $table->setEngName($attribs['engname']);
+        $table->setNameSingle($attribs['name_single']);
+        $table->setComments(@$attribs['comment']);
+        $table->setDisplay(to_bool($attribs['display']));
+        $table->setMask(@$attribs['mask']);
+        $table->setCascadeDel(to_bool($attribs['cascade_del']));
+        $table->setStatic(to_bool(@$attribs['static']));
+        $table->setTreeNodeChars(@$attribs['tree_node_chars']);
         
         switch ($attribs['access']) {
             case '':
@@ -361,13 +361,13 @@ class Table implements QueryTable {
                 $table->setDisplayStyle (TABLE_DISPLAY_STYLE_ROWS);
         }
         
-        if (to_num ($attribs['tree_top_nodes']) == 0) {
+        if (to_num(@$attribs['tree_top_nodes']) == 0) {
             $table->setTopNodesEnabled (false);
         } else {
             $table->setTopNodesEnabled ($attribs['tree_top_nodes']);
         }
         
-        if ($attribs['home'] != '') {
+        if (@$attribs['home'] != '') {
             $table->addAltPage ('main', $attribs['home']);
         }
         
@@ -400,7 +400,7 @@ class Table implements QueryTable {
         }
         $table->setDisableParentEdit (to_bool ($attribs['disable_parent_edit']));
         
-        if (to_bool ($attribs['joiner'])) $table->setJoiner (true);
+        if (to_bool(@$attribs['joiner'])) $table->setJoiner(true);
         if (isset ($attribs['show_sub_record_count'])) {
             $table->setShowSubRecordCount (to_bool_i ($attribs['show_sub_record_count']));
         }
@@ -419,7 +419,7 @@ class Table implements QueryTable {
         
         
         // partitioned tree
-        $partition = $attribs['partition'];
+        $partition = @$attribs['partition'];
         if ($partition != '') {
             $partition_col = $table->get ($partition);
             if ($partition_col != null) {
