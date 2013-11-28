@@ -9,11 +9,27 @@
  * @package meta_xml
  */
 
+
+interface ColumnInterface {
+    /**
+     * Gets the list of allowed SQL types for this type of column
+     * @return array Each element is an uppercase string, e.g. 'INT'
+     */
+    static function getAllowedSqlTypes();
+    
+    /**
+     * Gets the default SQL type for this type of column
+     * @return string
+     */
+    static function getDefaultSqlType();
+}
+
+
 /**
  * Stores meta-data about a database column
  * @package meta_xml
  */
-abstract class Column implements QueryField {
+abstract class Column implements QueryField, ColumnInterface {
     protected $table;
     protected $name;
     protected $engname;
@@ -248,18 +264,6 @@ abstract class Column implements QueryField {
         $this->engname = (string) $new_name;
     }
     
-    
-    /**
-     * Gets the list of allowed SQL types for this type of column
-     * @return array Each element is an uppercase string, e.g. 'INT'
-     */
-    abstract static function getAllowedSqlTypes ();
-    
-    /**
-     * Gets the default SQL type for this type of column
-     * @return string
-     */
-    abstract static function getDefaultSqlType ();
     
     /**
      * Sets the SQL type of this column.
