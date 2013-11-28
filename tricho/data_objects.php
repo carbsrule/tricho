@@ -77,7 +77,7 @@ function get_sql_params ($str) {
         throw new InvalidArgumentException ('Invalid column definition');
     }
     $type = $matches[1];
-    $size = str_replace (' ', '', trim ($matches[2], '()'));
+    $size = str_replace(' ', '', trim(@$matches[2], '()'));
     $attribs = trim (substr ($str, strlen ($matches[0])));
     return array ($type, $size, $attribs);
 }
