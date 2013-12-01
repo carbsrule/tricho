@@ -213,7 +213,7 @@ class PasswordColumn extends InputColumn {
     }
     
     
-    function getInputField () {
+    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         throw new Exception ('This column class uses getMultiInputs');
     }
     

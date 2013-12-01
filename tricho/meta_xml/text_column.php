@@ -38,7 +38,7 @@ class TextColumn extends StringColumn {
     }
     
     
-    function getInputField (Form $form, $input_value, $primary_key = null) {
+    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $field = '<textarea name="' . $this->name . '"';
         $maxlength = (int) $this->getMaxLength();
         if ($maxlength > 0) $field .= " maxlength=\"{$maxlength}\"";

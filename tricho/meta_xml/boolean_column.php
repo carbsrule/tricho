@@ -41,7 +41,7 @@ class BooleanColumn extends Column {
     /**
     * @author benno, 2011-12-28
     */
-    function getInputField (Form $form, $input_value, $primary_key = null) {
+    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         // TODO: support other representations, e.g. radio buttons 'Yes' and 'No'
         $field = '<input type="checkbox" name="'. $this->name. '" value="1"';
         
