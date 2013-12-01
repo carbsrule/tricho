@@ -278,7 +278,7 @@ class PasswordColumn extends InputColumn {
     /**
      * @author benno 2011-08-30
      */
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         $fields = "    <p><label for=\"require_existing\"><input type=\"checkbox\" id=\"require_existing\" name=\"{$class}_require_existing\" value=\"1\"";
         if ($config['require_existing'] == 1) $fields .= ' checked="checked"';
         $fields .= "> Must enter existing password to change it</label></p>\n";

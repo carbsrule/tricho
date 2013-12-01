@@ -23,7 +23,7 @@ class TextColumn extends StringColumn {
     }
     
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         list ($cols, $rows) = explode ('x', $config['size']);
         settype ($cols, 'int');
         settype ($rows, 'int');

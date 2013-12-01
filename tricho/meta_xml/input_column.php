@@ -72,7 +72,7 @@ abstract class InputColumn extends Column {
     }
     
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         return "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Input size</span>\n".
             "        <span class=\"fake-td\"><input type=\"text\" name=\"{$class}_size\" value=\"".

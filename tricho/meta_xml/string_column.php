@@ -190,7 +190,7 @@ abstract class StringColumn extends InputColumn {
     }
     
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         $fields = "<label for=\"trim\"><input type=\"checkbox\" name=\"{$class}_trim\" id=\"trim\" value=\"1\"";
         if ($config['trim'] == '1') $fields .= ' checked="checked"';
         $fields .= ">Trim leading &amp; trailing whitespace</label><br>\n";

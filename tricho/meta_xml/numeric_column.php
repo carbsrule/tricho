@@ -109,7 +109,7 @@ abstract class NumericColumn extends InputColumn {
     /**
      * @author benno 2011-08-17
      */
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         return parent::getConfigFormFields ($config, $class).
             "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Range</span>\n".
