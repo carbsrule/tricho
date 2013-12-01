@@ -46,7 +46,7 @@ function sql_remove_private ($q) {
     foreach ($tokens as $token) {
         $str = $token['value'];
         
-        if ($token['type'] == SQL_PARSE_STATE_QUERY) {
+        if ($token['type'] == SQLParser::QUERY) {
             while (strlen ($str) > 0) {
                 if (preg_match ('/^(MD5|SHA1?)\s*\(/i', $str, $matches)) {
                     $str = substr ($str, strlen ($matches[0]));
@@ -63,8 +63,8 @@ function sql_remove_private ($q) {
                     $str = substr ($str, 1);
                 }
             }
-        } else if (($token['type'] == SQL_PARSE_STATE_STRING_SINGLE or
-            $token['type'] == SQL_PARSE_STATE_STRING_DOUBLE) and $in_encrypt) {
+        } else if (($token['type'] == SQLParser::STRING_SINGLE or
+            $token['type'] == SQLParser::STRING_DOUBLE) and $in_encrypt) {
             // replace private data with ???
             $token['value'] = "???";
         }
