@@ -251,7 +251,7 @@ class PasswordColumn extends InputColumn {
     }
     
     
-    function collateInput () {
+    function collateInput($input, &$original_value) {
         throw new Exception ('This column class uses collateMultiInputs');
     }
     
