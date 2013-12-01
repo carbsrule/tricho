@@ -140,7 +140,7 @@ abstract class Column implements QueryField, ColumnInterface {
      * @author benno 2011-08-15
      * @return Column the meta-data store
      */
-    function applyXMLNode ($node) {
+    function applyXMLNode(DOMElement $node) {
         $attribs = HtmlDom::getAttribArray ($node);
         $this->setMandatory (to_bool ($attribs['mandatory']));
         $this->setEngName ($attribs['engname']);
