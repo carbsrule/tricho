@@ -23,7 +23,7 @@ require '../tricho.php';
 <table>
     <tr>
         <td>Username:</td>
-        <td><input type="text" class="login_field" value="<?= $_GET['u']; ?>" name="kaudhm"></td>
+        <td><input type="text" class="login_field" value="<?= @$_GET['u']; ?>" name="kaudhm"></td>
     </tr>
     <tr>
         <td>Password:</td>
@@ -36,7 +36,7 @@ require '../tricho.php';
 </table>
 
 <?php
-$redir = trim ($_GET['redirect']);
+$redir = trim(@$_GET['redirect']);
 if ($redir != '') {
     echo "<input type=\"hidden\" name=\"redirect\" value=\"", htmlspecialchars ($redir), "\">";
 }
