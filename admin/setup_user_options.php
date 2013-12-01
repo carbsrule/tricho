@@ -7,7 +7,7 @@
 
 function show_setup_user_option ($english, $opt) {
     
-    $current_status = ($_SESSION['setup']["view_{$opt}"]? 'y': 'n');
+    $current_status = (@$_SESSION['setup']["view_{$opt}"]? 'y': 'n');
     $new_status = ($current_status == 'y'? 'n': 'y');
     
     $url = $_SERVER['REQUEST_URI'];
@@ -31,24 +31,24 @@ function show_setup_user_option ($english, $opt) {
 
 if (test_setup_login (false, SETUP_ACCESS_FULL)) {
     
-    if ($_GET['q'] == 'y') {
+    if (@$_GET['q'] == 'y') {
         $_SESSION['setup']['view_q'] = true;
-    } else if ($_GET['q'] == 'n') {
+    } else if (@$_GET['q'] == 'n') {
         $_SESSION['setup']['view_q'] = false;
     }
     
-    if ($_GET['c'] == 'y') {
+    if (@$_GET['c'] == 'y') {
         $_SESSION['setup']['view_c'] = true;
-    } else if ($_GET['c'] == 'n') {
+    } else if (@$_GET['c'] == 'n') {
         $_SESSION['setup']['view_c'] = false;
     }
 }
 
 if (test_setup_login (false, SETUP_ACCESS_LIMITED)) {
     
-    if ($_GET['h'] == 'y') {
+    if (@$_GET['h'] == 'y') {
         $_SESSION['setup']['view_h'] = true;
-    } else if ($_GET['h'] == 'n') {
+    } else if (@$_GET['h'] == 'n') {
         $_SESSION['setup']['view_h'] = false;
     }
     

@@ -11,7 +11,9 @@ if (!defined ('ROOT_PATH_FILE')) require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-if (!$db instanceof Database) $db = Database::parseXML (ROOT_PATH_FILE. ADMIN_DIR. 'tables.xml');
+if (!isset($db) or !($db instanceof Database)) {
+    $db = Database::parseXML(ROOT_PATH_FILE . ADMIN_DIR . 'tables.xml');
+}
 
 require_once ROOT_PATH_FILE. ADMIN_DIR. 'setup_user_options.php';
 
@@ -92,7 +94,7 @@ foreach ($js_files as $js_file) {
 <?php
 }
 
-if ($inline_js != '') {
+if (@$inline_js != '') {
 ?>
         <script language="javascript" type="text/javascript"><?= $inline_js; ?></script>
 <?php
@@ -138,7 +140,7 @@ if (test_setup_login (false, SETUP_ACCESS_LIMITED)) {
 $tables = $db->getTables ();
 
 // find selected table
-if ($_GET['p'] != '') {
+if (@$_GET['p'] != '') {
     // get the last table in the parent chain
     $parts = explode (',', $_GET['p']);
     $parts = array_pop ($parts);
