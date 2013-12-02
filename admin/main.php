@@ -21,9 +21,9 @@ require 'head.php';
 require 'main_functions.php';
 
 $per_page = 15;
-$start = (int) $_GET['start'];
+$start = (int) @$_GET['start'];
 
-$new_per_page = (int) $_GET['per'];
+$new_per_page = (int) @$_GET['per'];
 if ($new_per_page > 0) $per_page = $new_per_page;
 
 $table = $db->getTable ($_GET['t']); // use table name
@@ -52,7 +52,9 @@ if ($table == null) {
 <?php
 
 // get the parent tables and show the tabs
-if (trim ($_GET['p']) != '') {
+$ancestors = array();
+$parent_table = null;
+if (trim(@$_GET['p']) != '') {
     $ancestors = explode(',', $_GET['p']);
     
     $parent_name = false;
