@@ -147,11 +147,9 @@ if ($table->isJoiner () and $parent_id != null) {
     $main = new MainTable ($table);
     
     // add the ancestors to the filter hate list
-    if (is_array ($ancestors)) {
-        foreach ($ancestors as $ancestor) {
-            list ($ancestor) = explode ('.', $ancestor);
-            $main->addFilterSkipTable ($ancestor);
-        }
+    foreach ($ancestors as $ancestor) {
+        list($ancestor) = explode('.', $ancestor);
+        $main->addFilterSkipTable($ancestor);
     }
     
     // determine if there are any records at all in this table
@@ -164,7 +162,7 @@ if ($table->isJoiner () and $parent_id != null) {
     }
     
     // parent table support
-    if (isset ($ancestors)) {
+    if (count($ancestors) > 0) {
         // changed by benno: the where clause doesn't need to reference the linked table, only the base
         $query = $main->getSelectQuery ();
         $link_col = $table->getLinkToTable ($parent_table);
@@ -220,7 +218,7 @@ if ($table->isJoiner () and $parent_id != null) {
     if ($partition != null) {
         
         // if the partition field is one of the parents, don't show it.
-        if (isset($ancestors)) {
+        if (count($ancestors) > 0) {
             $link = $partition->getLink ();
             $part_to_table = $link->getToColumn ()->getTable ()->getName ();
             foreach ($ancestors as $ancestor) {
@@ -355,7 +353,7 @@ if ($table->isJoiner () and $parent_id != null) {
     
     // parent table support
     // this is the non-SelectQuery version of a function above
-    if (isset ($ancestors)) {
+    if (count($ancestors) > 0) {
         if ($has_where) {
             $q .= ' AND ';
         } else {
