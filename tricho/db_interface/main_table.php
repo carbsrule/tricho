@@ -1083,13 +1083,9 @@ class MainTable {
                     $return_string .= '        <td style="display: none;"><input type="hidden" value="0" name="del['.$row->getPrimaryKey (). "]\"/></td>\n";
                 }
                 foreach ($this->visible_columns as $col) {
-                    if ($main_col instanceof MainOrderColumn) {
-                        list ($q_col, $main_col) = $col;
-                        $return_string .= "        ". $main_col->getTD ($prev_row, $row, $next_row). "\n";
-                    } else {
-                        $data = $row->get ($col->identify ('row'));
-                        $return_string .= "        ". $col->getTD ($data, $row->getPrimaryKey ()). "\n";
-                    }
+                    $data = $row->get($col->identify('row'));
+                    $return_string .= "        " .
+                        $col->getTD($data, $row->getPrimaryKey()) . "\n";
                 }
                 $return_string .= "    </tr>\n";
                 
