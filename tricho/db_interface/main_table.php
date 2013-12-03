@@ -111,37 +111,37 @@ class MainTable {
         
         // Strings for buttons and alerts
         $texts = $table->getAltButtons ();
-        if ($texts['main_add'] != '') {
+        if (@$texts['main_add'] != '') {
             $this->text_blocks[MAIN_TEXT_ADD_BUTTON] = $texts['main_add'];
         } else {
             $this->text_blocks[MAIN_TEXT_ADD_BUTTON] = str_replace ('%single%', strtolower ($table->getNameSingle ()),
             $this->text_blocks[MAIN_TEXT_ADD_BUTTON]);
         }
-        if ($texts['main_delete'] != '') {
+        if (@$texts['main_delete'] != '') {
             $this->text_blocks[MAIN_TEXT_DEL_BUTTON] = $texts['main_delete'];
         }
-        if ($texts['delete_alert'] != '') {
+        if (@$texts['delete_alert'] != '') {
             $this->text_blocks[MAIN_TEXT_DEL_POPUP] = $texts['delete_alert'];
         }
-        if ($texts['main_csv'] != '') {
+        if (@$texts['main_csv'] != '') {
             $this->text_blocks[MAIN_TEXT_CSV_BUTTON] = $texts['main_csv'];
         }
-        if ($texts['add_cond'] != '') {
+        if (@$texts['add_cond'] != '') {
             $this->text_blocks[MAIN_TEXT_ADD_CONDITION] = $texts['add_cond'];
         }
-        if ($texts['apply_conds'] != '') {
+        if (@$texts['apply_conds'] != '') {
             $this->text_blocks[MAIN_TEXT_APPLY_CONDITIONS] = $texts['apply_conds'];
         }
-        if ($texts['clear_conds'] != '') {
+        if (@$texts['clear_conds'] != '') {
             $this->text_blocks[MAIN_TEXT_CLEAR_CONDITIONS] = $texts['clear_conds'];
         }
-        if ($texts['no_records'] != '') {
+        if (@$texts['no_records'] != '') {
             $this->text_blocks[MAIN_TEXT_NO_RECORDS] = $texts['no_records'];
         } else {
             $this->text_blocks[MAIN_TEXT_NO_RECORDS] = str_replace ('%multiple%', strtolower ($table->getEngName ()),
             $this->text_blocks[MAIN_TEXT_NO_RECORDS]);
         }
-        if ($texts['not_found'] != '') {
+        if (@$texts['not_found'] != '') {
             $this->text_blocks[MAIN_TEXT_NOT_FOUND] = $texts['not_found'];
         } else {
             $this->text_blocks[MAIN_TEXT_NOT_FOUND] = str_replace ('%multiple%', strtolower ($table->getEngName ()),
@@ -190,7 +190,7 @@ class MainTable {
         
         // Don't include columns that link to the parent if accessed via parent
         $parent = null;
-        if ($_GET['p'] != '') {
+        if (@$_GET['p'] != '') {
             if ($debug) echo "Determining parent...<br>\n";
             list ($ancestor) = explode (',', $_GET['p']);
             list ($parent_name, $parent_pk) = explode ('.', $ancestor);
@@ -837,7 +837,7 @@ class MainTable {
         */
         
         if ($page === null) {
-            $page = $_GET['page'];
+            $page = @$_GET['page'];
         }
         
         $records_per_page = (int) $records_per_page;
@@ -862,7 +862,7 @@ class MainTable {
         
         $q = cast_to_string ($count_select_query);
         
-        if ($_SESSION['setup']['view_q'] === true) {
+        if (@$_SESSION['setup']['view_q'] === true) {
             echo "<p style=\"font-size: 9px;\">Q: {$q}</p>\n";
         }
         
@@ -882,7 +882,7 @@ class MainTable {
         
         $this->select_query->setLimit ("{$records_per_page} OFFSET {$offset}");
         
-        if ($_SESSION['setup']['view_q'] === true or $_GET['q'] == 'y') {
+        if (@$_SESSION['setup']['view_q'] === true or @$_GET['q'] == 'y') {
             echo "<p style=\"font-size: 9px;\">Q: ", cast_to_string ($this->select_query), "</p>\n";
         }
         
@@ -946,7 +946,7 @@ class MainTable {
                 " method=\"post\">\n";
             $return_string .= "<input type=\"hidden\" value=\"{$table_name}\" name=\"_t\"/>\n";
             
-            if ($_GET['p'] != '') {
+            if (@$_GET['p'] != '') {
                 $return_string .= "<input type=\"hidden\" value=\"{$_GET['p']}\" name=\"_p\"/>\n";
             }
             if ($this->inline_search) {
@@ -1039,7 +1039,7 @@ class MainTable {
             
             $return_string .= "onclick=\"window.location = '{$add_url}{$add_sep}t=". urlencode ($table_name);
             
-            if ($_GET['p'] != '') {
+            if (@$_GET['p'] != '') {
                 $return_string .= "&p={$_GET['p']}";
             }
             $return_string .= "';\"/></p>\n";
@@ -1134,15 +1134,14 @@ class MainTable {
             list ($main_url, $main_sep) = $this->page_urls->get (MAIN_PAGE_MAIN);
             list ($edit_url, $edit_sep) = $this->page_urls->get (MAIN_PAGE_EDIT);
             
-            $return_string .= "<script type=\"text/javascript\" language=\"javascript\">".
-                "activate_main_form ('{$main_url}{$main_sep}t=".
-                urlencode ($table_name).
-                "&p={$_GET['p']}', '{$edit_url}{$edit_sep}t=".
-                urlencode ($table_name).
-                "&p={$_GET['p']}', {$start_page}, '{$form_id}');".
+            $return_string .= "<script type=\"text/javascript\">" .
+                "activate_main_form('{$main_url}{$main_sep}t=" .
+                urlencode($table_name) .
+                '&p=' . @$_GET['p'] . "', '{$edit_url}{$edit_sep}t=" .
+                urlencode($table_name) .
+                '&p=' . @$_GET['p'] . "', {$start_page}, '{$form_id}');" .
                 "</script>\n";
-                
-                
+            
         } else {
             // there were no rows
             if ($this->num_pre_filters > 0) {
