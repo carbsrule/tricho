@@ -47,14 +47,14 @@ class QueryFieldLiteral extends AliasedField {
      * This is an empty function to override the abstract method specified in
      * {@link QueryField}
      */
-    function setName () {
+    function setName($name) {
     }
     
     /**
      * This is an empty function to override the abstract method specified in
      * {@link QueryField}
      */
-    function setAlias () {
+    function setAlias($alias) {
     }
     
     /**
