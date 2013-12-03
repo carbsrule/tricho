@@ -275,14 +275,7 @@ class MainTable {
         if (!($column instanceof LinkColumn)) {
             $main = false;
             
-            if ($column->getOption () == 'ordernum') {
-                if ($debug) {
-                    echo "Created MainOrderColumn from column <strong>", $column->getName (), "</strong><br>\n";
-                }
-                list ($main_url, $main_sep) = $this->page_urls->get (MAIN_PAGE_ORDER);
-                $main_col = new MainOrderColumn ($table->getName (), $column->getEngName (), $main_url. $main_sep);
-                
-            } else if ($is_view_item) {
+            if ($is_view_item) {
                 if ($debug) {
                     echo "Including column <strong>",
                         $column->getTable()->getName(), '.',
