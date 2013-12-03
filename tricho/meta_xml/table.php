@@ -2962,7 +2962,7 @@ class Table implements QueryTable {
      * @return boolean true if the action is allowed, false otherwise.
      */
     function getAllowed ($action) {
-        return $this->allowed_actions[$action];
+        return @$this->allowed_actions[$action];
     }
     
     /**
