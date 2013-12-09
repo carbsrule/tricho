@@ -722,15 +722,15 @@ abstract class Column implements QueryField, ColumnInterface {
         $help_columns = tricho\Runtime::get_help_text();
         
         $db = $this->table->getDatabase();
-        if ($_SESSION['setup']['view_h'] and $db->getHelpTable () != null) {
+        if (@$_SESSION['setup']['view_h'] and $db->getHelpTable () != null) {
             $label .= ' <a href="help_edit.php?t='. hsc ($this->getTable ()->getName ());
             $label .= '&amp;c='. hsc ($this->getName ()). '" class="help">[help]</a>';
-        } else if ($help_columns[$this->getName ()]['HasLongHelp']) {
+        } else if (@$help_columns[$this->getName()]['HasLongHelp']) {
             $label .= ' <a href="help.php?t='. hsc ($this->getTable ()->getName ());
             $label .= '&amp;c='. hsc ($this->getName ()). '" target="_blank" onclick="return popup_a(this);" class="help">[?]</a>';
         }
         
-        $quick_help = trim ($help_columns[$this->getName ()]['QuickHelp']);
+        $quick_help = trim(@$help_columns[$this->getName()]['QuickHelp']);
         if ($quick_help != '') {
             $label .= "<div class=\"quick_help\">". hsc ($quick_help). "</div>";
         }
@@ -941,7 +941,7 @@ abstract class Column implements QueryField, ColumnInterface {
         throw new Exception ('setOption is deprecated');
     }
     function getOption () {
-        return (string) $this->option;
+        return (string) @$this->option;
     }
     function getLink () {
         return null;
