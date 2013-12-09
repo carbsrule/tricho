@@ -2753,12 +2753,6 @@ class Table implements QueryTable {
                 echo "<pre>[id] q: {$q}</pre>";
             }
             
-            // there may have been an error
-            if ($error_cond) {
-                echo '<p class="error">Error: Identifier for this table is too complex. Identifiers do not support multiple joins to the same table at this time.</p>';
-                return '';
-            }
-            
             // query execute
             $res = execq($q);
             $row = fetch_assoc($res);
