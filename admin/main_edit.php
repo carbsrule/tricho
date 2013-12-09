@@ -30,8 +30,8 @@ $form->setTable($table);
 // Work out urls and buttons
 list ($urls, $seps) = $table->getPageUrls ();
 $button_text = $table->getAltButtons ();
-if ($button_text['edit'] == '') $button_text['edit'] = 'Save';
-if ($button_text['cancel'] == '') $button_text['cancel'] = 'Cancel';
+if (@$button_text['edit'] == '') $button_text['edit'] = 'Save';
+if (@$button_text['cancel'] == '') $button_text['cancel'] = 'Cancel';
 
 // URL stuff
 $hidden_url = substr ($_SERVER['PHP_SELF'], strrpos ($_SERVER['PHP_SELF'], '/') + 1);
@@ -110,6 +110,8 @@ init_tinymce ($tinymce_fields);
 echo "<div id=\"main_data\">\n";
 
 // tabs
+$parents = array();
+$parent_table = null;
 if (trim ($_GET['p']) != '') {
     $parents = explode (',', $_GET['p']);
     if (count ($parents) > 0) {
@@ -139,7 +141,7 @@ if ($db->getShowSectionHeadings()) {
     
     $lc = strtolower ($table->getNameSingle());
     if ($identifier != '') $identifier = ': ' . $identifier;
-    if (count($ancestors) > 0 or $db->getShowPrimaryHeadings ()) {
+    if (count($parents) > 0 or $db->getShowPrimaryHeadings ()) {
         echo "<h3>{$act} {$lc}{$identifier}</h3>\n";
     } else {
         echo "<h2>{$act} {$lc}{$identifier}</h2>\n";
@@ -165,7 +167,7 @@ if ($help_table != null) {
     $q = "SELECT HelpColumn, QuickHelp, HelpText
         FROM `{$help_table->getName ()}`
         WHERE HelpTable = '{$_GET['t']}'";
-    if ($_SESSION['setup']['view_q']) echo "<pre>Help Q: {$q}</pre>";
+    if (@$_SESSION['setup']['view_q']) echo "<pre>Help Q: {$q}</pre>";
     $res = execq($q);
     while ($row = fetch_assoc($res)) {
         $help_columns[$row['HelpColumn']] = array (
@@ -178,6 +180,7 @@ if ($help_table != null) {
 // determine what functions are going to be called, and build a MySQL string of all of them
 $functions = array ();
 $function_id = 0;
+$function_sql = '';
 foreach ($view_items as $item) {
     if ($item instanceof FunctionViewItem) {
         $functions[] = $item->getCode (). ' AS func'. ($function_id++);
@@ -193,7 +196,7 @@ $hidden_fields = array ();
 $q = "SELECT `{$_GET['t']}`.*{$function_sql} FROM `{$_GET['t']}` WHERE {$pk_clause}";
 
 // show the query
-if ($_SESSION['setup']['view_q'] === true) {
+if (@$_SESSION['setup']['view_q'] === true) {
     echo "Q: {$q}<br>\n";
 }
 
@@ -228,7 +231,7 @@ if (@$res->rowCount() == 1) {
     $parents = explode (',', $_GET['p']);
     $parent_vals = array ();
     foreach ($parents as $parent) {
-        list ($parent_col, $parent_val) = explode ('.', $parent);
+        @list($parent_col, $parent_val) = explode('.', $parent);
         $parent_vals[$parent_col] = $parent_val;
     }
     
