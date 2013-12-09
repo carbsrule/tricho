@@ -32,8 +32,8 @@ $form->setTable($table);
 
 // alt button text
 $button_text = $table->getAltButtons ();
-if ($button_text['add'] == '') $button_text['add'] = 'Add';
-if ($button_text['cancel'] == '') $button_text['cancel'] = 'Cancel';
+if (@$button_text['add'] == '') $button_text['add'] = 'Add';
+if (@$button_text['cancel'] == '') $button_text['cancel'] = 'Cancel';
 
 // include JS editor stuff if there are any columns that require it, and check for file fields
 $file_uploads_required = false;
@@ -70,7 +70,9 @@ init_tinymce ($tinymce_fields);
 echo "<div id=\"main_data\">\n";
 
 // tabs
-if (trim ($_GET['p']) != '') {
+$parents = array();
+$parent_table = null;
+if (trim(@$_GET['p']) != '') {
     $parents = explode (',', $_GET['p']);
     if (count ($parents) > 0) {
         list ($parent_table) = explode ('.', $parents[0]);
@@ -92,7 +94,7 @@ if ($db->getShowPrimaryHeadings ()) {
 show_parent_siblings($table, $parents);
 
 if ($db->getShowSectionHeadings()) {
-    if (count($ancestors) > 0 or $db->getShowPrimaryHeadings ()) {
+    if (count($parents) > 0 or $db->getShowPrimaryHeadings ()) {
         echo "<h3>Adding new {$table->getNameSingle ()}</h3>";
     } else {
         echo "<h2>Adding new {$table->getNameSingle ()}</h2>";
@@ -117,7 +119,7 @@ $help_columns = array ();
 if ($help_table != null) {
     $q = "SELECT HelpColumn, QuickHelp, HelpText
         FROM `{$help_table->getName()}` WHERE HelpTable = '{$_GET['t']}'";
-    if ($_SESSION['setup']['view_q']) echo "<pre>Help Q: {$q}</pre>";
+    if (@$_SESSION['setup']['view_q']) echo "<pre>Help Q: {$q}</pre>";
     $res = execq($q);
     while ($row = fetch_assoc($res)) {
         $help_columns[$row['HelpColumn']] = array (
@@ -137,7 +139,7 @@ echo ">\n";
 
 echo "<input type=\"hidden\" name=\"_t\" value=\"{$_GET['t']}\">\n";
 
-if ($_GET['p'] != '') {
+if (@$_GET['p'] != '') {
     echo "<input type=\"hidden\" name=\"_p\" value=\"", htmlspecialchars ($_GET['p']), "\">\n";
     
     $parents = explode (',', $_GET['p']);
@@ -219,7 +221,7 @@ foreach ($view_items as $item) {
             $col->setExistingRequired (false);
         }
         
-        $value = $_SESSION[ADMIN_KEY]['add'][$table->getName ()][$col->getName ()];
+        $value = @$_SESSION[ADMIN_KEY]['add'][$table->getName ()][$col->getName ()];
         
         if (method_exists ($col, 'getMultiInputs')) {
             $input_rows = $col->getMultiInputs ($form, $value);
