@@ -425,7 +425,7 @@ class MainTable {
         $order = false,
         $order_dir = ORDER_DIR_ASC)
     {
-        
+        $select_field_added = false;
         if ($main or $pk) {
             // Add to main view
             if ($main) $this->visible_columns[] = $field;
@@ -508,7 +508,7 @@ class MainTable {
         
         $q = cast_to_string ($count_select_query);
         
-        if ($_SESSION['setup']['view_q'] === true) {
+        if (@$_SESSION['setup']['view_q'] === true) {
             echo "<p style=\"font-size: 9px;\">Q: {$q}</p>\n";
         }
         
@@ -640,6 +640,7 @@ class MainTable {
         } else {
             $search_key = 'search_params';
         }
+        $sess = @$_SESSION[ADMIN_KEY][$search_key][$table_name];
         
         // Show filter options -- should this be its own function?
         if (count($this->search_cols) > 0) {
@@ -651,7 +652,8 @@ class MainTable {
             $return_string .= "<form method=\"post\" action=\"{$search_url}\">";
             
             $return_string .= "<input type=\"hidden\" name=\"_t\" value=\"{$table_name}\">";
-            $return_string .= "<input type=\"hidden\" name=\"_p\" value=\"{$_GET['p']}\">";
+            $return_string .= '<input type="hidden" name="_p" value="' .
+                hsc(@$_GET['p']) . '">';
             
             if ($this->inline_search) {
                 $return_string .= "<input type=\"hidden\" name=\"_search_type\" value=\"inline\">";
@@ -667,18 +669,13 @@ class MainTable {
             $return_string .= "<div id=\"search\">\n";
             
             $return_string .= "<input type=\"radio\" name=\"_match_type\" value=\"all\" id=\"search_match_all\"";
-            if (
-                $_SESSION[ADMIN_KEY][$search_key][$table_name]['_match_type'] == 'all'
-                or
-                $_SESSION[ADMIN_KEY][$search_key][$table_name]['_match_type'] == ''
-            ) {
+            $match_type = @$sess['_match_type'];
+            if ($match_type == 'all' or $match_type == '') {
                 $return_string .= " checked";
             }
             $return_string .= "> <label for=\"search_match_all\">Match all</label>";
             $return_string .= "<input type=\"radio\" name=\"_match_type\" value=\"any\" id=\"search_match_any\"";
-            if ($_SESSION[ADMIN_KEY][$search_key][$table_name]['_match_type'] == 'any') {
-                $return_string .= " checked";
-            }
+            if ($match_type == 'any') $return_string .= " checked";
             $return_string .= "> <label for=\"search_match_any\">Match any</label>";
             
             // add condition button
@@ -956,7 +953,8 @@ class MainTable {
                 $base_url = "inline_search.php?t=". urlencode ($table_name). "&amp;p={$_GET['p']}&amp;f={$_GET['f']}";
             } else {
                 list ($main_url, $main_sep) = $this->page_urls->get (MAIN_PAGE_MAIN);
-                $base_url = "{$main_url}{$main_sep}t=". urlencode ($table_name). "&amp;p={$_GET['p']}";
+                $base_url = "{$main_url}{$main_sep}t=" .
+                    urlencode($table_name) . '&amp;p=' . urlencode(@$_GET['p']);
             }
             
             // first arrow
@@ -1111,8 +1109,10 @@ class MainTable {
                 }
                 
                 if ($this->options[MAIN_OPTION_CSV]) {
-                    $return_string .= "<input type=\"button\" value=\"{$this->text_blocks[MAIN_TEXT_CSV_BUTTON]}\" ".
-                        "onclick=\"window.location = 'main_export.php?t={$table_name}&p={$_GET['p']}';\">\n";
+                    $return_string .= "<input type=\"button\" value=\"{$this->text_blocks[MAIN_TEXT_CSV_BUTTON]}\" " .
+                        "onclick=\"window.location = 'main_export.php?t=" .
+                        hsc($table_name) . '&amp;p=' . hsc(@$_GET['p']) .
+                        "';\">\n";
                 }
                 
                 $return_string .= "</p>\n";
