@@ -52,7 +52,8 @@ if (count($primary_key_cols) == count($primary_key_values)) {
         
         $old_val = 0;
         try {
-            $val = reset($col->collateInput($val, $old_val));
+            $val = $col->collateInput($val, $old_val);
+            $val = reset($val);
         } catch (DataValidationException $ex) {
             report_error('Invalid key provided');
             require 'foot.php';
