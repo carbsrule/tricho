@@ -2749,7 +2749,7 @@ class Table implements QueryTable {
             
             // final query build
             $q = cast_to_string ($handler);
-            if ($_SESSION['setup']['view_q']) {
+            if (@$_SESSION['setup']['view_q']) {
                 echo "<pre>[id] q: {$q}</pre>";
             }
             
