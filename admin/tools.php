@@ -11,7 +11,7 @@ test_setup_login(true, SETUP_ACCESS_LIMITED);
 $_GET['t'] = '__tools';
 require_once 'head.php';
 
-if ($_GET['section'] == '') $_GET['section'] = 'gen';
+if (@$_GET['section'] == '') $_GET['section'] = 'gen';
 
 if (test_setup_login (false, SETUP_ACCESS_FULL)) {
     $show_all_tools = true;
