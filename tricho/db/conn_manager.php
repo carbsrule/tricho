@@ -52,7 +52,8 @@ class ConnManager {
     static function get_default() {
         static $conn = null;
         if ($conn) return $conn;
-        $config_id = reset(array_keys(self::$configs));
+        $configs = array_keys(self::$configs);
+        $config_id = reset($configs);
         $conn = self::connect($config_id, false);
         return $conn;
     }
