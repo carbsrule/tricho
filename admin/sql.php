@@ -222,7 +222,10 @@ if (count($queries) > 0) {
                             'double',
                             'real',
                             'decimal',
-                            'numeric'
+                            'numeric',
+                            'long',
+                            'longlong',
+                            'newdecimal'
                         );
                         
                         $col_names = array ();
@@ -232,13 +235,24 @@ if (count($queries) > 0) {
                         for ($field_counter = 0; $field_counter < $num_fields; $field_counter++) {
                             $col_data = $result->getColumnMeta($field_counter);
                             $col_names[] = $col_data['name'];
+                            
+                            // N.B. The MySQL PDO driver doesn't appear to set
+                            // the native_type value for certain columns:
+                            // TINYINT, for example. Also, pdo_type seems,
+                            // erroneously, to always be 2 (PDO::PARAM_STR), so
+                            // that can't be used reliably either.
+                            // Both of these results apply to PHP 5.3.26,
+                            // using MySQL 5.5.34
+                            if (!isset($col_data['native_type'])) {
+                                $col_data['native_type'] = 'tinyint';
+                            }
                             $col_type = strtolower($col_data['native_type']);
+                            
+                            $align = '';
                             if (in_array ($col_type, $numeric_types)) {
                                 $align = ' align="right"';
                             } else if ($col_type == 'bit' or $col_type == 'unknown') {
                                 $possible_bit_fields[] = $field_counter;
-                            } else {
-                                $align = '';
                             }
                             $col_aligns[] = $align;
                         }
