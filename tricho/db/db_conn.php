@@ -63,7 +63,7 @@ abstract class DbConn implements DbConnValidator {
         return $this->params;
     }
     function get_param($name) {
-        return $this->params[$name];
+        return @$this->params[$name];
     }
     
     
