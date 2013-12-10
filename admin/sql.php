@@ -30,7 +30,7 @@ $conn = ConnManager::get_active();
 //    - Do not confirm successful queries
 // Real tables are tables that do not begin with '_tricho'
 $do_query_logging = true;
-if ($_FILES['sql_file']['tmp_name']) {
+if (@$_FILES['sql_file']['tmp_name']) {
     $q = "SHOW TABLES";
     $res = execq($q);
     
@@ -57,16 +57,17 @@ if (defined ('SQL_FIELD_BREAK')) {
 settype ($_POST['max_fails'], 'int');
 if ($_POST['max_fails'] <= 0) $_POST['max_fails'] = 100;
 
-$parser = new SQLParser ();
-$queries = array ();
-if (is_uploaded_file ($_FILES['sql_file']['tmp_name'])) {
-    $file_contents = file_get_contents ($_FILES['sql_file']['tmp_name']);
-    $queries = $parser->parse ($file_contents);
-} else if ($_FILES['sql_file']['error'] != UPLOAD_ERR_NO_FILE
-        and $_FILES['sql_file']['error'] != UPLOAD_ERR_OK) {
-    report_error ("File upload failed");
+$parser = new SQLParser();
+$queries = array();
+$file = @$_FILES['sql_file'];
+if (is_uploaded_file($file['tmp_name'])) {
+    $file_contents = file_get_contents($file['tmp_name']);
+    $queries = $parser->parse($file_contents);
+} else if ($file['error'] != UPLOAD_ERR_NO_FILE
+        and $file['error'] != UPLOAD_ERR_OK) {
+    report_error("File upload failed");
 }
-$queries = $parser->parse ($_POST['query'], $queries);
+$queries = $parser->parse(@$_POST['query'], $queries);
 
 if (count($queries) > 0) {
     
@@ -392,10 +393,10 @@ $max_upload_size = bytes_to_human ($ini_max_upload);
 <form action="sql.php" method="post" enctype="multipart/form-data">
         <p>Use queries from file (max size <?= $max_upload_size; ?>): <input type="file" name="sql_file"></p>
         <p>
-            <label for="show_success" class="label_plain"><input id="show_success" type="checkbox" name="show_success" <?= (($_POST['show_success'] == 1 or !isset ($_POST['query']))? 'checked' : ''); ?> value="1"> Show confirmation of successful queries that don't return a result set </label>
+            <label for="show_success" class="label_plain"><input id="show_success" type="checkbox" name="show_success" <?= ((@$_POST['show_success'] == 1 or !isset($_POST['query']))? 'checked' : ''); ?> value="1"> Show confirmation of successful queries that don't return a result set </label>
         </p>
         <p>Stop trying after <input type="text" name="max_fails" size="3" maxlength="4" value="<?=    $_POST['max_fails']; ?>"> failed queries</p>
-        <textarea name="query" cols="40" rows="12"><?= htmlspecialchars ($_POST['query']); ?></textarea>
+        <textarea name="query" cols="40" rows="12"><?= htmlspecialchars(@$_POST['query']); ?></textarea>
         <p><input type="submit" value="Execute"></p>
     </form>
 </td>
