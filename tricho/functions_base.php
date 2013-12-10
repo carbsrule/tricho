@@ -1011,11 +1011,12 @@ function is_https () {
     // However, when IIS specifies '', that (cryptically) means that HTTPS is on
     // -- This hasn't been tested, it's assumed that $_SERVER['SERVER_SOFTWARE'] contains 'IIS' somewhere
     
-    if ($_SERVER['HTTPS'] == 'on') {
+    $https = @$_SERVER['HTTPS'];
+    if ($https == 'on') {
         return true;
-    } else if ($_SERVER['HTTPS'] == 'off') {
+    } else if ($https == 'off') {
         return false;
-    } else if ($_SERVER['HTTPS'] == '') {
+    } else if ($https == '') {
         if (stripos ($_SERVER['SERVER_SOFTWARE'], 'iis') !== false) {
             return true;
         } else {
