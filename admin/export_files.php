@@ -20,12 +20,12 @@ test_admin_login ();
 set_time_limit (900);
 
 $debug_mode = false;
-if ($_GET['debug'] == 'true' or $_GET['debug'] == 'y' or $_GET['debug'] == 'Y' or $_GET['debug'] == '1') {
+if (in_array(@$_GET['debug'], array('true', 'y', 'Y', '1'))) {
     $debug_mode = true;
 }
 
 $delete_archive = true;
-if ($_GET['del'] == 'false' or $_GET['del'] == 'n' or $_GET['del'] == 'N' or $_GET['del'] == '0') {
+if (in_array(@$_GET['del'], array('false', 'n', 'N', '0'))) {
     $delete_archive = false;
 }
 

@@ -33,7 +33,9 @@ echo "</tr>";
 
 $altrow = 1;
 $total_num = 0;
+$total_cols = 0;
 $total_space = 0;
+$total_rows = 0;
 while ($row = fetch_assoc($res)) {
     
     // ignore views

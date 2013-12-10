@@ -149,13 +149,13 @@ if (@$_GET['p'] != '') {
     
 } else {
     // just get the current table
-    $selected_table = $db->getTable ($_GET['t']);
+    $selected_table = $db->getTable(@$_GET['t']);
 }
 
 echo "    <ul class=\"level1\">\n";
 if (file_exists ('home.php')) {
     echo "        <li";
-    if ($_GET['t'] == '__home') echo ' class="on"';
+    if (@$_GET['t'] == '__home') echo ' class="on"';
     echo "> <a href=\"", ROOT_PATH_WEB, ADMIN_DIR, "home.php\">Home</a></li>\n";
 }
 
@@ -222,7 +222,7 @@ foreach ($menu_tables as $menu_table) {
     }
 }
 if (test_setup_login (false, SETUP_ACCESS_LIMITED)) {
-    if ($_GET['t'] == '__tools') {
+    if (@$_GET['t'] == '__tools') {
         $class = ' class="on"';
     } else {
         $class = '';

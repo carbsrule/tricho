@@ -8,7 +8,7 @@
 require_once '../tricho.php';
 use tricho\Runtime;
 
-if ($_GET['view'] == 'session') {
+if (@$_GET['view'] == 'session') {
     test_setup_login (true, SETUP_ACCESS_FULL);
 } else {
     test_setup_login (true, SETUP_ACCESS_LIMITED);
@@ -27,8 +27,7 @@ $_GET['section'] = 'gen';
 require_once 'tools_tabs.php';
 
 
-// ALT VIEW: phpinfo
-if ($_GET['view'] == 'phpinfo') {
+if (@$_GET['view'] == 'phpinfo') {
     
     // send phpinfo() to an output handler so we can kill off head, css, etc.
     ob_start ();
@@ -54,8 +53,7 @@ if ($_GET['view'] == 'phpinfo') {
     exit;
 }
 
-// ALT VIEW: session
-if ($_GET['view'] == 'session') {
+if (@$_GET['view'] == 'session') {
     echo '<p><a href="info.php">&laquo; back</a></p>';
     echo '<pre>';
     print_human ($_SESSION);
@@ -65,8 +63,7 @@ if ($_GET['view'] == 'session') {
     exit;
 }
 
-// ALT VIEW: server
-if ($_GET['view'] == 'server') {
+if (@$_GET['view'] == 'server') {
     echo '<p><a href="info.php">&laquo; back</a></p>';
     echo '<pre>';
     print_human ($_SERVER);
@@ -271,7 +268,7 @@ if (class_exists ('PEAR_Dependency2') or count ($pear_packages) > 0) {
     
     echo "<br>&nbsp; &nbsp; Version: ";
     if (class_exists ('PEAR_Dependency2')) {
-        echo PEAR_Dependency2::getPEARVersion ();
+        echo @PEAR_Dependency2::getPEARVersion();
     } else {
         echo $pear_packages['PEAR']['version'];
     }

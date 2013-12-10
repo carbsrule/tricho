@@ -20,7 +20,7 @@ require_once 'tools_tabs.php';
 
 if (defined ('PASSWORD_MIN_LENGTH')) {
     
-    if ($_GET['length'] == '') {
+    if (@$_GET['length'] == '') {
         $_GET['length'] = PASSWORD_MIN_LENGTH;
     } else {
         settype ($_GET['length'], 'int');
