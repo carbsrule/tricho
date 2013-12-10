@@ -69,8 +69,8 @@ class EmailColumn extends StringColumn {
     /**
      * @author benno, 2013-04-28
      */
-    static function getConfigFormFields ($config, $class) {
-        $fields = parent::getConfigFormFields ($config, $class);
+    static function getConfigFormFields(array $config, $class) {
+        $fields = parent::getConfigFormFields($config, $class);
         $fields = "    <p>Validate using</p>\n";
         
         $fields .= "<label for=\"val_basic\"><input type=\"radio\" name=\"{$class}_validate\" id=\"val_basic\" value=\"basic\"";
