@@ -20,7 +20,7 @@ if ($db->getShowSectionHeadings ()) {
     echo "<h2>Generate tables.xml</h2>";
 }
 
-$_GET['section'] = 'gen';
+$_GET['section'] = 'db';
 require_once 'tools_tabs.php';
 
 
