@@ -76,7 +76,7 @@ class LinkColumn extends Column {
         }
     }
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         // TODO: fix this kludge
         global $db;
         
@@ -149,7 +149,7 @@ class LinkColumn extends Column {
     }
     
     
-    function getInputField (Form $form, $input_value = '') {
+    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $q = $this->getSelectQuery();
         $res = execq($q);
         

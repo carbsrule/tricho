@@ -76,7 +76,7 @@ abstract class InputColumn extends Column {
         return "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Input size</span>\n".
             "        <span class=\"fake-td\"><input type=\"text\" name=\"{$class}_size\" value=\"".
-            hsc ($config['size']). "\"></span>\n".
+            hsc(@$config['size']). "\"></span>\n" .
             "    </p>\n";
     }
 }

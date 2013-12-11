@@ -283,7 +283,7 @@ class FileColumn extends Column {
     }
     
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         $fields = self::getFileConfigFormFields ($config, $class);
         
         $fields .=    "<p>Show icon on main view:\n";

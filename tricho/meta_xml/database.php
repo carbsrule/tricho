@@ -264,7 +264,7 @@ class Database {
         fwrite ($file, $xml);
         fclose ($file);
         
-        if (is_array ($_SESSION['setup']['msg'])) {
+        if (is_array(@$_SESSION['setup']['msg'])) {
             $_SESSION['setup']['msg'][] = "XML written";
         } else {
             $_SESSION['setup']['msg'] = "XML written";

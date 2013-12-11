@@ -91,7 +91,7 @@ if ($permissions_ok) {
             }
             
             echo "<option value=\"", $table->getName (), "\"";
-            if ($table->getName() == $_SESSION['setup']['table_edit']['chosen_table']) {
+            if ($table->getName() == @$_SESSION['setup']['table_edit']['chosen_table']) {
                 echo ' selected="selected"';
             }
             echo ">", $table->getName(), ' (', $table->getEngName(),

@@ -246,7 +246,7 @@ class ImageColumn extends FileColumn {
     }
     
     
-    static function getConfigFormFields ($config, $class) {
+    static function getConfigFormFields(array $config, $class) {
         $fields = self::getFileConfigFormFields ($config, $class);
         
         $fields .= "<p class=\"fake-tr\">\n";

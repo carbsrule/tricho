@@ -277,9 +277,6 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
         if ($config['class'] == $class) $css_class = '';
         echo "<div id=\"options-{$class}\" class=\"{$css_class}\">\n";
         $config_fields = '';
-        if ($class::isJSOnchangeAllowed ()) {
-            $config_fields .= $class::getJsOnchangeConfigFormField ($config);
-        }
         $config_fields .= $class::getConfigFormFields ($config, $class);
         if ($config_fields != '') {
             echo $config_fields;

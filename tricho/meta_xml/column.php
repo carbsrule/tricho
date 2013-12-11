@@ -41,7 +41,6 @@ abstract class Column implements QueryField, ColumnInterface {
     protected $comment;
     protected $params;
     protected $default = null;
-    protected $onchange_method;
     
     
     /**
@@ -588,18 +587,6 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
-     * Gets whether or not a JavaScript onchange property can be set for this
-     * column type
-     *
-     * @return bool True if onchange is settable, false otherwise
-     * @author benno, 2011-08-17
-     */
-    function isJSOnchangeAllowed () {
-        return true;
-    }
-    
-    
-    /**
      * Gets the default value for a column if it has one
      *
      * @return string The default value, or null if the column does not have a
@@ -901,27 +888,6 @@ abstract class Column implements QueryField, ColumnInterface {
      */
     function getPostSafeName () {
         return str_replace (' ', '_', $this->name);
-    }
-    
-    
-    /**
-     * Gets the JS onchange method to call when the value of an input field for
-     * this column has changed
-     * @return string
-     * @author benno, 2011-08-17
-     */
-    function getOnChangeMethod () {
-        return $this->onchange_method;
-    }
-    
-    /**
-     * Sets the JS onchange method to call when the value of an input field for
-     * this column has changed
-     * @param string $method The method to call
-     * @author benno, 2011-08-17
-     */
-    function setOnChangeMethod ($method) {
-        $this->onchange_method = (string) $method;
     }
     
     

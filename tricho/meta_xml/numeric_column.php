@@ -114,8 +114,8 @@ abstract class NumericColumn extends InputColumn {
             "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Range</span>\n".
             "        <span class=\"fake-td\"><input type=\"text\" name=\"{$class}_min\" value=\"".
-            hsc ($config['min']). "\" size=\"4\"> to <input type=\"text\" name=\"{$class}_max\" value=\"".
-            hsc ($config['max']). "\" size=\"4\"></span></p>\n";
+            hsc(@$config['min']) . "\" size=\"4\"> to <input type=\"text\" name=\"{$class}_max\" value=\"" .
+            hsc(@$config['max']) . "\" size=\"4\"></span></p>\n";
     }
     
     
