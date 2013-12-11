@@ -61,6 +61,9 @@ class ConnManager {
     
     /**
      * Gets the current active DB connection (of a specific type, if desired)
+     * @param string $class The name of a specific connection class, if desired,
+     *        e.g. MysqlConn
+     * @return DbConn or NULL
      */
     static function get_active($class = '') {
         // Connect using default db config if no active connections
