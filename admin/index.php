@@ -17,7 +17,7 @@ Therefore, the 'Location' redirects here must be explicitly specified
 */
 $root = ROOT_PATH_WEB. dirname (substr (__FILE__, strlen (ROOT_PATH_FILE))). '/';
 
-if ($_SESSION[ADMIN_KEY]['id'] == '') {
+if (@$_SESSION[ADMIN_KEY]['id'] == '') {
     header ("Location: {$root}login.php");
 } else {
     
