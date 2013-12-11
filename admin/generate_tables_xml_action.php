@@ -194,7 +194,7 @@ while ($table = fetch_row($tables)) {
             
             // work out what the sql attributes should be
             $attrs = array ();
-            if ($matches[5] != '') {
+            if (@$matches[5] != '') {
                 $attrs[] = $matches[5];
             }
             if ($column['Null'] == 'NO') {
@@ -402,7 +402,7 @@ function convert_to_english_name ($name) {
     }
     
     $eng_name = strtoupper($name[0]);
-    for ($i = 1; $i <= strlen($name); $i++) {
+    for ($i = 1; $i < strlen($name); $i++) {
         $chr = $name[$i];
         if (strtolower($chr) == $chr) {
             $eng_name .= $chr;

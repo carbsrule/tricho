@@ -34,9 +34,9 @@ require_once 'tools_tabs.php';
 <?php
 for ($i = 1; $i <= SEARCH_ALL_NUM_TERMS; $i++) {
     echo "    <tr><td>{$i}</td><td><input type=\"text\" name=\"search[{$i}]\" value=\"",
-        htmlspecialchars ($_POST['search'][$i]),
+        hsc(@$_POST['search'][$i]),
         "\"></td><td><input type=\"text\" name=\"replacement[{$i}]\" value=\"",
-        htmlspecialchars ($_POST['replacement'][$i]), "\"></td></tr>\n";
+        hsc(@$_POST['replacement'][$i]), "\"></td></tr>\n";
 }
 ?>
     <tr><td colspan="3">Perform replacement(s) <input type="checkbox" name="replace" value="1"></td>
@@ -63,7 +63,7 @@ if (@count($_POST['search']) > 0) {
     if ($tables_rs->rowCount() > 0) {
         echo "<table class=\"form-table\">\n";
         echo "    <tr><th>Table</th><th>PK</th><th>Before</th><th>After</th>";
-        if ($_POST['replace'] == 1) {
+        if (@$_POST['replace']) {
             echo "<th>Result</th>";
         }
         echo "</tr>\n";
@@ -182,7 +182,7 @@ if (@count($_POST['search']) > 0) {
                     }
                     echo "</td>\n";
                     
-                    if ($_POST['replace'] == 1) {
+                    if (@$_POST['replace']) {
                         echo "        <td>";
                         // echo htmlspecialchars ($replace_query);
                         if (execq($replace_query, true, true, false)) {
@@ -203,7 +203,7 @@ if (@count($_POST['search']) > 0) {
         echo "</table>\n";
         
         echo "<p>{$records_matched} ";
-        if ($_POST['replace'] == 1) {
+        if (@$_POST['replace']) {
             echo 'replacement(s) performed';
         } else {
             echo 'match(es) found';

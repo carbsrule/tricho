@@ -102,7 +102,7 @@ while ($row = fetch_assoc($res)) {
     $collations[$row['Name']] = $row['Collation'];
 }
 
-if ($_POST['dl'] == 1) {
+if (@$_POST['dl']) {
     require_once '../tricho.php';
     test_admin_login ();
     
@@ -137,8 +137,9 @@ if ($_POST['dl'] == 1) {
 $db = Database::parseXML ('tables.xml');
 foreach ($_POST['tables'] as $table => $val) {
     
-    // export is the generic table-specific data store
-    $export = array();
+    // export is the generic table-specific data store, with
+    // s: structure, d: data, u: data as INSERT/UPDATE
+    $export = array('s' => false, 'd' => false, 'u' => false);
     if ($_POST['mode'] == 'essential') {
         $export['s'] = true;
         $db_table = $db->getTable ($table);
@@ -148,10 +149,11 @@ foreach ($_POST['tables'] as $table => $val) {
             }
         }
     } else {
-        if (strpos($val, 's') !== false) $export['s'] = true;
-        if (strpos($val, 'd') !== false) $export['d'] = true;
         if (strpos($val, 'u') !== false) {
-            $export = array ('u' => true);
+            $export['u'] = true;
+        } else {
+            if (strpos($val, 's') !== false) $export['s'] = true;
+            if (strpos($val, 'd') !== false) $export['d'] = true;
         }
     }
     
@@ -189,7 +191,7 @@ foreach ($_POST['tables'] as $table => $val) {
             // collation
             $collation = $row['Collation'];
             if ($collation != '' and $collation != $collations[$table]) {
-                $charset = reset (explode ('_', $collation));
+                list($charset) = explode('_', $collation);
                 $col_defn .= " CHARACTER SET {$charset} COLLATE {$collation}";
             }
             
@@ -225,13 +227,14 @@ foreach ($_POST['tables'] as $table => $val) {
         if (count ($pk_fields) > 0) {
             $col_defns[] = "PRIMARY KEY (". implode (',', $pk_fields). ')';
         }
-        if ($_POST['inc_del'] == 1) write_out ("DROP TABLE IF EXISTS `{$table}`;");
+        if (@$_POST['inc_del']) write_out("DROP TABLE IF EXISTS `{$table}`;");
         
         // setup indexes (apart from primary key)
         $indexes = array ();
         $res = execq("SHOW INDEXES FROM `{$table}`");
         while ($row = fetch_assoc($res)) {
             if ($row['Key_name'] != 'PRIMARY') {
+                $indexes[$row['Key_name']]['type'] = '';
                 if ($row['Non_unique'] == 0) {
                     $indexes[$row['Key_name']]['type'] = 'UNIQUE';
                 }
@@ -290,7 +293,7 @@ foreach ($_POST['tables'] as $table => $val) {
         $table_defn .= ") ENGINE={$engine_types[$table]}";
         $collation = $collations[$table];
         if ($collation != '') {
-            $charset = reset (explode ('_', $collation));
+            list($charset) = explode('_', $collation);
             $table_defn .= " DEFAULT CHARSET={$charset} COLLATE={$collation}";
         }
         $table_defn .= ';';
@@ -370,7 +373,7 @@ foreach ($_POST['tables'] as $table => $val) {
         write_out ('');
     }
 }
-if ($_POST['dl'] != 1) {
+if (@$_POST['dl'] != 1) {
     echo "</textarea></div>\n</body>\n</html>";
 }
 ?>

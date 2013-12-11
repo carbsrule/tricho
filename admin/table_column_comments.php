@@ -31,6 +31,7 @@ echo '<table class="bordered horizonal">';
 $tables = $db->getOrderedTables ();
 $no_com_tbl = array();
 $altrow = 1;
+$has_comment = false;
 foreach ($tables as $table) {
 
     // get the table comment

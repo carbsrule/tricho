@@ -1057,7 +1057,7 @@ function redirect ($uri) {
             // work out the relative path of the current directory from ROOT_PATH_WEB
             // first deal with symlinks below the document root
             $filename_called = $_SERVER['SCRIPT_FILENAME'];
-            $filename_real = realpath ($filename_real);
+            $filename_real = realpath($filename_called);
             if ($filename_called != $filename_real) {
                 $parts = explode ('/', trim ($filename_called, '/'));
                 $base_dir_real = '';

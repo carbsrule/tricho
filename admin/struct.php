@@ -15,7 +15,7 @@ require 'head.php';
 if (isset ($_POST)) {
     $_SESSION[ADMIN_KEY]['struct'] = array ();
     
-    if (is_array ($_POST['tables'])) {
+    if (is_array(@$_POST['tables'])) {
         foreach ($_POST['tables'] as $id => $val) {
             if ($val == 1) $_SESSION[ADMIN_KEY]['struct'][] = $id;
         }
@@ -33,8 +33,13 @@ if ($major_version < 5) {
 } else {
     $show = 'SHOW FULL TABLES';
 }
-if ($_POST['filter'] != '') {
-    $show .= ' '. $_POST['filter'];
+if (@$_POST['filter'] != '') {
+    $conn = ConnManager::get_active();
+    $safe_filter = $conn->quote($_POST['filter']);
+    if (substr($safe_filter, -1) == "'") {
+        $safe_filter = substr($safe_filter, 0, -1) . "%'";
+    }
+    $show .= ' LIKE ' . $safe_filter;
 }
 
 ?>
@@ -76,7 +81,7 @@ require_once 'tools_tabs.php';
 <input type='button' onclick="uncheckall('struct', 'tables'); return false;" value="Select None">
 <?php } ?>
 
-&nbsp;<code>SHOW TABLES </code><input type='text' name='filter' value="<?=$_POST['filter'];?>"style="font-family: monospace; font-size: small;">
+&nbsp;<code>SHOW TABLES </code><input type='text' name='filter' value="<?= @$_POST['filter']; ?>"style="font-family: monospace; font-size: small;">
 
 
 <table class="export_tables">
@@ -98,7 +103,7 @@ foreach ($db_rows as $db_row) {
     $cells[$col][$row] = $db_row;
     $i++;
 }
-$num_rows = count($cells[0]);
+$num_rows = count(@$cells[0]);
 
 
 // display cells
@@ -199,10 +204,10 @@ if ($num > 0) {
         </td>
         <td>
             <label for="style_vert" class="label_plain">
-                <input type="radio" id="style_vert" name="style" value="vert"<?php if ($_POST['style'] != 'horiz') echo ' checked'; ?>>Vertical
+                <input type="radio" id="style_vert" name="style" value="vert"<?php if (@$_POST['style'] != 'horiz') echo ' checked'; ?>>Vertical
             </label>
             <label for="style_horiz" class="label_plain">
-                <input type="radio" id="style_horiz" name="style" value="horiz"<?php if ($_POST['style'] == 'horiz') echo ' checked'; ?>>Horizontal
+                <input type="radio" id="style_horiz" name="style" value="horiz"<?php if (@$_POST['style'] == 'horiz') echo ' checked'; ?>>Horizontal
             </label>
         </td>
      </tr>
@@ -212,10 +217,10 @@ if ($num > 0) {
         </td>
         <td>
             <label for="full_y" class="label_plain">
-                <input type="radio" id="full_y" name="full_data" value="y"<?php if ($_POST['full_data'] != 'n') echo ' checked'; ?>>Yes
+                <input type="radio" id="full_y" name="full_data" value="y"<?php if (@$_POST['full_data'] != 'n') echo ' checked'; ?>>Yes
             </label>
             <label for="full_n" class="label_plain">
-                <input type="radio" id="full_n" name="full_data" value="n"<?php if ($_POST['full_data'] == 'n') echo ' checked'; ?>>No
+                <input type="radio" id="full_n" name="full_data" value="n"<?php if (@$_POST['full_data'] == 'n') echo ' checked'; ?>>No
             </label>
         </td>
     </tr>

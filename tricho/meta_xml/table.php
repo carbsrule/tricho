@@ -659,7 +659,10 @@ class Table implements QueryTable {
         $root = tricho\Runtime::get('root_path');
         require_once $root . 'admin/setup/setup_functions.php';
         
-        if ($engine == '') $engine = reset (get_available_engines ());
+        if ($engine == '') {
+            $available_engines = get_available_engines();
+            $engine = reset($available_engines);
+        }
         
         if ($table_collation == '') {
             $table_collation = get_table_collation ($this->getName ());
@@ -689,7 +692,7 @@ class Table implements QueryTable {
         $columns = $this->getColumns ();
         $col_defns = array ();
         foreach ($columns as $col) {
-            $column_collation = $col_collations[$col->getName ()];
+            $column_collation = @$col_collations[$col->getName ()];
             if ($column_collation == $table_collation) $column_collation = '';
             $defn = $col->getCreateSql ();
             if ($column_collation) {
