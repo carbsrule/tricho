@@ -22,6 +22,7 @@ abstract class TemporalColumn extends Column {
     }
     
     function collateInput ($input, &$original_value) {
+        $y = $m = $d = $hr = $min = $sec = 0;
         if (is_string($input)) {
             $input = trim($input);
             if ($this->has_date and $this->has_time) {

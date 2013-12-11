@@ -56,10 +56,10 @@ class DecimalColumn extends NumericColumn {
                 $negative = true;
                 $value = substr ($value, 1);
             }
-            list ($int_part, $frac_part) = explode ('.', $value);
-            list ($full_len, $frac_len) = preg_split ('/, */', $this->sql_size);
-            settype ($full_len, 'int');
-            settype ($frac_len, 'int');
+            @list($int_part, $frac_part) = explode('.', $value);
+            @list($full_len, $frac_len) = preg_split('/, */', $this->sql_size);
+            settype($full_len, 'int');
+            settype($frac_len, 'int');
             $int_len = $full_len - $frac_len;
             if ($int_part != '0' and strlen ($int_part) > $int_len) {
                 $max = "{$int_len} ". ($int_len == 1? 'digit is': "digits are");

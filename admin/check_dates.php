@@ -32,8 +32,6 @@ require_once 'tools_tabs.php';
     <th>SQL type</th>
     <th>From</th>
     <th>To</th>
-    <th>Format</th>
-    <th>Example</th>
     <th>Errors</th>
 </tr>
 
@@ -59,14 +57,13 @@ foreach ($tables as $table) {
             // determine errors
             $errors = array();
             if ($column->getSqlType () != SQL_TYPE_TIME) {
-                $val = $column->getParam ('date_min_year');
+                $val = $column->getMinYear();
                 if ($val == '') $errors[] = 'no min year set';
                 if ($val[0] == '+') $errors[] = 'min year must not be an offset';
                 
-                $val = $column->getParam ('date_max_year');
+                $val = $column->getMaxYear();
                 if ($val == '') $errors[] = 'no max year set';
             }
-            if ($column->getParam ('date_format') == '') $errors[] = 'no date format set';
             
             // work out class for this column
             $class = 'altrow'. $altrow;
@@ -87,24 +84,10 @@ foreach ($tables as $table) {
             
             // date range
             if ($column->getSqlType() != SQL_TYPE_TIME) {
-                echo '<td>'. $column->getParam ('date_min_year'). '</td><td>'. $column->getParam ('date_max_year'). "</td>\n";
+                echo '<td>', $column->getMinYear(), '</td><td>', 
+                    $column->getMaxYear(), "</td>\n";
             } else {
                 echo "<td colspan=\"2\"><i>n/a</i></td>\n";
-            }
-            
-            // format + example
-            $format = trim ($column->getParam ('date_format'));
-            if ($format != '') {
-                echo "<td>{$format}</td>\n";
-                
-                $format = sql_enclose ($format);
-                $q = "SELECT DATE_FORMAT(NOW(), {$format}) AS Example";
-                $res = execq($q);
-                $row = fetch_assoc($res);
-                echo "<td>{$row['Example']}</td>\n";
-                
-            } else {
-                echo "<td>&nbsp;</td><td>&nbsp;</td>\n";
             }
             
             // errors

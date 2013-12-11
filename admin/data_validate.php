@@ -55,7 +55,9 @@ foreach ($tables as $table) {
     }
     
     $q = "SELECT * FROM `{$table->getName ()}`";
-    if ($_SESSION['setup']['view_q']) echo "<pre>[data_validate] q: {$q}</pre>";
+    if (@$_SESSION['setup']['view_q']) {
+        echo "<pre>[data_validate] q: {$q}</pre>";
+    }
     $res = execq($q);
     while ($row = fetch_assoc($res)) {
         
