@@ -90,7 +90,7 @@ class LinkColumn extends Column {
             $pks = $table->getPKnames();
             if (count($pks) != 1) continue;
             $target = "{$table->getName()}.{$pks[0]}";
-            if ($config['target'] == $target) {
+            if (@$config['target'] == $target) {
                 $selected = ' selected="selected"';
             } else {
                 $selected = '';

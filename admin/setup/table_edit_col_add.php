@@ -9,7 +9,7 @@ require_once '../../tricho.php';
 
 $session = &$_SESSION['setup']['table_edit'];
 
-if ($session['add_column']['type'] != '') {
+if (@$session['add_column']['type'] != '') {
     $onload_javascript = "column_edit_init ();";
 }
 

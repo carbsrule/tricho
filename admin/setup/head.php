@@ -137,7 +137,7 @@ if ($permissions_ok) {
     }
     
     
-    if ($_SESSION['setup']['table_edit']['chosen_table'] == '') {
+    if (@$_SESSION['setup']['table_edit']['chosen_table'] == '') {
 ?>
         <li><a href="../">Administration</a></li>
 <?php
