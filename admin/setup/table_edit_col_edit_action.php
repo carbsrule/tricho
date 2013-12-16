@@ -43,9 +43,6 @@ foreach ($_POST as $field => $value) {
     $config[$field] = $value;
 }
 $session['edit_column'] = $config;
-
-$session['edit_column']['specific_date'] = tricho_date_build ('specific_date');
-
 $new_col = column_config_to_meta ($table, 'edit', 'table_edit_col_edit.php', $config);
 $table->replaceColumn($column, $new_col);
 

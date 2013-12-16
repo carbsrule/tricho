@@ -41,8 +41,6 @@ foreach ($_POST as $field => $value) {
 }
 
 $session['add_column'] = $config;
-
-$session['add_column']['specific_date'] = tricho_date_build ('specific_date');
 $col = column_config_to_meta ($table, 'add', 'table_edit_col_add.php', $config);
 
 // warn if duplicate english name

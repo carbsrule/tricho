@@ -27,7 +27,6 @@ if ($_POST['action'] == 'cancel') {
     redirect ('table_create1_done.php');
 }
 
-$_POST['specific_date'] = tricho_date_build ('specific_date');
 if (!table_name_valid ($_POST['name'])) $_POST['name'] = '';
 
 if (!isset($session['columns'])) $session['columns'] = array();
