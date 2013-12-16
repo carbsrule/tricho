@@ -310,7 +310,7 @@ class FileColumn extends Column {
     /**
      * @author benno, 2012-02-05
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         if ($this->mask == '') $this->newMask ();
         if (@$config['max_file_size'] > 0) {
             $this->setMaxFileSize ($config['max_file_size']);

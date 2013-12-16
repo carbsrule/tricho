@@ -76,7 +76,7 @@ abstract class NumericColumn extends InputColumn {
     /**
      * @author benno 2011-08-17
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         $this->min = null;
         $this->max = null;
         if ($config['min'] != '') {

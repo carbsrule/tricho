@@ -477,7 +477,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     }
     
     if (!($col instanceof LinkColumn)) $col->setSqlType($sql_type);
-    $col->applyConfig($config);
+    $col->applyConfig($config, $errors);
     
     if ($col instanceof LinkColumn) {
         $target = $col->getTarget();

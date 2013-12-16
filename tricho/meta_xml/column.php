@@ -894,9 +894,11 @@ abstract class Column implements QueryField, ColumnInterface {
     /**
      * Applies config options in setup from a column creation/edit form
      * @param array $config The data posted from the form
+     * @param array &$errors Any errors in the config options will add string
+     *        elements to this array, describing the error(s) that occurred.
      * @author benno, 2011-08-17
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         // to be extended in subclasses
     }
     

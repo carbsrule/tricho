@@ -167,7 +167,7 @@ abstract class StringColumn extends InputColumn {
     /**
      * @author benno 2011-08-25
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         $this->setCollation($config['collation']);
         $this->clearTextFilters ();
         foreach ($this->known_filters as $filter) {

@@ -259,7 +259,7 @@ class PasswordColumn extends InputColumn {
     /**
      * @author benno 2011-08-29
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         $this->setEncryptionMethod ($config['encryption_method']);
         if ($config['require_existing'] == 1) $this->setExistingRequired (true);
         $this->setSalt($config['salt']);

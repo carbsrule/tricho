@@ -107,7 +107,7 @@ class LinkColumn extends Column {
     /**
      * @author benno, 2013-02-28
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         // TODO IMPROVE
         $path = tricho\Runtime::get('root_path') . 'admin/tables.xml';
         $db = Database::parseXML($path);

@@ -87,7 +87,7 @@ class EmailColumn extends StringColumn {
     /**
      * @author benno, 2013-04-28
      */
-    function applyConfig (array $config) {
+    function applyConfig(array $config, array &$errors) {
         @$this->setValidationType($config['validate']);
     }
     
