@@ -17,7 +17,7 @@
  * @subpackage view
  * @author Josh 2007-08-24
  */
-class FunctionViewItem implements ViewItem {
+class FunctionViewItem extends ViewItem {
     
     private $name;
     private $code;
@@ -54,6 +54,15 @@ class FunctionViewItem implements ViewItem {
     public function loadFromXML ($xml_params, $view) {
         $this->name = $xml_params['NAME'];
         $this->code = $xml_params['CODE'];
+    }
+    
+    
+    function toXMLNode(DOMDocument $doc, $add_edit = array()) {
+        $node = $doc->createElement('item');
+        $node->setAttribute('type', 'func');
+        $node->setAttribute('name', $this->name);
+        $node->setAttribute('code', $this->code);
+        return $node;
     }
     
     /**

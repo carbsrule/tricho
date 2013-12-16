@@ -50,6 +50,12 @@ abstract class ViewItem {
                 return $item;
                 break;
             
+            case 'func':
+                $item = new FunctionViewItem();
+                $item->setDetails(@$attribs['name'], @$attribs['code']);
+                return $item;
+                break;
+            
             default:
                 throw new Exception ('Unknown view item type');
         }
