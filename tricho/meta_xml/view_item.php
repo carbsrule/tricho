@@ -61,6 +61,8 @@ abstract class ViewItem {
         }
     }
     
+    abstract function toXMLNode(DOMDocument $doc, $add_edit = array());
+    
     /**
      * The object should create itself
      * @param string $xml_params The parameters as provided by the xml parser
