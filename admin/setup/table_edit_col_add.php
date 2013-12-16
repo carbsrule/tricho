@@ -6,7 +6,6 @@
  */
 
 require_once '../../tricho.php';
-session_start ();
 
 $session = &$_SESSION['setup']['table_edit'];
 
