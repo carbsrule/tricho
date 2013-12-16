@@ -518,19 +518,6 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         }
     }
     
-    // check storage location
-    if ($config['options'] == 'image' or $config['options'] == 'file') {
-        $config['storeloc'] = preg_replace('/^[.\/]*/', '', $config['storeloc']);
-        if ($config['storeloc'] == '') {
-            $errors[] = 'You must specify a storage location for file and image columns';
-        
-        } else {
-            if (!file_exists (ROOT_PATH_FILE. $config['storeloc'])) {
-                $try_create_dir = ROOT_PATH_FILE. $config['storeloc'];
-            }
-        }
-    }
-    
     // If there were errors, redirect to the form
     if (count ($errors) > 0) {
         $_SESSION['setup']['err'] = $errors;

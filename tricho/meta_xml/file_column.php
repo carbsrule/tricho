@@ -316,10 +316,12 @@ class FileColumn extends Column {
             $this->setMaxFileSize ($config['max_file_size']);
         }
         $config['storeloc'] = @trim($config['storeloc']);
-        $config['storeloc'] = ltrim ($config['storeloc'], "/.");
+        $config['storeloc'] = ltrim($config['storeloc'], "/.\\");
         $config['storeloc'] = ltrim($config['storeloc']);
         if (@$config['storeloc'] != '') {
             $this->setStorageLocation ($config['storeloc']);
+        } else {
+            $errors[] = 'Storage location required';
         }
         $this->allow_delete = ((int) $config['allow_del']? true: false);
         if (@count($config['types_allowed']) > 0) {
