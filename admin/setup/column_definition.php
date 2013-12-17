@@ -384,13 +384,20 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
  * @author benno 2010-11-11, 2011-08-04
  */
 function column_config_to_meta (Table $table, $action, $form_url, array $config) {
-    
-    $config['name'] = trim ($config['name']);
-    $col = new $config['class'] ($config['name']);
-    if (!($col instanceof Column)) {
-        throw new InvalidParameterException($config['class'] . ' is not a Column');
+    $errors = array();
+    if ($config['class'] == '') {
+        $errors[] = 'You must specify a class';
     }
-    $col->setTable($table);
+    $col = null;
+    $config['name'] = trim($config['name']);
+    if ($config['name'] and @$config['class']) {
+        $col = new $config['class'] ($config['name']);
+        if (!($col instanceof Column)) {
+            $err = $config['class'] . ' is not a Column';
+            throw new InvalidParameterException($err);
+        }
+        $col->setTable($table);
+    }
     
     // params are deprecated
     /*
@@ -402,13 +409,13 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     $col->clearParams ();
     */
     
-    $errors = array ();
     $sized_types = array(SQL_TYPE_VARCHAR, SQL_TYPE_CHAR, SQL_TYPE_DECIMAL,
         SQL_TYPE_BINARY, SQL_TYPE_VARBINARY);
     
     // get sql definition from params
+    $sql_type = 0;
     if ($config['sqltype'] == '') {
-        $errors[] = "You must specify an SQL type.";
+        $errors[] = "You must specify an SQL type";
     } else if ($config['class'] != 'LinkColumn') {
         $sql_type = sql_type_string_to_defined_constant($config['sqltype']);
         if ($sql_type == 0) {
@@ -458,17 +465,17 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     
     
     // check sql name
-    $name = trim ($config['name']);
-    if ($name == '' or !table_name_valid ($name)) {
-        $errors[] = 'You must specify a valid sql column name';
+    if ($config['name'] == '' or !table_name_valid($config['name'])) {
+        $errors[] = 'You must specify a valid SQL column name';
         
     // check for duplicate name
     } else {
-        foreach ($table->getColumns () as $other_col) {
-            if ($col === $other_col) continue;
-            if ($other_col->getName () == $config['name'] and $col->getName () != $config['name']) {
-                $errors[] = 'A column with that sql name already exists';
-                break;
+        if ($action != 'edit' or $config['name'] != @$config['old_name']) {
+            foreach ($table->getColumns() as $other_col) {
+                if ($other_col->getName() == $config['name']) {
+                    $errors[] = 'A column with that name already exists';
+                    break;
+                }
             }
         }
     }
@@ -478,23 +485,27 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         $errors[] = 'You must specify an English name';
     }
     
-    if (!($col instanceof LinkColumn)) $col->setSqlType($sql_type);
-    $col->applyConfig($config, $errors);
-    
-    if ($col instanceof LinkColumn) {
-        $target = $col->getTarget();
-        $sql_type = $target->getSqlType();
-        $col->setSqlType($sql_type);
-        $config['sql_size'] = $target->getSqlSize();
-        $sql_attributes = $target->getSqlAttributes();
-        $key = array_search('AUTO_INCREMENT', $sql_attributes);
-        if ($key !== false) {
-            unset($sql_attributes[$key]);
-            $sql_attributes = array_merge($sql_attributes);
+    if ($col) {
+        if (!($col instanceof LinkColumn) and $sql_type > 0) {
+            $col->setSqlType($sql_type);
         }
+        $col->applyConfig($config, $errors);
         
-        // TODO: Allow setting default value
-        $config['set_default'] = false;
+        if ($col instanceof LinkColumn) {
+            $target = $col->getTarget();
+            $sql_type = $target->getSqlType();
+            $col->setSqlType($sql_type);
+            $config['sql_size'] = $target->getSqlSize();
+            $sql_attributes = $target->getSqlAttributes();
+            $key = array_search('AUTO_INCREMENT', $sql_attributes);
+            if ($key !== false) {
+                unset($sql_attributes[$key]);
+                $sql_attributes = array_merge($sql_attributes);
+            }
+            
+            // TODO: Allow setting default value
+            $config['set_default'] = false;
+        }
     }
     
     // check date range is valid
