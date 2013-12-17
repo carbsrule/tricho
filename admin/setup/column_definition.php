@@ -93,9 +93,8 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     }
     
     $init_fields = array('insert_after', 'name', 'engname', 'sql_size',
-        'sql_default', 'class', 'mandatory', 'list_view', 'add_view',
-        'edit_view', 'edit_view_show', 'edit_view_edit', 'export_view',
-        'comments');
+        'class', 'mandatory', 'list_view', 'add_view', 'edit_view',
+        'edit_view_show', 'edit_view_edit', 'export_view', 'comments');
     foreach ($init_fields as $field) {
         if (!isset($config[$field])) $config[$field] = '';
     }
