@@ -83,7 +83,7 @@ class FileColumn extends Column {
         } else {
             $this->allow_delete = false;
         }
-        if ($params['types_allowed'] != '') {
+        if (@$params['types_allowed'] != '') {
             $this->types_allowed = preg_split('/,\s*/', $params['types_allowed']);
         }
     }
