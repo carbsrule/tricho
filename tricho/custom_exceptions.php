@@ -113,7 +113,7 @@ class InvalidColumnConfigException extends Exception {
 class DataValidationException extends Exception {
     function __construct ($message, $original_data = null) {
         $this->message = $message;
-        $this->data = $data;
+        $this->data = $original_data;
     }
 }
 

@@ -403,20 +403,22 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     */
     
     $errors = array ();
+    $sized_types = array(SQL_TYPE_VARCHAR, SQL_TYPE_CHAR, SQL_TYPE_DECIMAL,
+        SQL_TYPE_BINARY, SQL_TYPE_VARBINARY);
     
     // get sql definition from params
     if ($config['sqltype'] == '') {
-        $errors[] = "You must specify a sql type.";
+        $errors[] = "You must specify an SQL type.";
     } else if ($config['class'] != 'LinkColumn') {
-        $sql_type = sql_type_string_to_defined_constant ($config['sqltype']);
-        if ($sql_type == 0) $errors[] = "Unknown sql type: {$config['sqltype']}";
-    }
-    
-    if (in_array ($sql_type, array (SQL_TYPE_VARCHAR, SQL_TYPE_CHAR, SQL_TYPE_DECIMAL, SQL_TYPE_BINARY, SQL_TYPE_VARBINARY))) {
-        if ($config['sql_size'] == '') {
-            $errors[] = $config['sqltype']. ' columns need a defined SQL size';
+        $sql_type = sql_type_string_to_defined_constant($config['sqltype']);
+        if ($sql_type == 0) {
+            $errors[] = "Unknown SQL type: {$config['sqltype']}";
+        }
+        if (in_array($sql_type, $sized_types) and $config['sql_size'] == '') {
+            $errors[] = $config['sqltype'] . ' columns need a defined SQL size';
         }
     }
+    
     if ($config['sql_size'] != '') {
         
         $max = '255';
@@ -490,6 +492,9 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
             unset($sql_attributes[$key]);
             $sql_attributes = array_merge($sql_attributes);
         }
+        
+        // TODO: Allow setting default value
+        $config['set_default'] = false;
     }
     
     // check date range is valid
@@ -530,16 +535,17 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     $col->setEngName($config['engname']);
     $col->setSqlSize($config['sql_size']);
     $col->setSqlAttributes(implode(' ', $sql_attributes));
-    $col->setMandatory($config['mandatory']);
+    $col->setMandatory(@$config['mandatory']);
     $col->setComment($config['comments']);
     
     // check that the default value is valid, given the column configuration
     $col->setDefault (null);
-    if ($config['set_default'] and !($col instanceOf PasswordColumn)) {
+    if (@$config['set_default'] and !($col instanceOf PasswordColumn)) {
         try {
             $dummy = null;
-            $default = reset ($col->collateInput ($config['sql_default'], $dummy));
-            $col->setDefault ($default);
+            $values = $col->collateInput($config['sql_default'], $dummy);
+            $default = reset($values);
+            $col->setDefault($default);
         } catch (DataValidationException $ex) {
             $errors[] = 'Default value failed to validate: '. $ex->getMessage ();
         }
@@ -759,7 +765,7 @@ function column_def_update_views (Column $col, $config) {
         'export' => 'export_view'
     );
     foreach ($views as $view => $attrib) {
-        if ($config[$attrib] == 1) {
+        if (@$config[$attrib]) {
             if ($config['insert_after'] == 'retain') {
                 if ($table->getColumnInView ($view, $col->getName ()) !== null) continue;
                 column_relative_view_insert ($table, $col_view_item, $view, $previous_col, $next_col);
@@ -790,10 +796,6 @@ function column_def_update_views (Column $col, $config) {
  * @author benno 2010-11-11
  */
 function column_def_update_add_edit_view (ColumnViewItem $col_view_item, $config, $previous_col, $next_col) {
-    
-    // ordernum columns are never allowed in the add/edit view
-    if ($config['options'] == 'ordernum') return;
-    
     $col = $col_view_item->getColumn ();
     $table = $col->getTable ();
     
@@ -808,7 +810,7 @@ function column_def_update_add_edit_view (ColumnViewItem $col_view_item, $config
     
     // remove all references to this column if it is never to be displayed
     // on the add or edit forms
-    if ($config['add_view'] != 1 and $config['edit_view_show'] != 1) {
+    if (@$config['add_view'] != 1 and @$config['edit_view_show'] != 1) {
         $action = 'remove';
         $config['insert_after'] = 'remove';
     }
@@ -836,13 +838,13 @@ function column_def_update_add_edit_view (ColumnViewItem $col_view_item, $config
     
     // set which actions are allowed
     $add_edit_item['add'] = false;
-    if ($config['add_view'] == 1) $add_edit_item['add'] = true;
+    if (@$config['add_view']) $add_edit_item['add'] = true;
     
     $add_edit_item['edit_view'] = false;
     $add_edit_item['edit_change'] = false;
-    if ($config['edit_view_show'] == 1) {
+    if (@$config['edit_view_show']) {
         $add_edit_item['edit_view'] = true;
-        if ($config['edit_view_edit'] == 1) $add_edit_item['edit_change'] = true;
+        if (@$config['edit_view_edit']) $add_edit_item['edit_change'] = true;
     }
     
     if ($action != 'add') {

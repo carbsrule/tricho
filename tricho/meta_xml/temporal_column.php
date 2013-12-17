@@ -26,17 +26,17 @@ abstract class TemporalColumn extends Column {
         if (is_string($input)) {
             $input = trim($input);
             if ($this->has_date and $this->has_time) {
-                list($date, $time) = explode(' ', $input);
+                @list($date, $time) = explode(' ', $input);
             } else if ($this->has_date) {
                 $date = $input;
             } else {
                 $time = $input;
             }
             if ($this->has_date) {
-                list($y, $m, $d) = @explode('-', $date);
+                @list($y, $m, $d) = @explode('-', $date);
             }
             if ($this->has_time) {
-                list($hr, $min, $sec) = @explode(':', $time);
+                @list($hr, $min, $sec) = @explode(':', $time);
                 $ap = 'AM';
                 $int_hr = (int) $hr;
                 if ($int_hr >= 12) {
@@ -51,7 +51,7 @@ abstract class TemporalColumn extends Column {
             $m = @$input['m'];
             $d = @$input['d'];
             $ap = @$input['ap'];
-            list($hr, $min, $sec) = explode(':', @$input['t']);
+            @list($hr, $min, $sec) = explode(':', @$input['t']);
         }
         $y = self::non_neg($y);
         $m = self::non_neg($m);

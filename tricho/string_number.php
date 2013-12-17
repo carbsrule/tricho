@@ -46,13 +46,13 @@ class StringNumber {
             throw new InvalidArgumentException ("{$num2} is not a valid decimal number");
         }
         
-        list ($int1, $frac1) = explode ('.', $value1);
-        list ($int2, $frac2) = explode ('.', $value2);
+        @list($int1, $frac1) = explode('.', $value1);
+        @list($int2, $frac2) = explode('.', $value2);
         
-        $int_len1 = strlen ($int1);
-        $int_len2 = strlen ($int2);
-        $frac_len1 = strlen ($frac1);
-        $frac_len1 = strlen ($frac1);
+        $int_len1 = strlen($int1);
+        $int_len2 = strlen($int2);
+        $frac_len1 = strlen($frac1);
+        $frac_len2 = strlen($frac2);
         
         // make sure integer and fractional parts are the same length in both
         // numbers, to facilitate string comparison
