@@ -5,8 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-if ($_SESSION['setup']['table_edit']['chosen_table'] == '') {
-    echo '<p class="error">Hey! I don\'t have a table set in my session variable, so can you please choose one from the list above and click \'Edit\'. Thanks.</p>';
+if (@$_SESSION['setup']['table_edit']['chosen_table'] == '') {
+    echo '<p class="error">No table currently set.</p>';
     require 'foot.php';
     exit;
 }
