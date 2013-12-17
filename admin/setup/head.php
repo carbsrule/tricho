@@ -147,7 +147,7 @@ if ($permissions_ok) {
 <?php
     }
 ?>
-        <li><a href="logout.php">Log Out</a></li>
+        <li><a href="../logout.php">Log out</a></li>
     </ul>
 </td>
 </tr></table>

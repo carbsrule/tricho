@@ -79,7 +79,7 @@ function test_admin_login ($redirect_on_error = true) {
  */
 function test_setup_login ($redirect_on_error = true, $access_level = SETUP_ACCESS_FULL) {
     
-    if ($_SESSION['setup']['id'] == '' or
+    if (@$_SESSION['setup']['id'] == '' or
             (((int) $_SESSION['setup']['level']) < $access_level)) {
         if ($redirect_on_error) {
             $_SESSION[ADMIN_KEY]['err'] = 'You have not logged in, or your session has expired';
