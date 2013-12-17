@@ -399,16 +399,6 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         $col->setTable($table);
     }
     
-    // params are deprecated
-    /*
-    // take note of the unsupported thumbnail sizes
-    $existing_thumbnails = $col->getParam('thumbnails');
-    unset ($existing_thumbnails['medium'], $existing_thumbnails['small']);
-    
-    // clear existing parameters for the column
-    $col->clearParams ();
-    */
-    
     $sized_types = array(SQL_TYPE_VARCHAR, SQL_TYPE_CHAR, SQL_TYPE_DECIMAL,
         SQL_TYPE_BINARY, SQL_TYPE_VARBINARY);
     
