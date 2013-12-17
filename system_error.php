@@ -43,8 +43,8 @@ if (!$error) $error = "Unknown error";
 
 echo "<p class='error'>{$error}</p>\n";
 
-$_GET['redirect'] = trim($_GET['redirect']);
-if ($_GET['err'] == 'db') {
+$_GET['redirect'] = @trim($_GET['redirect']);
+if (@$_GET['err'] == 'db') {
     if ($_GET['redirect'] != '') {
         echo "<p><a href=\"{$_GET['redirect']}\">Try again</a></p>\n";
     }
