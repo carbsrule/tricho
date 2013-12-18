@@ -10,7 +10,7 @@ test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 $db = Database::parseXML ('tables.xml');
 
-if ($_POST['_joiner'] != '') {
+if (@$_POST['_joiner'] != '') {
     $table = $db->getTable ($_POST['_joiner']);
 } else {
     $table = $db->getTable ($_POST['_t']);
@@ -238,7 +238,8 @@ if (count($temp_errs) > 0) {
     redirect ($url);
 }
 
-// Re-jig OrderNum values
+// TODO: reimplement rejigging of OrderNum values
+$rejig_order_qs = array();
 if (count ($rejig_order_qs) > 0) {
     foreach ($rejig_order_qs as $q) {
         execq($q);
@@ -275,7 +276,7 @@ if (count($field_values) != 0) {
         foreach ($view_columns as $item) {
             $col = $item->getColumn ();
             if ($item->getEditable () and $col instanceof FileColumn) {
-                $value = $field_values[$col->getName()];
+                $value = @$field_values[$col->getName()];
                 if (!($value instanceof UploadedFile)) continue;
                 $col->saveData ($value, $primary_key_values);
             }
@@ -356,7 +357,7 @@ if (count($temp_errs) > 0) {
 
 // go somewhere
 $url = "{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ());
-if ($_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
+if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
 redirect ($url);
 
 ?>

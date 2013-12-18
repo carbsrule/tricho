@@ -50,7 +50,7 @@ class FloatColumn extends NumericColumn {
                 throw new DataValidationException ('Must be at least 0.0');
             }
         }
-        if ($value === null and !$this->isNullAllowed) $value = 0.0;
+        if ($value === null and !$this->isNullAllowed()) $value = 0.0;
         return array ($this->name => $value);
     }
 }

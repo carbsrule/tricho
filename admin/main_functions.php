@@ -15,7 +15,7 @@ function show_children (Table $from_table, $this_identifier = '') {
     global $db;
     
     // determine old parent
-    $old_parent = trim ($_GET['p']);
+    $old_parent = trim(@$_GET['p']);
     if ($old_parent != '') $old_parent = ',' . $old_parent;
     
     // determine children (tis slow i fear)

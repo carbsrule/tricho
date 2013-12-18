@@ -113,7 +113,7 @@ echo "<div id=\"main_data\">\n";
 // tabs
 $parents = array();
 $parent_table = null;
-if (trim ($_GET['p']) != '') {
+if (trim(@$_GET['p']) != '') {
     $parents = explode (',', $_GET['p']);
     if (count ($parents) > 0) {
         list ($parent_table) = explode ('.', $parents[0]);
@@ -223,13 +223,13 @@ if (@$res->rowCount() == 1) {
         echo ">\n";
         
         echo "<input type=\"hidden\" name=\"_t\" value=\"{$_GET['t']}\">\n";
-        if ($_GET['p'] != '') {
+        if (@$_GET['p'] != '') {
             echo "<input type=\"hidden\" name=\"_p\" value=\"", htmlspecialchars ($_GET['p']), "\">\n";
         }
     }
     
     // determine PK values for ancestors that were used for drill-down
-    $parents = explode (',', $_GET['p']);
+    $parents = explode(',', @$_GET['p']);
     $parent_vals = array ();
     foreach ($parents as $parent) {
         @list($parent_col, $parent_val) = explode('.', $parent);

@@ -131,7 +131,7 @@ abstract class TemporalColumn extends Column {
         }
         
         if ($this->has_date and $this->has_time) {
-            list($date, $time) = @explode(' ', $input_value);
+            @list($date, $time) = explode(' ', $input_value);
         } else if ($this->has_date) {
             $date = $input_value;
         } else {
@@ -140,7 +140,7 @@ abstract class TemporalColumn extends Column {
         $fieldname = $this->getPostSafeName();
         
         if ($this->has_date) {
-            list($y, $m, $d) = @explode('-', $date);
+            @list($y, $m, $d) = explode('-', $date);
             $y = (int) $y;
             $m = (int) $m;
             $d = (int) $d;
@@ -174,7 +174,7 @@ abstract class TemporalColumn extends Column {
         }
         
         if ($this->has_time) {
-            list($hr, $min, $sec) = @explode(':', $time);
+            @list($hr, $min, $sec) = explode(':', $time);
             $hr = (int) $hr;
             $min = (int) $min;
             $sec = (int) $sec;

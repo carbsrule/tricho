@@ -167,8 +167,7 @@ class LinkColumn extends Column {
         }
         $out .= "</select>\n";
         
-        // TODO: show query if required
-        if ($_SESSION['setup']['view_q']) {
+        if (@$_SESSION['setup']['view_q']) {
             $out .= "<pre>Q:\n" . hsc($q) . "</pre>\n";
         }
         
