@@ -183,7 +183,9 @@ class LinkColumn extends Column {
         $values = $this->target->collateInput($input, $original_value);
         $value = reset($values);
         $original_value = $value;
-        if ($value === null) return array($this->name => $value);
+        if ($this->target->isInputEmpty($values)) {
+            return array($this->name => $value);
+        }
         
         $col = $this->target;
         $table = $this->target->getTable();
