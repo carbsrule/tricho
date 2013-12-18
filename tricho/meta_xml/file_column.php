@@ -259,12 +259,12 @@ class FileColumn extends Column {
         $fields = "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Storage location</span>\n".
             "        <span class=\"fake-td\"><small>". $_SERVER['SERVER_NAME']. ROOT_PATH_WEB. "</small>\n".
-            "        <input type=\"text\" name=\"{$class}_storeloc\" value=\"{$config['storeloc']}\"></span>\n".
+            "        <input type=\"text\" name=\"{$class}_storeloc\" value=\"" . hsc(@$config['storeloc']) . "\"></span>\n" .
             "    </p>\n".
             "    <p class=\"fake-tr\">\n".
             "        <span class=\"fake-td left-col\">Max file size (bytes)</span>\n".
             "        <span class=\"fake-td\"><input type=\"text\" name=\"{$class}_max_file_size\" value=\"";
-        if ($config['max_file_size'] != 0) $fields .= $config['max_file_size'];
+        if (@$config['max_file_size'] != 0) $fields .= $config['max_file_size'];
         $fields .= "\" size=\"9\" maxlength=\"9\"></span>\n".
             "    </p>\n";
         
@@ -273,10 +273,10 @@ class FileColumn extends Column {
         $fields .= "<span class=\"fake-td\">";
         $fields .= "<label for=\"{$class}_del_y\">";
         $fields .= "<input id=\"{$class}_del_y\" type=\"radio\" name=\"{$class}_allow_del\" value=\"1\"";
-        if ($config['allow_del']) $fields .= ' checked="checked"';
+        if (@$config['allow_del']) $fields .= ' checked="checked"';
         $fields .= ">Yes <label for=\"{$class}_del_n\">";
         $fields .= "<input id=\"{$class}_del_n\" type=\"radio\" name=\"{$class}_allow_del\" value=\"0\"";
-        if (!$config['allow_del']) $fields .= ' checked="checked"';
+        if (!@$config['allow_del']) $fields .= ' checked="checked"';
         $fields .= ">No</label></span></p>\n";
         
         return $fields;
@@ -295,7 +295,7 @@ class FileColumn extends Column {
             MAIN_PIC_ONLY_IMAGE => 'Only show icon'
         );
         foreach ($icon_options as $option_num => $option_name) {
-            if ($option_num == $config['file_icon']) {
+            if ($option_num == @$config['file_icon']) {
                 $fields .= "<option selected=\"selected\" value=\"{$option_num}\">".
                     "{$option_name}</option>\n";
             } else {

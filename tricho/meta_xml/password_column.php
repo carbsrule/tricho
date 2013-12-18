@@ -260,8 +260,8 @@ class PasswordColumn extends InputColumn {
      * @author benno 2011-08-29
      */
     function applyConfig(array $config, array &$errors) {
-        $this->setEncryptionMethod ($config['encryption_method']);
-        if ($config['require_existing'] == 1) $this->setExistingRequired (true);
+        $this->setEncryptionMethod(@$config['encryption_method']);
+        if (@$config['require_existing']) $this->setExistingRequired(true);
         $this->setSalt($config['salt']);
     }
     
@@ -280,7 +280,7 @@ class PasswordColumn extends InputColumn {
      */
     static function getConfigFormFields(array $config, $class) {
         $fields = "    <p><label for=\"require_existing\"><input type=\"checkbox\" id=\"require_existing\" name=\"{$class}_require_existing\" value=\"1\"";
-        if ($config['require_existing'] == 1) $fields .= ' checked="checked"';
+        if (@$config['require_existing']) $fields .= ' checked="checked"';
         $fields .= "> Must enter existing password to change it</label></p>\n";
         
         $fields .= "    <p class=\"fake-tr\">\n".
@@ -293,7 +293,7 @@ class PasswordColumn extends InputColumn {
             $fields .= "            <label for=\"enc_{$method}\">" .
                 "<input type=\"radio\" name=\"{$class}_encryption_method\" " .
                 "id=\"enc_{$method}\" value=\"{$method}\"";
-            if ($config['encryption_method'] == $method) {
+            if (@$config['encryption_method'] == $method) {
                 $fields .= ' checked="checked"';
             }
             $fields .= ">{$data['name']} ({$data['len']} chars)</label>";
@@ -306,7 +306,7 @@ class PasswordColumn extends InputColumn {
             "        <span class=\"fake-td left-col\">Fixed salt</span>\n" .
             "        <span class=\"fake-td\">";
         $fields .= "<input type=\"text\" name=\"{$class}_salt\" value=\"" .
-            hsc($config['salt']) . "\"></span>\n" . "    </p>\n";
+            hsc(@$config['salt']) . "\"></span>\n" . "    </p>\n";
         
         return $fields;
     }

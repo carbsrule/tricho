@@ -147,7 +147,7 @@ class ImageColumn extends FileColumn {
         "<input type=\"text\" name=\"image_{$vid}[name]\" value=\"" . hsc($name) .
             "\"></span></p>\n";
         
-        list($width, $height) = @explode('x', $variant['max_size']);
+        @list($width, $height) = explode('x', $variant['max_size']);
         $width = (int) $width;
         $height = (int) $height;
         if ($width == 0) $width = '';
@@ -172,14 +172,14 @@ class ImageColumn extends FileColumn {
             " onchange=\"image_exact_no_minimum(this, {$num});\">\n";
         foreach ($handling_options as $key => $val) {
             $render .= '<option value="' . hsc($key) . '"';
-            if ($key == $variant['process']) $render .= ' selected="selected"';
+            if ($key == @$variant['process']) $render .= ' selected="selected"';
             $render .= '>' . hsc($val) . "</option>\n";
         }
         $render .= "</select></span></p>\n";
         
         if ($num == 1) {
             $class = 'fake-tr';
-            if ($variant['process'] == 'exact') {
+            if (@$variant['process'] == 'exact') {
                 $class .= ' display-none';
             }
             $render .= "<p class=\"{$class}\" id=\"image_min_size{$num}\">\n";
@@ -188,16 +188,16 @@ class ImageColumn extends FileColumn {
                 "<label for=\"min_as_max{$num}\">" .
                 "<input type=\"radio\" id=\"min_as_max{$num}\"" .
                 " name=\"image_{$vid}[min_size]\" value=\"max\"";
-            if ($variant['min_size'] == 'max') $render .= ' checked="checked"';
+            if (@$variant['min_size'] == 'max') $render .= ' checked="checked"';
             $render .= ">Same as max size</label><br>\n";
             
             $checked = array();
-            if ($variant['min_size'] == 'either') {
+            if (@$variant['min_size'] == 'either') {
                 $checked['width'] = true;
                 $checked['height'] = true;
-            } else if ($variant['min_size'] == 'width') {
+            } else if (@$variant['min_size'] == 'width') {
                 $checked['width'] = true;
-            } else if ($variant['min_size'] == 'height') {
+            } else if (@$variant['min_size'] == 'height') {
                 $checked['height'] = true;
             }
             $render .= "<label for=\"min_match{$num}\">" .
@@ -218,9 +218,9 @@ class ImageColumn extends FileColumn {
             $render .= " onclick=\"document.getElementById('min_match{$num}').checked = true;\">" .
                 "height</label><br>\n";
             
-            if (preg_match('/^[0-9]+x[0-9]+$/', $variant['min_size'])) {
+            if (preg_match('/^[0-9]+x[0-9]+$/', @$variant['min_size'])) {
                 $checked = ' checked="checked"';
-                list($width, $height) = @explode('x', $variant['min_size']);
+                @list($width, $height) = explode('x', $variant['min_size']);
                 $width = (int) $width;
                 $height = (int) $height;
                 if ($width == 0) $width = '';

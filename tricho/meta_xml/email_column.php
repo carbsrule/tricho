@@ -74,11 +74,11 @@ class EmailColumn extends StringColumn {
         $fields = "    <p>Validate using</p>\n";
         
         $fields .= "<label for=\"val_basic\"><input type=\"radio\" name=\"{$class}_validate\" id=\"val_basic\" value=\"basic\"";
-        if ($config['validate'] == 'basic') $fields .= ' checked="checked"';
+        if (@$config['validate'] == 'basic') $fields .= ' checked="checked"';
         $fields .= ">Basic checks</label><br>\n";
         
         $fields .= "<label for=\"val_dns\"><input type=\"radio\" name=\"{$class}_validate\" id=\"val_dns\" value=\"dns\"";
-        if ($config['validate'] != 'basic') $fields .= ' checked="checked"';
+        if (@$config['validate'] != 'basic') $fields .= ' checked="checked"';
         $fields .= ">DNS lookup</label><br>\n";
         return $fields;
     }

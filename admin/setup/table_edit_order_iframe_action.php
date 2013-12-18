@@ -19,6 +19,7 @@ list ($in_list, $out_list) = get_in_out_lists ($table, $_GET['list']);
 
 
 // if the IN list contains an ordernum will will output a message
+$ordernum = false;
 foreach ($in_list as $order_item) {
     if ($order_item[0]->getOption () == 'ordernum') {
         $ordernum = true;

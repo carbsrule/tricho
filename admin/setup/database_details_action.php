@@ -10,19 +10,19 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
 $db = Database::parseXML ('../tables.xml');
-$db->setDataChecking ((bool) $_POST['data_check']);
-$db->setShowPrimaryHeadings ((bool) $_POST['primary_heading']);
-$db->setShowSectionHeadings ((bool) $_POST['section_heading']);
-$db->setShowSubRecordCount ((bool) $_POST['show_sub_record_count']);
-$db->setShowSearch ((bool) $_POST['show_search']);
+$db->setDataChecking ((bool) @$_POST['data_check']);
+$db->setShowPrimaryHeadings ((bool) @$_POST['primary_heading']);
+$db->setShowSectionHeadings ((bool) @$_POST['section_heading']);
+$db->setShowSubRecordCount ((bool) @$_POST['show_sub_record_count']);
+$db->setShowSearch ((bool) @$_POST['show_search']);
 
-$table = $db->getTable ($_POST['help_table']);
+$table = $db->getTable (@$_POST['help_table']);
 if ($table == null) {
-    $table = new Table ($_POST['help_table']);
+    $table = new Table (@$_POST['help_table']);
 }
 $db->setHelpTable ($table);
 
-$db->setConvertOutput ((int) $_POST['convert_output']);
+$db->setConvertOutput ((int) @$_POST['convert_output']);
 
 $db->dumpXML ('../tables.xml', 'database_details2.php');
 ?>

@@ -187,7 +187,7 @@ while ($table = fetch_row($tables)) {
                 continue 2;
             }
             $column_obj->setSqlType ($sql_type);
-            if ($matches[3] != '') {
+            if (@$matches[3] != '') {
                 $column_obj->setSqlSize ($matches[3]);
             }
             

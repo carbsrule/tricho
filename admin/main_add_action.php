@@ -67,7 +67,7 @@ foreach ($view_columns as $item) {
                 $value = $col->collateInput ($source[$col->getPostSafeName ()], $input);
             }
             
-            $extant_value = $_SESSION[ADMIN_KEY]['add'][$table->getName()][$col->getName()];
+            $extant_value = @$_SESSION[ADMIN_KEY]['add'][$table->getName()][$col->getName()];
             if ($col instanceOf FileColumn and $col->isInputEmpty ($value)) {
                 if ($extant_value instanceof UploadedFile) {
                     $input_data[$col->getName ()] = $extant_value;
@@ -210,7 +210,7 @@ if (execq($q, false)) {
     $url = "{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ());
     
     
-    if ($_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
+    if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
     
     redirect ($url);
     

@@ -32,7 +32,8 @@ if (!table_name_valid ($_POST['name'])) $_POST['name'] = '';
 if (!isset($session['columns'])) $session['columns'] = array();
 
 // reposition columns if necessary
-if ($_POST['insert_after'] == -1) {
+$insert_after = @$_POST['insert_after'];
+if (@$insert_after == -1) {
     unset ($session['columns'][$col_num]);
     
     // can't use array merge, since indexes starting from 1 are desired
@@ -42,14 +43,14 @@ if ($_POST['insert_after'] == -1) {
     }
     $col_num = 1;
     $session['columns'] = $new_cols;
-} else if ($_POST['insert_after'] != 'retain') {
+} else if ($insert_after != 'retain') {
     // ensure not to overwrite
-    if ($_POST['insert_after'] == '') {
+    if ($insert_after == '') {
         $position = -1;
         unset ($session['columns'][$col_num]);
     } else {
         // increment value since keys start at 1
-        $position = $_POST['insert_after'] + 1;
+        $position = $insert_after + 1;
         
         // remove existing definition if there is one,
         // and offset the new position to accommodate the hole just created
@@ -68,7 +69,7 @@ if ($_POST['insert_after'] == -1) {
             $col_num = $key;
         }
     }
-    if ($_POST['insert_after'] == '') {
+    if ($insert_after == '') {
         $new_cols[++$key] = array ();
         $col_num = $key;
     }

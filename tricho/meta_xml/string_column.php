@@ -169,11 +169,9 @@ abstract class StringColumn extends InputColumn {
      */
     function applyConfig(array $config, array &$errors) {
         $this->setCollation($config['collation']);
-        $this->clearTextFilters ();
+        $this->clearTextFilters();
         foreach ($this->known_filters as $filter) {
-            if ($config[$filter]) {
-                $this->setTextFilter ($filter, true);
-            }
+            if (@$config[$filter]) $this->setTextFilter($filter, true);
         }
     }
     

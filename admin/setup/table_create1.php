@@ -6,7 +6,6 @@
  */
 
 require_once '../../tricho.php';
-session_start ();
 require_once 'column_definition.php';
 
 $session = & $_SESSION['setup']['create_table'];
@@ -22,9 +21,7 @@ if (isset ($session['columns'][$col])) {
 }
 
 
-if ($meta['class'] != '') {
-    $onload_javascript = "column_edit_init ();";
-}
+if (@$meta['class'] != '') $onload_javascript = "column_edit_init();";
 
 require 'head.php';
 require_once 'setup_functions.php';
@@ -36,8 +33,8 @@ $table = $session['table'];
 
 <?php
 // show already defined columns
-if (is_array ($session['columns'])) {
-    table_create_list_columns ($session['columns'], $col);
+if (is_array(@$session['columns'])) {
+    table_create_list_columns($session['columns'], $col);
 }
 ?>
 

@@ -213,7 +213,7 @@ function table_create_list_columns ($columns, $curr_col = 0) {
         
         echo "<tr><td>$id</td>\n";
         echo "<td class=\"mandatory\">\n";
-        if ($col['mandatory']) {
+        if (@$col['mandatory']) {
             echo '<img src="', ROOT_PATH_WEB, IMAGE_MANDATORY, '" alt="*" title="Mandatory">';
         } else {
             echo '&nbsp;';
@@ -229,7 +229,7 @@ function table_create_list_columns ($columns, $curr_col = 0) {
             "<a href=\"table_create1.php?id={$id}\">Edit</a> ",
             "<a href=\"table_create_del_col.php?id={$id}&name={$col['name']}\">Delete</a>",
             "</td>\n";
-        echo "<td>{$col['sql_attributes']}</td></tr>\n";
+        echo "</tr>\n";
     }
     echo "</table>\n";
 }

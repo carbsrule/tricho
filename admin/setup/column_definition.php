@@ -249,10 +249,11 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     
     // SQL attribute: default
     echo "            <label for=\"attrib_default\"><input id=\"attrib_default\" type=\"checkbox\" name=\"set_default\" value=\"1\"";
-    if (isset ($config['sql_default']) and $config['sql_default'] !== null) echo ' checked';
+    if (isset($config['sql_default'])) echo ' checked="checked"';
     echo ">Default</label>\n";
-    echo "            <input type=\"text\" name=\"sql_default\" id=\"attrib_default_value\" value=\"",
-        hsc ($config['sql_default']), "\" onkeypress=\"default_keypress ();\">\n";
+    echo '            <input type="text" name="sql_default" ',
+        'id="attrib_default_value" value="', hsc(@$config['sql_default']),
+        "\" onkeypress=\"default_keypress();\">\n";
     echo "\n";
     
     echo "            <script type=\"text/javascript\">\n";
@@ -745,13 +746,13 @@ function column_def_update_views (Column $col, $config) {
     $table = $col->getTable ();
     
     // Determine position
-    if ($config['insert_after'] == 'retain') {
+    if (@$config['insert_after'] == 'retain') {
         $index = $table->getColumnPosition ($col);
         $prev_index = $index - 1;
         $next_index = $index + 1;
     } else {
-        $prev_index = $config['insert_after'];
-        $next_index = $config['insert_after'] + 1;
+        $prev_index = @$config['insert_after'];
+        $next_index = @$config['insert_after'] + 1;
     }
     $previous_col = $table->getColumnByPosition ($prev_index);
     if ($previous_col === $col) $previous_col = $table->getColumnByPosition ($prev_index - 1);
@@ -768,14 +769,14 @@ function column_def_update_views (Column $col, $config) {
     );
     foreach ($views as $view => $attrib) {
         if (@$config[$attrib]) {
-            if ($config['insert_after'] == 'retain') {
+            if (@$config['insert_after'] == 'retain') {
                 if ($table->getColumnInView ($view, $col->getName ()) !== null) continue;
                 column_relative_view_insert ($table, $col_view_item, $view, $previous_col, $next_col);
             } else {
                 $table->removeColumnFromView ($view, $col);
-                if ($config['insert_after'] === '') {
+                if (@$config['insert_after'] === '') {
                     $table->appendView ($view, $col_view_item);
-                } else if ($config['insert_after'] == -1) {
+                } else if (@$config['insert_after'] == -1) {
                     $table->insertView ($view, -1, $col_view_item);
                 } else {
                     column_relative_view_insert ($table, $col_view_item, $view, $previous_col, $next_col);
@@ -856,9 +857,9 @@ function column_def_update_add_edit_view (ColumnViewItem $col_view_item, $config
     }
     
     // insert new record in the desired position
-    if ($config['insert_after'] == -1) {
+    if (@$config['insert_after'] == -1) {
         $new_view = array_merge (array ($add_edit_item), $view);
-    } else if ($config['insert_after'] == '') {
+    } else if (@$config['insert_after'] == '') {
         $new_view = $view;
         $new_view[] = $add_edit_item;
     } else {
@@ -921,16 +922,14 @@ function column_relative_view_insert (Table $table, ColumnViewItem $col_view_ite
             return;
         }
     }
-    if ($next_col and !$inserted) {
+    if ($next_col) {
         $next_index = $table->getColumnInView ($view, $next_col->getName (), true);
         if ($next_index !== false) {
             $table->insertView ($view, $next_index, $col_view_item);
             return;
         }
     }
-    if (!$inserted) {
-        $table->appendView ($view, $col_view_item);
-    }
+    $table->appendView($view, $col_view_item);
 }
 
 

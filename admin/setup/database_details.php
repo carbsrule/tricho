@@ -20,6 +20,10 @@ $convert_types = array (
     CONVERT_OUTPUT_NONE => 'Silently ignore'
 );
 
+$help_table = $db->getHelpTable();
+if ($help_table != null) {
+  $help_table = $help_table->getName();
+}
 ?>
 <h2>Database details</h2>
 <form method="post" action="database_details_action.php">

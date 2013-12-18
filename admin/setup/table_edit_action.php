@@ -49,13 +49,13 @@ $table->setEngName ($_POST['table_name_eng']);
 $table->setNameSingle ($_POST['table_name_single']);
 $table->setAccessLevel ($_POST['access_level']);
 
-$table->setJoiner (false);
-if ($_POST['joiner'] == 1) $table->setJoiner (true);
+$table->setJoiner(false);
+if (@$_POST['joiner']) $table->setJoiner(true);
 // $table->setHomePage ($_POST['home']);
 $table->setDisplay ($_POST['display']);
 $table->setDisplayStyle ($_POST['display_style']);
 
-$table->setStatic ($_POST['static'] == 1? true: false);
+$table->setStatic(@$_POST['static']? true: false);
 
 $table->setComments ($_POST['comments']);
 $options = array('add', 'edit', 'del', 'export');
@@ -69,16 +69,16 @@ foreach ($options as $id => $option) {
 $table->setConfirmDel ($_POST['confirm_del']);
 $table->setCascadeDel ($_POST['cascade_del']);
 
-if ($_POST['disable_top_nodes'] == 1) {
-    $table->setTopNodesEnabled (false);
+if (@$_POST['disable_top_nodes']) {
+    $table->setTopNodesEnabled(false);
 } else {
-    $table->setTopNodesEnabled (true);
+    $table->setTopNodesEnabled(true);
 }
 
-if ($_POST['disable_parent_edit'] == 1) {
-    $table->setDisableParentEdit (true);
+if (@$_POST['disable_parent_edit']) {
+    $table->setDisableParentEdit(true);
 } else {
-    $table->setDisableParentEdit (false);
+    $table->setDisableParentEdit(false);
 }
 
 switch ($_POST['show_sub_record_count']) {

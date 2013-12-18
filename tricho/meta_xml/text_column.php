@@ -24,7 +24,7 @@ class TextColumn extends StringColumn {
     
     
     static function getConfigFormFields(array $config, $class) {
-        list ($cols, $rows) = explode ('x', $config['size']);
+        @list($cols, $rows) = explode('x', $config['size']);
         settype ($cols, 'int');
         settype ($rows, 'int');
         if ($cols == 0) $cols = '';

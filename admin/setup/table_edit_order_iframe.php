@@ -82,8 +82,8 @@ $table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
 
 // TODO: show message: "xml saved"
 
-if ($_SESSION['setup']['ordernum_changed']) {
-    unset ($_SESSION['setup']['ordernum_changed']);
+if (@$_SESSION['setup']['ordernum_changed']) {
+    unset($_SESSION['setup']['ordernum_changed']);
     echo '<p class="confirmation">Would you like to <a href="../fix_ordernum.php?table='
         . urlencode ($table->getName ()) . '" target="_top">fix the ordernumber values</a> for this table?</p>';
 }

@@ -31,7 +31,7 @@ $table_eng_name = $table->getEngName ();
 $table_single_name = $table->getNameSingle ();
 
 // Load alternate names if they have been specified
-if ($_POST['_p']) {
+if (@$_POST['_p']) {
     $ancestors = explode (',', $_POST['_p']);
     
     if (count($ancestors) > 0) {
@@ -86,7 +86,7 @@ if ($_POST['rem'] != '') {
     
     // return
     $url = "{$urls['main']}{$seps['main']}t=". urlencode ($_POST['_t']);
-    if ($_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
+    if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
     redirect ($url);
     
     

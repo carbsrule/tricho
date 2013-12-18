@@ -381,8 +381,8 @@ class Table implements QueryTable {
         foreach ($actions as $action) {
             $action = strtolower (trim ($action));
             $value = true;
-            if ($action[0] == '~') {
-                $action = substr ($action, 1);
+            if (@$action[0] == '~') {
+                $action = substr($action, 1);
                 $value = false;
             }
             if ($action == 'all') {
@@ -2493,7 +2493,7 @@ class Table implements QueryTable {
             
             
             // Delete child records.
-            $links = $child_links[$column->getName ()];
+            $links = @$child_links[$column->getName()];
             if ($links != null and $this->cascade_delete) {
                 foreach ($links as $link) {
                     if ($debug) echo "    deleting child records from {$column->getName ()}\n";
