@@ -475,25 +475,27 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     }
     
     if ($col) {
-        if (!($col instanceof LinkColumn) and $sql_type > 0) {
-            $col->setSqlType($sql_type);
-        }
-        $col->applyConfig($config, $errors);
-        
         if ($col instanceof LinkColumn) {
+            $col->applyConfig($config, $errors);
             $target = $col->getTarget();
-            $sql_type = $target->getSqlType();
-            $col->setSqlType($sql_type);
+            $col->setSqlType($target->getSqlType());
             $config['sql_size'] = $target->getSqlSize();
-            $sql_attributes = $target->getSqlAttributes();
-            $key = array_search('AUTO_INCREMENT', $sql_attributes);
-            if ($key !== false) {
-                unset($sql_attributes[$key]);
-                $sql_attributes = array_merge($sql_attributes);
-            }
             
-            // TODO: Allow setting default value
-            $config['set_default'] = false;
+            // Copy UNSIGNED attribute, as that's a core part of the column
+            // definition, but do not copy AUTO_INCREMENT (that would be
+            // nonsense) or NOT NULL (as the LinkColumn's allowance of NULL
+            // values is independent of the link target)
+            $target_sql_attrs = $target->getSqlAttributes();
+            $sql_attributes = array();
+            if (in_array('UNSIGNED', $target_sql_attrs)) {
+                $sql_attributes[] = 'UNSIGNED';
+            }
+            if (in_array('NOT NULL', $config['sql_attribs'])) {
+                $sql_attributes[] = 'NOT NULL';
+            }
+        } else {
+            if ($sql_type > 0) $col->setSqlType($sql_type);
+            $col->applyConfig($config, $errors);
         }
     }
     

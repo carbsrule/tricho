@@ -525,10 +525,8 @@ function sql_type_options () {
     var defn_opts = document.getElementById('sql_defn_opts');
     if (chosen_sql_type == 'LINK') {
         add_class(defn, 'display-none');
-        add_class(defn_opts, 'display-none');
     } else {
         rem_class(defn, 'display-none');
-        rem_class(defn_opts, 'display-none');
     }
     
     on_autoinc_click();

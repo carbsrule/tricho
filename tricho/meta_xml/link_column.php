@@ -118,6 +118,7 @@ class LinkColumn extends Column {
         $col = $table->get($col);
         if ($col == null) throw new Exception('Unknown column');
         $this->target = $col;
+        $this->sql_collation = $col->sql_collation;
     }
     
     
