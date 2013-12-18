@@ -173,4 +173,30 @@ class LinkColumn extends Column {
         
         return $out;
     }
+    
+    
+    /**
+     * @author benno, 2013-12-18
+     */
+    function collateInput($input, &$original_value) {
+        $values = $this->target->collateInput($input, $original_value);
+        $value = reset($values);
+        $original_value = $value;
+        if ($value === null) return array($this->name => $value);
+        
+        $col = $this->target;
+        $table = $this->target->getTable();
+        $q = new SelectQuery($table);
+        $q->addSelectField($col);
+        $qval = new QueryFieldLiteral($value);
+        $cond = new LogicConditionNode($col, LOGIC_CONDITION_EQ, $qval);
+        $q->getWhere()->setRoot($cond);
+        $res = execq($q);
+        $count = $res->rowCount();
+        $res->closeCursor();
+        if ($count == 0) {
+            throw new DataValidationException('Nonexistent value');
+        }
+        return array($this->name => $value);
+    }
 }
