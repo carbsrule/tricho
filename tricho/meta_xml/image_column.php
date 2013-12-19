@@ -283,7 +283,7 @@ class ImageColumn extends FileColumn {
      * @author benno, 2012-11-14
      */
     function applyConfig(array $config, array &$errors) {
-        parent::applyConfig($config);
+        parent::applyConfig($config, $errors);
         if (!is_array(@$config['image_variants'])) return;
         $this->variants = array();
         foreach ($config['image_variants'] as $data) {
