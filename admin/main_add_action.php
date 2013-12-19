@@ -64,7 +64,7 @@ foreach ($view_columns as $item) {
             if (method_exists ($col, 'collateMultiInputs')) {
                 $value = $col->collateMultiInputs ($source, $input);
             } else {
-                $value = $col->collateInput ($source[$col->getPostSafeName ()], $input);
+                $value = $col->collateInput(@$source[$col->getPostSafeName()], $input);
             }
             
             $extant_value = @$_SESSION[ADMIN_KEY]['add'][$table->getName()][$col->getName()];

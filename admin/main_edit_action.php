@@ -35,11 +35,11 @@ if ($_POST['_do'] == 'Cancel') {
     unset ($_SESSION[ADMIN_KEY]['edit'][$table->getName().'.'.$_POST['_id']]);
     
     // joiner tables return to themself on edit or cancel. let the user know the edit was cancelled
-    if ($_POST['_joiner'] != '') {
+    if (@$_POST['_joiner'] != '') {
         $_SESSION[ADMIN_KEY]['msg'] = 'Edit cancelled.';
     }
     
-    if ($_POST['_p'] != '') {
+    if (@$_POST['_p'] != '') {
         redirect ("{$urls['main']}{$seps['main']}p={$_POST['_p']}&t=". urlencode ($table->getName ()));
     } else {
         redirect ("{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ()));

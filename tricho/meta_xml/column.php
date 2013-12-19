@@ -844,7 +844,7 @@ abstract class Column implements QueryField, ColumnInterface {
         if (method_exists($this, 'collateMultiInputs')) {
             return $this->collateMultiInputs($source, $original_value);
         } else {
-            $input = $source[$this->getPostSafeName()];
+            $input = @$source[$this->getPostSafeName()];
             return $this->collateInput($input, $original_value);
         }
     }
