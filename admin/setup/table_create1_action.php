@@ -89,6 +89,7 @@ foreach ($_POST as $field => $value) {
     }
     $config[$field] = $value;
 }
+if (!@$_POST['set_default']) $config['sql_default'] = null;
 $session['columns'][$col_num] = $config;
 
 $table->wipe ();
