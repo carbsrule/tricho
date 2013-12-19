@@ -779,30 +779,6 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
-     * Gets a string of SQL data used to create this column,
-     * e.g. "`MyColumn1` VARCHAR(12) NOT NULL"
-     * @return string
-     * @author benno, 2011-08-18
-     */
-    function getCreateSql () {
-        $return = '`'. $this->name. '` '.
-            sql_type_string_from_defined_constant ($this->sqltype);
-        $txt = $this->getSqlSize ();
-        if ($txt != '') $return .= "({$txt})";
-        if (count ($this->sql_attributes) > 0) {
-            $return .= ' '. implode (' ', $this->sql_attributes);
-        }
-        if ($this->default !== null) {
-            $return .= ' DEFAULT '. sql_enclose ($this->default);
-        }
-        if ($this->sql_collation !== null) {
-            $return .= ' COLLATE '. $this->sql_collation;
-        }
-        return $return;
-    }
-    
-    
-    /**
      * Gets the HTML for the configuration settings for a column of this class.
      * n.b. this method should be overridden by each Column class
      * @param array $config Config options with which to prefill fields

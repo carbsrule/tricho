@@ -694,7 +694,7 @@ class Table implements QueryTable {
         foreach ($columns as $col) {
             $column_collation = @$col_collations[$col->getName ()];
             if ($column_collation == $table_collation) $column_collation = '';
-            $defn = $col->getCreateSql ();
+            $defn = '`' . $col->getName() . '` ' . $col->getSqlDefn();
             if ($column_collation) {
                 $defn .= ' COLLATE '. $column_collation;
             }
