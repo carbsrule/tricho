@@ -695,7 +695,8 @@ class Table implements QueryTable {
             $column_collation = @$col_collations[$col->getName ()];
             if ($column_collation == $table_collation) $column_collation = '';
             $defn = '`' . $col->getName() . '` ' . $col->getSqlDefn();
-            if ($column_collation) {
+            $collate_defined = preg_match('/COLLATE [a-z0-9_]+$/i', $defn);
+            if ($column_collation and !$collate_defined) {
                 $defn .= ' COLLATE '. $column_collation;
             }
             $col_defns[] = $defn;
