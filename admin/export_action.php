@@ -112,7 +112,7 @@ if (@$_POST['dl']) {
     $file_name = $safe_name . "_dump_mysql{$_POST['mysql_version']}_" .
         date ('Y-m-d') . '.sql';
     
-    header ('Content-type: text/plain');
+    header ('Content-type: text/plain; charset=utf-8');
     header ("Content-Disposition: attachment; filename={$file_name}");
     header ("Cache-Control: cache, must-revalidate");
     header ("Pragma: public");
