@@ -88,17 +88,7 @@ $engine_types = array ();
 $collations = array ();
 $res = execq("SHOW TABLE STATUS");
 while ($row = fetch_assoc($res)) {
-    // MySQL changed the column name between versions 4 and 5
-    if (isset ($row['Engine'])) {
-        // MySQL 5
-        $engine_types[$row['Name']] = $row['Engine'];
-    } else if (isset ($row['Type'])) {
-        // MySQL 4
-        $engine_types[$row['Name']] = $row['Type'];
-    }
-    
-    // NB: table collations were added in MySQL 4.1:
-    // see http://dev.mysql.com/doc/refman/4.1/en/charset.html
+    $engine_types[$row['Name']] = $row['Engine'];
     $collations[$row['Name']] = $row['Collation'];
 }
 
@@ -109,8 +99,7 @@ if (@$_POST['dl']) {
     $safe_name = str_replace(' ', '_', tricho\Runtime::get('site_name'));
     $safe_name = preg_replace("/[^A-Za-z0-9_\-]+/", '', $safe_name);
     $safe_name = strtolower($safe_name);
-    $file_name = $safe_name . "_dump_mysql{$_POST['mysql_version']}_" .
-        date ('Y-m-d') . '.sql';
+    $file_name = $safe_name . "_dump_" . date('Y-m-d_Hi') . '.sql';
     
     header ('Content-type: text/plain; charset=utf-8');
     header ("Content-Disposition: attachment; filename={$file_name}");
@@ -259,13 +248,8 @@ foreach ($_POST['tables'] as $table => $val) {
         
         if (@count ($indexes) > 0) {
             foreach ($indexes as $index_name => $index) {
-                
-                $col_defn = ($index['type']? $index['type']. ' ': ''). "KEY `{$index_name}`";
-                if ($_POST['mysql_version'] > 4 and $index['algorithm'] != '') {
-                    // There doesn't seem to be a lot of point specifying this - mysqldump doesn't
-                    //$col_defn .= " USING {$index['algorithm']}";
-                }
-                $col_defn .= " (";
+                $col_defn = ($index['type']? $index['type'] . ' ': '') .
+                    "KEY `{$index_name}` (";
                 $cols = 0;
                 foreach ($index['cols'] as $index_defn) {
                     if (++$cols > 1) {
@@ -307,11 +291,7 @@ foreach ($_POST['tables'] as $table => $val) {
         $col = $col[0];
         $res = execq("SELECT {$col} FROM `{$table}` WHERE {$col} < 1");
         if ($res->rowCount() > 0) {
-            if ($_POST['mysql_version'] > 4) {
-                write_out ("SET sql_mode='NO_AUTO_VALUE_ON_ZERO';");
-            } else {
-                write_out ("-- You will need to manually add your zero elements for them to work with MySQL 4.0");
-            }
+            write_out("SET sql_mode='NO_AUTO_VALUE_ON_ZERO';");
         }
     }
     

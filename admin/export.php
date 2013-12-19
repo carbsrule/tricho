@@ -38,9 +38,7 @@ $db_tables = array ();
 $tables_not_defined = array ();
 $db = Database::parseXML ('tables.xml');
 while ($db_row = fetch_assoc($res)) {
-    
-    // In MySQL versions before 4.1.2, 'Engine' was called 'Type'
-    $engine = (isset ($db_row['Engine'])? $db_row['Engine']: $db_row['Type']);
+    $engine = $db_row['Engine'];
     
     // It's pointless to export views
     if ($engine == null) continue;
@@ -141,17 +139,10 @@ for ($row = 0; $row < $num_rows; $row++) {
             
             <br><label class="label_plain" for="dl"><input type="checkbox" id="dl" name="dl" value="1" checked>
                 Download as file</label>
-            
-            <br>Target MySQL version:
-            <br><label class="label_plain" for="mysql4"><input type="radio" name="mysql_version" value="4" id="mysql4">
-                4.0</label>
-            
-            <br><label class="label_plain" for="mysql5"><input type="radio" name="mysql_version" value="5" id="mysql5" checked>
-                4.1/5.0 or higher (supports index types (BTREE|HASH), and sql mode NO_AUTO_VALUE_ON_ZERO)</label>
         </td>
     </tr>
     <tr>
-        <td align="right">
+        <td>
             <input type="submit" value="Export data">
         </td>
     </tr>
