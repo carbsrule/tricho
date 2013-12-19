@@ -190,27 +190,27 @@ abstract class StringColumn extends InputColumn {
     
     static function getConfigFormFields(array $config, $class) {
         $fields = "<label for=\"trim\"><input type=\"checkbox\" name=\"{$class}_trim\" id=\"trim\" value=\"1\"";
-        if ($config['trim'] == '1') $fields .= ' checked="checked"';
+        if (@$config['trim']) $fields .= ' checked="checked"';
         $fields .= ">Trim leading &amp; trailing whitespace</label><br>\n";
         
         $fields .= "<label for=\"tabs\"><input type=\"checkbox\" name=\"{$class}_tabs\" id=\"tabs\" value=\"1\"";
-        if ($config['tabs'] == '1') $fields .= ' checked="checked"';
+        if (@$config['tabs']) $fields .= ' checked="checked"';
         $fields .= ">Replace tabs with spaces</label><br>\n";
         
         $fields .= "<label for=\"multispace\"><input type=\"checkbox\" name=\"{$class}_multispace\" id=\"multispace\" value=\"1\"";
-        if ($config['multispace'] == '1') $fields .= ' checked="checked"';
+        if (@$config['multispace']) $fields .= ' checked="checked"';
         $fields .= ">Replace repeated spaces with a single space</label><br>\n";
         
         $fields .= "<label for=\"nl\"><input type=\"checkbox\" name=\"{$class}_nl\" id=\"nl\" value=\"1\"";
-        if ($config['nl'] == '1') $fields .= ' checked="checked"';
+        if (@$config['nl']) $fields .= ' checked="checked"';
         $fields .= ">Convert to UNIX style new lines</label><br>\n";
         
         $fields .= "<label for=\"tags\"><input id=\"tags\" type=\"checkbox\" name=\"{$class}_tags\" value=\"1\"";
-        if ($config['tags'] == '1') $fields .= ' checked="checked"';
+        if (@$config['tags']) $fields .= ' checked="checked"';
         $fields .= ">Strip tags</label><br>\n";
         
         $fields .= "<label for=\"br\"><input type=\"checkbox\" name=\"{$class}_br\" id=\"br\" value=\"1\"";
-        if ($config['br'] == '1') $fields .= ' checked="checked"';
+        if (@$config['br']) $fields .= ' checked="checked"';
         $fields .= ">Add &lt;br&gt;s before new lines</label><br>\n";
         
         return $fields;
