@@ -46,6 +46,12 @@ class BooleanColumn extends Column {
         $field = '<input type="checkbox" name="'. $this->name. '" value="1"';
         
         $default = $this->getDefault ();
+        
+        // BIT fields are returned as 1-byte strings, need to convert to ints
+        if ($this->sqltype == SQL_TYPE_BIT) {
+            $input_value = ord($input_value);
+        }
+        
         if ($input_value === '' and $default != '') $input_value = $default;
         if ($input_value != '' and $input_value != '0') $input_value = '1';
         if ($input_value == '1') {

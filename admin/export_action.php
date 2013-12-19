@@ -49,17 +49,17 @@ function db_export_quote ($col, $value) {
     global $export, $numeric_types;
     if (is_null ($value)) {
         return 'NULL';
+    } else if (in_array($export['col_type'][$col], $numeric_types)) {
+        return $value;
+    } else if ($export['col_type'][$col] == 'BIT') {
+        return ord($value);
     } else {
-        if (in_array ($export['col_type'][$col], $numeric_types)) {
-            return $value;
-        } else {
-            return sql_enclose ($value, false);
-        }
+        return sql_enclose ($value, false);
     }
 }
 
 $numeric_types = array (
-    'BIT','TINYINT','SMALLINT','MEDIUMINT','INT','INTEGER','BIGINT',
+    'TINYINT','SMALLINT','MEDIUMINT','INT','INTEGER','BIGINT',
     'REAL','DOUBLE','FLOAT',
     'DECIMAL','NUMERIC'
 );
