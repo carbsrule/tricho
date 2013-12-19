@@ -27,10 +27,6 @@ if (!defined ('SQL_DEFAULT_COLLATION')) {
 }
 
 
-// Menu types
-define ('MENU_TYPE_SELECT', 1);
-define ('MENU_TYPE_LIST', 2);
-
 // Table display types
 define ('TABLE_DISPLAY_STYLE_ROWS', 1);
 define ('TABLE_DISPLAY_STYLE_TREE', 2);

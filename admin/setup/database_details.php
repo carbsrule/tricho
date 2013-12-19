@@ -8,12 +8,6 @@
 require 'head.php';
 
 $db = Database::parseXML ('../tables.xml');
-
-$menu_types = array (
-    MENU_TYPE_LIST => 'List items',
-    MENU_TYPE_SELECT => 'Select menu'
-);
-
 $convert_types = array (
     CONVERT_OUTPUT_FAIL => 'Show an error',
     CONVERT_OUTPUT_WARN => 'Show a warning',

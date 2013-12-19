@@ -82,7 +82,6 @@ if ($_POST['data_from'] == 'self') {
                 $existing_xml_doc = new DOMDocument ();
                 // set up defaults
                 $database_node = $existing_xml_doc->createElement ('database');
-                $database_node->setAttribute ('menutype', MENU_TYPE_LIST);
                 $existing_xml_doc->appendChild ($database_node);
                 // save most basic version in case things go pear
                 $existing_xml_doc->save ('tables.xml');
