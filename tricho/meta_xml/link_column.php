@@ -112,7 +112,7 @@ class LinkColumn extends Column {
         $path = tricho\Runtime::get('root_path') . 'admin/tables.xml';
         $db = Database::parseXML($path);
         
-        list($table, $col) = @explode('.', $config['target']);
+        @list($table, $col) = explode('.', $config['target']);
         $table = $db->get($table);
         if ($table == null) throw new Exception('Unknown table');
         $col = $table->get($col);
