@@ -17,4 +17,18 @@ class DateColumn extends TemporalColumn {
     static function getDefaultSqlType() {
         return 'DATE';
     }
+    
+    
+    static function getConfigFormFields(array $config, $class) {
+        $fields = parent::getConfigFormFields($config, $class);
+        
+        $fields .= '<p>Year range: ';
+        $fields .= "<input type=\"text\" name=\"{$class}_min_year\" ";
+        $fields .= 'style="width:2.5em;" value="' . hsc(@$config['min_year']) .
+            '"> to ';
+        $fields .= "<input type=\"text\" name=\"{$class}_max_year\" ";
+        $fields .= 'style="width:2.5em;" value="' . hsc(@$config['max_year']) .
+            '">';
+        return $fields;
+    }
 }

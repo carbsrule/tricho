@@ -19,6 +19,10 @@ class DatetimeColumn extends TemporalColumn {
         return 'DATETIME';
     }
     
+    static function getConfigFormFields(array $config, $class) {
+        return DateColumn::getConfigFormFields($config, $class);
+    }
+    
     function identify($context) {
         if ($context == 'row') return $this->name;
         if ($this->sqltype == SQL_TYPE_INT) {

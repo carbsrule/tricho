@@ -500,32 +500,6 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         }
     }
     
-    // check date range is valid
-    if (($config['sqltype'] == SQL_TYPE_DATE) || ($config['sqltype'] == SQL_TYPE_DATETIME)) {
-        
-        $config['year_max'] = trim ($config['year_max']);
-        $config['year_min'] = trim ($config['year_min']);
-        
-        if ($config['year_max'] == '' or $config['year_min'] == '') {
-            $errors[] = 'You must specify a year range for date columns';
-        } else if (preg_match ('/^[-+]?\d+$/', $config['year_max']) == 1
-                             and preg_match ('/^\d+$/',    $config['year_min']) == 1) {
-            
-            $year_max = (int) $config['year_max'];
-            $year_min = (int) $config['year_min'];
-            
-            if ($config['year_max']{0} == '-' or $config['year_max']{0} == '+') {
-                $year_max += (int) date ('Y');
-            }
-            
-            if ($year_min > $year_max) {
-                $errors[] = 'Invalid date range specified';
-            }
-        } else {
-            $errors[] = 'Invalid date range specified';
-        }
-    }
-    
     // If there were errors, redirect to the form
     if (count ($errors) > 0) {
         $_SESSION['setup']['err'] = $errors;
