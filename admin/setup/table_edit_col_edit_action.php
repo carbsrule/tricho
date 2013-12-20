@@ -42,6 +42,7 @@ foreach ($_POST as $field => $value) {
     }
     $config[$field] = $value;
 }
+if (!@$_POST['set_default']) $config['sql_default'] = null;
 $config['old_name'] = $column->getName();
 $session['edit_column'] = $config;
 $new_col = column_config_to_meta ($table, 'edit', 'table_edit_col_edit.php', $config);

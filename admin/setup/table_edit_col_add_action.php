@@ -39,7 +39,7 @@ foreach ($_POST as $field => $value) {
     }
     $config[$field] = $value;
 }
-
+if (!@$_POST['set_default']) $config['sql_default'] = null;
 $session['add_column'] = $config;
 $col = column_config_to_meta ($table, 'add', 'table_edit_col_add.php', $config);
 
