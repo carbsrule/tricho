@@ -77,8 +77,7 @@ class LinkColumn extends Column {
     }
     
     static function getConfigFormFields(array $config, $class) {
-        // TODO: fix this kludge
-        global $db;
+        $db = Database::getLastLoaded();
         
         if (!($db instanceof Database)) return '';
         
@@ -108,9 +107,11 @@ class LinkColumn extends Column {
      * @author benno, 2013-02-28
      */
     function applyConfig(array $config, array &$errors) {
-        // TODO IMPROVE
-        $path = tricho\Runtime::get('root_path') . 'admin/tables.xml';
-        $db = Database::parseXML($path);
+        $db = Database::getLastLoaded();
+        if ($db == null) {
+            $path = tricho\Runtime::get('root_path') . 'admin/tables.xml';
+            $db = Database::parseXML($path);
+        }
         
         @list($table, $col) = explode('.', $config['target']);
         $table = $db->get($table);

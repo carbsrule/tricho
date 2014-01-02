@@ -23,7 +23,7 @@ class Database {
     private $show_search = false;
     private $help_table;
     private $convert_output;
-    
+    static private $last_loaded = null;
     
     /**
      * Used by {@link print_human} to create a human-readable string that
@@ -57,6 +57,15 @@ class Database {
         
     }
     
+    
+    /**
+     * Returns the last Database object that was loaded (by parseXML)
+     */
+    static function getLastLoaded() {
+        return self::$last_loaded;
+    }
+    
+    
     /**
      * Read a Tricho-formatted XML file into meta-data store.
      * 
@@ -86,7 +95,8 @@ class Database {
             throw new Exception ('Invalid XML');
         }
         $db_node = $dbs->item (0);
-        return self::fromXMLNode ($db_node);
+        self::$last_loaded = self::fromXMLNode($db_node);
+        return self::$last_loaded;
     }
     
     
