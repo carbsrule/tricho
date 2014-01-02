@@ -754,22 +754,7 @@ class MainTable {
             ];
             
             // for each filter, check it is valid in this context
-            if ($filters == null) {
-                $filters = array();
-            } else {
-                // pop off all invalid filters
-                foreach ($filters as $index => $filter) {
-                    if ($filter instanceof MainJoinFilter) {
-                        $joins = $filter->getJoinList();
-                        $table = $joins[0]->getToTable();
-                        if (in_array($table, $this->filter_skip_tables)) {
-                            unset($filters[$index]);
-                        }
-                    }
-                }
-                // if there's only the match type left, ditch it all
-                if (count($filters) == 1) $filters = array();
-            }
+            if ($filters == null) $filters = array();
             
             $bits = explode (':', $fields[0]);
             $return_string .= "var default_field = " . $bits[0] . ";\n\n";

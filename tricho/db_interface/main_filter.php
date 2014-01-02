@@ -115,7 +115,6 @@ class MainFilter {
         $where_conditions = array();
         
         // It is assumed that MainFilter will only ever apply on the base table
-        // otherwise a MainJoinFilter should surely be used.
         // Hence, specify the base table name for the find method, otherwise a
         // matching column from another table could be returned.
         

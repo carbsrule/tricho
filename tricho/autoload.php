@@ -72,8 +72,6 @@ function tricho_autoload ($class_name) {
         case 'MainRow':
         case 'MainTable':
         case 'MainUrlSet':
-        case 'MainJoinFilter':
-        case 'MainJoin':
         case 'MenuHolder':
         case 'RandomString':
             require_once $root_path . 'tricho/db_interface/' . $file_name;
