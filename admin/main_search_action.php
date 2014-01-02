@@ -14,7 +14,7 @@ $table = $db->getTable ($_POST['_t']);
 force_redirect_to_alt_page_if_exists ($table, 'main_search_action');
 
 list ($urls, $seps) = $table->getPageUrls ();
-if ($_POST['_search_type'] == 'inline') {
+if (@$_POST['_search_type'] == 'inline') {
     define ('SEARCH_KEY', 'inline_search');
     $urls['main'] = "inline_search.php?f={$_POST['_f']}";
     $seps['main'] = '&';
@@ -255,6 +255,8 @@ class ReturnVal {
  */
 function work_out_date ($id, $number) {
     global $cond;
+    
+    $quote = false;
     
     // get date parts
     $year = (int) $_POST['val'][$id][$number]['y'];
