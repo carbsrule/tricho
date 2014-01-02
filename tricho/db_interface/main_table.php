@@ -200,7 +200,10 @@ class MainTable {
         
         foreach ($view_items as $item) {
             if ($item instanceof FunctionViewItem) {
-                if ($debug) echo "Processing FunctionViewItem<br>\n";
+                if ($debug) {
+                    echo "Processing FunctionViewItem: ";
+                    echo $item->getName(), "<br>\n";
+                }
                 
                 $function = new QueryFunction ('', new QueryFieldLiteral ($item->getCode (), false));
                 $function->setAlias ($item->getName ());
@@ -208,13 +211,15 @@ class MainTable {
                 $this->addField ($function, true, false, false, false, 0);
                 
             } else if ($item instanceof ColumnViewItem) {
-                if ($debug) echo "Processing ColumnViewItem<br>\n";
-                
-                $column = $item->getColumn ();
+                $column = $item->getColumn();
                 
                 // Never show passwords on the main view
                 if ($column instanceof PasswordColumn) continue;
                 
+                if ($debug) {
+                    echo "Processing ColumnViewItem: ";
+                    echo $column->getName(), "<br>\n";
+                }
                 $view_columns[] = $column;
                 
                 $this->importColumn ($column, $parent, true);
