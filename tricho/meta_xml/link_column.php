@@ -114,9 +114,15 @@ class LinkColumn extends Column {
         
         @list($table, $col) = explode('.', $config['target']);
         $table = $db->get($table);
-        if ($table == null) throw new Exception('Unknown table');
+        if ($table == null) {
+            $errors[] = 'Unknown table';
+            return;
+        }
         $col = $table->get($col);
-        if ($col == null) throw new Exception('Unknown column');
+        if ($col == null) {
+            $errors[] = 'Unknown column';
+            return;
+        }
         $this->target = $col;
         $this->sql_collation = $col->sql_collation;
     }
