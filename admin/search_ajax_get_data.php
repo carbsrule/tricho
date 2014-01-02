@@ -10,7 +10,7 @@ require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-if (!$db instanceof Database) $db = Database::parseXML ('tables.xml');
+if (!@$db instanceof Database) $db = Database::parseXML ('tables.xml');
 
 // get the 'from' table
 $fromTable = $db->getTable ($_GET['t']);
@@ -30,8 +30,8 @@ $selectNode = $domDocument->createElement ('items');
 $domDocument->appendChild ($selectNode);
 
 // get the chooser query
-$handler = $fromColumn->getChooserQuery ();
-$q = cast_to_string ($handler);
+$handler = $fromColumn->getSelectQuery();
+$q = cast_to_string($handler);
 
 // output if requested
 if ($_SESSION['setup']['view_q']) {
@@ -45,10 +45,10 @@ $res = execq($q);
 while ($row = fetch_assoc($res)) {
     
     // create the node and append to the list
-    $optionNode = $domDocument->createElement ('item');
-    $optionNode->setAttribute ('id', $row['pri_key']);
-    $optionNode->nodeValue = htmlspecialchars ($row['val']);
-    $selectNode->appendChild ($optionNode);
+    $optionNode = $domDocument->createElement('item');
+    $optionNode->setAttribute('id', $row['ID']);
+    $optionNode->nodeValue = htmlspecialchars($row['Value']);
+    $selectNode->appendChild($optionNode);
 }
 
 // output

@@ -293,8 +293,9 @@ class MainTable {
             $this->addField ($column, $main, false, $search, $order, $order_dir);
             
         } else {
-            $this->concat_func = new QueryFunction ('CONCAT');
-            $this->concat_func->setAlias ($column->getEngName ());
+            $this->concat_func = new QueryFunction('CONCAT');
+            $this->concat_func->setAlias($column->getEngName());
+            $this->concat_func->setSource($column);
             
             if ($column->getTable ()->isColumnInView ($this->view_type, $column)) {
                 $view = true;
@@ -528,29 +529,21 @@ class MainTable {
             // Build a set of conditions based on the filters
             $new_where_conditions = array ();
             $require_all = true;
+            $base = $this->select_query->getBaseTable();
             foreach ($filters as $filter_key => $filter) {
-                // Regular Column
                 if ($filter instanceof MainFilter) {
-                    // create the condition and then add it
+                    $col = $base->get($filter->getName());
+                    
+                    if ($col instanceof LinkColumn) {
+                        // TODO: skip parent links
+                        // Requires drill-down behaviour to be reimplemented
+                    }
+                    
                     $cond = $filter->applyFilter($this);
                     if ($cond != null) {
                         $new_where_conditions[] = $cond;
                     }
-                
-                // Linked Column
-                } else if ($filter instanceof MainJoinFilter) {
-                    // check if table is in hate list
-                    $joins = $filter->getJoinList();
-                    $table = $joins[0]->getToTable();
-                    if (in_array($table, $this->filter_skip_tables)) continue;
-
-                    // create the condition and then add it
-                    $cond = $filter->applyFilter($this);
-                    if ($cond != null) {
-                        $new_where_conditions[] = $cond;
-                    }
-                
-                // Other
+                    
                 } else if ($filter_key == '_match_type') {
                     if ($filter == 'any') {
                         $require_all = false;
@@ -690,24 +683,16 @@ class MainTable {
             
             // show conditions
             foreach ($this->search_cols as $search_col) {
-                
-                list ($search_col, $eng_name) = $search_col;
-                
-                // check to see if column has link in Table object (from tables.xml)
-                $link = null;
-                /*
-                if ($search_col->getAlias () != null) {
-                    $column = $GLOBALS['table']->get ($search_col->getAlias ());
-                    $link = $column->getLink ();
+                list($search_col, $eng_name) = $search_col;
+                if ($search_col instanceof QueryFunction) {
+                    $column = $search_col->getSource();
                 } else {
-                    $column = $GLOBALS['table']->get ($search_col->getName ());
+                    $column = $GLOBALS['table']->get($search_col->getName());
                 }
-                */
-                $column = $GLOBALS['table']->get($search_col->getName());
                 
                 /* LINKED COLUMN */
-                if ($link != null) {
-                    $field_defn = "'". $search_col->getAlias ()."' : ['". addslashes ($eng_name)."', TYPE_LINKED, ";
+                if ($column instanceof LinkColumn) {
+                    $field_defn = "'". $column->getName()."' : ['". addslashes ($eng_name)."', TYPE_LINKED, ";
                     $field_defn .= ($column->isNullAllowed() ? 'true' : 'false') . ", '";
                     $field_defn .= $column->getTable()->getName() . "']";
                 

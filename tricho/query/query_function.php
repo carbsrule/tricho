@@ -20,6 +20,12 @@ class QueryFunction extends AliasedField {
     private $params;
     
     /**
+     * When a CONCAT QueryFunction is created automatically for a LinkColumn
+     * on admin/main.php, this refers to the source column of the link.
+     */
+    private $source = null;
+    
+    /**
      * @param string $function_name the name of the function to be called,
      *        e.g. DATE_SUB
      * @param mixed $params a parameter, or an array of parameters. Each
@@ -72,6 +78,23 @@ class QueryFunction extends AliasedField {
         return $string_val;
         
     }
+    
+    
+    function setSource($source) {
+        if ($source == null) {
+            $this->source = null;
+            return;
+        }
+        if (!($source instanceof Column)) {
+            throw new InvalidArgumentException('Must be a Column or null');
+        }
+        $this->source = $source;
+    }
+    function getSource() {
+        return $this->source;
+    }
+    
+    
     
     /**
      * adds another parameter to the function call

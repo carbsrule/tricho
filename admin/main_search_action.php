@@ -48,142 +48,85 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
         
         if ($column === null) continue;
         
+        // get someinfo
+        $cond = $_POST['condition'][$id];
+        $col = $table->get ($name);
         
-        $link = $column->getLink ();
-        if ($link == null) {
-            /* REGULAR COLUMNS */
+        // IS [ NULL | NOT NULL ] is a pain
+        if ($cond == LOGIC_CONDITION_IS
+                    or $cond == LOGIC_CONDITION_STARTS_WITH
+                    or $cond == LOGIC_CONDITION_ENDS_WITH) {
+            $value = $_POST['val'][$id][0];
             
-            // get someinfo
-            $cond = $_POST['condition'][$id];
-            $col = $table->get ($name);
+        } else {
+            // value switching based on type
+            switch ($col->getSqlType ()) {
+                case SQL_TYPE_DATE:
+                    $value = work_out_date ($id, 0);
+                    if ($value === false) continue 2;
+                    $value = $value->getVal ();
+                    break;
+                    
+                case SQL_TYPE_DATETIME:
+                    $value = work_out_date ($id, 0);
+                    if ($value === false) continue 2;
+                    $value2 = work_out_time ($id, 0);
+                    if ($value2 === false) continue 2;
+                    $value = $value->concat ($value2);
+                    $value = $value->getVal ();
+                    break;
+                case SQL_TYPE_TIME:
+                    $value = work_out_time ($id, 0);
+                    if ($value === false) continue 2;
+                    $value = $value->getVal ();
+                    break;
+                default:
+                    $value = $_POST['val'][$id][0];
+            }
             
-            // IS [ NULL | NOT NULL ] is a pain
-            if ($cond == LOGIC_CONDITION_IS
-                        or $cond == LOGIC_CONDITION_STARTS_WITH
-                        or $cond == LOGIC_CONDITION_ENDS_WITH) {
-                $value = $_POST['val'][$id][0];
-                
-            } else {
-                // value switching based on type
+            // if value is null, make into a IS NULL;
+            if ($value === null) {
+                switch ($cond) {
+                    case LOGIC_CONDITION_NOT_LIKE:
+                    case LOGIC_CONDITION_NOT_EQ:
+                        $value = 'not null'; break;
+                    default:
+                        $value = 'null'; break;
+                }
+                $cond = LOGIC_CONDITION_IS;
+            }
+            
+            // clever stuff for between
+            if ($cond == LOGIC_CONDITION_BETWEEN) {
                 switch ($col->getSqlType ()) {
                     case SQL_TYPE_DATE:
-                        $value = work_out_date ($id, 0);
-                        if ($value === false) continue 2;
-                        $value = $value->getVal ();
+                        $value_right = work_out_date ($id, 1);
+                        if ($value_right === false) continue 2;
+                        $value_right = $value_right->getVal ();
                         break;
                         
                     case SQL_TYPE_DATETIME:
-                        $value = work_out_date ($id, 0);
-                        if ($value === false) continue 2;
-                        $value2 = work_out_time ($id, 0);
-                        if ($value2 === false) continue 2;
-                        $value = $value->concat ($value2);
-                        $value = $value->getVal ();
+                        $value_right = work_out_date ($id, 1);
+                        if ($value_right === false) continue 2;
+                        $value_right2 = work_out_time ($id, 1);
+                        if ($value_right2 === false) continue 2;
+                        $value_right = $value_right->concat ($value_right2);
+                        $value_right = $value_right->getVal ();
                         break;
                     case SQL_TYPE_TIME:
-                        $value = work_out_time ($id, 0);
-                        if ($value === false) continue 2;
-                        $value = $value->getVal ();
+                        $value_right = work_out_time ($id, 1);
+                        if ($value_right === false) continue 2;
+                        $value_right = $value_right->getVal ();
                         break;
                     default:
-                        $value = $_POST['val'][$id][0];
+                        $value_right = $_POST['val'][$id][1];
                 }
-                
-                // if value is null, make into a IS NULL;
-                if ($value === null) {
-                    switch ($cond) {
-                        case LOGIC_CONDITION_NOT_LIKE:
-                        case LOGIC_CONDITION_NOT_EQ:
-                            $value = 'not null'; break;
-                        default:
-                            $value = 'null'; break;
-                    }
-                    $cond = LOGIC_CONDITION_IS;
-                }
-                
-                // clever stuff for between
-                if ($cond == LOGIC_CONDITION_BETWEEN) {
-                    switch ($col->getSqlType ()) {
-                        case SQL_TYPE_DATE:
-                            $value_right = work_out_date ($id, 1);
-                            if ($value_right === false) continue 2;
-                            $value_right = $value_right->getVal ();
-                            break;
-                            
-                        case SQL_TYPE_DATETIME:
-                            $value_right = work_out_date ($id, 1);
-                            if ($value_right === false) continue 2;
-                            $value_right2 = work_out_time ($id, 1);
-                            if ($value_right2 === false) continue 2;
-                            $value_right = $value_right->concat ($value_right2);
-                            $value_right = $value_right->getVal ();
-                            break;
-                        case SQL_TYPE_TIME:
-                            $value_right = work_out_time ($id, 1);
-                            if ($value_right === false) continue 2;
-                            $value_right = $value_right->getVal ();
-                            break;
-                        default:
-                            $value_right = $_POST['val'][$id][1];
-                    }
-                    $value = array ($value, $value_right);
-                }
+                $value = array ($value, $value_right);
             }
-            
-            // save filter
-            $filters[] = new MainFilter ($name, $cond, $value);
-            
-            
-            
-            
-            
-        } else {
-            /* LINKED COLUMNS */
-            $value = $_POST['val'][$id][0];
-            
-            // this is a chain builder
-            $joinlist = array ();
-            $from = $table->get ($name);
-            $to = $link->getToColumn ();
-            //echo '<pre>';
-            while ($to != null) {
-                // add join to list
-                $join = new MainJoin ('','','','');
-                $join->setFromColumn ($from->getName ());
-                $join->setFromTable ($from->getTable ()->getName ());
-                $join->setToColumn ($to->getName ());
-                $join->setToTable ($to->getTable ()->getName ());
-                $joinlist[] = $join;
-                
-                //todo: getParent? argh! die!
-                $to = null; //hack that make it think it has no parent
-                
-                /*
-                // find the next item in the chain
-                $table = $to->getTable();
-                $tbl = $table->getParent();
-                $to = null;
-                if ($tbl != null) {
-                    $columns = $table->getColumns();
-                    foreach ($columns as $column) {
-                        $link = $column->getLink();
-                        if ($link != null and $link->getToColumn()->getTable() === $tbl) {
-                            $from = $column;
-                            $to = $link->getToColumn();
-                            break;
-                        }
-                    }
-                }*/
-                
-            }
-            //echo '</pre>';
-            
-            // create and add the filter
-            $filter = new MainJoinFilter ($value, $joinlist);
-            $filter->setType ($_POST['condition'][$id]);
-            $filters[] = $filter;
-            
         }
+        
+        // save filter
+        $filters[] = new MainFilter ($name, $cond, $value);
     }
 }
 $filters['_match_type'] = $_POST['_match_type'];

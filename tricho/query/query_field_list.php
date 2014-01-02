@@ -106,6 +106,15 @@ class QueryFieldList {
                     return $field;
                 }
             }
+            
+            // Support LinkColumns
+            if ($field instanceof QueryFunction) {
+                $source = $field->getSource();
+                if ($source == null) continue;
+                if ($source->getName() != $field_name) continue;
+                if ($source->getTable()->getName() != $table_name) continue;
+                return $source;
+            }
         }
         
         return null;
