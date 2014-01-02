@@ -234,7 +234,7 @@ abstract class TemporalColumn extends Column {
             $date .= "</select>\n";
             
             $date .= "<input type=\"text\" name=\"{$fieldname}[y]\" " .
-                'size="3" maxlength="4"';
+                ' class="year" size="3" maxlength="4"';
             if ($input_value != '') {
                 $val = str_pad($y, 4, '0', STR_PAD_LEFT);
                 $date .= " value=\"{$val}\"";
@@ -264,7 +264,7 @@ abstract class TemporalColumn extends Column {
                 $ap = '';
             }
             $time = "<input type=\"text\" name=\"{$fieldname}[t]\" " .
-                " size=\"6\" value=\"{$val}\"> ";
+                " class=\"hour_min\" size=\"6\" value=\"{$val}\"> ";
             foreach (array('AM', 'PM') as $half) {
                 $time .= "<label for=\"{$fieldname}_{$half}\">" .
                     "<input type=\"radio\" name=\"{$fieldname}[ap]\" " .

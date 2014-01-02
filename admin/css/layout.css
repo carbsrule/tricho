@@ -170,6 +170,8 @@ table.bordered .comments_right { border-right: 1px #555555 solid; }
     width: 228px;
     height: 6em;
 }
+.main_add_edit input.year { width: 2.6em; }
+.main_add_edit input.hour_min { width: 4.2em; }
 
 .login_field { width: 180px; }
 
