@@ -394,7 +394,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         $col = new $config['class'] ($config['name']);
         if (!($col instanceof Column)) {
             $err = $config['class'] . ' is not a Column';
-            throw new InvalidParameterException($err);
+            throw new InvalidArgumentException($err);
         }
         $col->setTable($table);
     }
