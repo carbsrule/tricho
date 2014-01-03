@@ -346,10 +346,10 @@ if (@$res->rowCount() == 1) {
     }
     
     if ($table->getAllowed ('edit')) {
-        echo "<tr class=\"buttons\"><td colspan=\"2\" align=\"right\">";
-        echo "<input type=\"hidden\" name=\"_do\" value=\"Edit\">";
-        echo "<input type=\"button\" value=\"{$button_text['cancel']}\" onclick=\"main_form.elements['_do'].value='Cancel'; main_form.submit();\"> ";
-        echo "<input type=\"submit\" value=\"{$button_text['edit']}\"></td></tr>\n";
+        echo "<tr class=\"buttons\"><td>&nbsp;</td><td>";
+        echo "<input type=\"submit\" value=\"{$button_text['edit']}\"> ";
+        echo "<input type=\"submit\" value=\"{$button_text['cancel']}\" name=\"cancel\">";
+        echo "</td></tr>\n";
     }
     
     echo "</tbody>\n";

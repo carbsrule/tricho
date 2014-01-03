@@ -31,7 +31,7 @@ list ($urls, $seps) = $table->getPageUrls ();
 
 
 // cancel edit
-if ($_POST['_do'] == 'Cancel') {
+if (@$_POST['cancel'] != '') {
     unset ($_SESSION[ADMIN_KEY]['edit'][$table->getName().'.'.$_POST['_id']]);
     
     // joiner tables return to themself on edit or cancel. let the user know the edit was cancelled

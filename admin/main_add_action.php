@@ -20,10 +20,10 @@ if (!$table->checkAuth ()) {
 list ($urls, $seps) = $table->getPageUrls ();
 
 // cancel add
-if ($_POST['_do'] == 'Cancel') {
+if (@$_POST['cancel'] != '') {
     unset($_SESSION[ADMIN_KEY]['add'][$table->getName()]);
     
-    if ($_POST['_p'] != '') {
+    if (@$_POST['_p'] != '') {
         redirect ("{$urls['main']}{$seps['main']}p={$_POST['_p']}&t=". urlencode ($table->getName ()));
     } else {
         redirect ("{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ()));
