@@ -121,7 +121,7 @@ foreach ($columns as $column) {
     if ($link != null) {
         $num_joins++;
         if ($link->isParent ()) {
-            $text = "<a href=\"table_edit_col_action.php?col={$column->getName()}&action=Link\">{$column->getName()}</a> -&gt; ";
+            $text = "{$column->getName()} -&gt; ";
             $text .= $link->getToColumn ()->getTable ()->getName ();
             $lines[] = $text;
         }

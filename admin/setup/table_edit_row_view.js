@@ -301,22 +301,6 @@ function IncludeDescriptor (value, checkboxes) {
 }
 
 
-
-
-
-
-
-/* the table has changed */
-function update_on_table_change(new_val) {
-    update_select('to_col', 'table_edit_col_link_ajax_col_list.php?table=' + new_val + '&name=to_col');
-    update_select('add_col', 'table_edit_col_link_ajax_col_list.php?table=' + new_val + '&name=add_col');
-    
-    // remove descriptors
-    nodes = [];
-    draw_nodes();
-}
-
-
 /* add a desc */
 function add_desc(node_type, node_value, checkboxes) {
     switch (node_type) {

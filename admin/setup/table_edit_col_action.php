@@ -29,9 +29,6 @@ switch ($_GET['action']) {
 case 'Edit':
     redirect('table_edit_col_edit.php' . $suffix);
 
-case 'Link':
-    redirect('table_edit_col_link.php' . $suffix);
-
 case 'Del';
     redirect('table_edit_delete_column.php' . $suffix);
 

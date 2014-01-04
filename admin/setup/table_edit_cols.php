@@ -123,11 +123,6 @@ foreach ($columns as $col) {
             <input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
             <input type="hidden" name="col" value="<?= $col->getName (); ?>">
             <input type="submit" name="action" value="Edit">
-<?php
-//TODO: remove old link mechanism once link descriptors/ordering mechanism
-// has been implemented for LinkColumn
-//            <input type="submit" name="action" value="Link">
-?>
             <input type="submit" name="action" value="Del">
             </form>
         </td>
