@@ -8,7 +8,10 @@
 require_once '../../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
 
-//print_r ($_POST);
+$db = Database::parseXML('../tables.xml');
+$table = $db->get($_POST['t']);
+if (!$table) redirect('./');
+$url = 'table_edit_indexes.php?t=' . urlencode($_POST['t']);
 
 if ($_POST['type'] == 'INDEX') {
     $type = 'INDEX';
@@ -18,18 +21,15 @@ if ($_POST['type'] == 'INDEX') {
     $type = 'UNIQUE INDEX';
 } else {
     $_SESSION['setup']['err'] = 'Invalid index type';
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 if (@count ($_POST['columns']) == 0) {
     $_SESSION['setup']['err'] = 'Invalid index columns';
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 
-
-$q = "ALTER TABLE `". $_SESSION['setup']['table_edit']['chosen_table']. '` ';
-
-
-$q .= ' ADD '. $type;
+$q = "ALTER TABLE `" . $_POST['t'] . '` ';
+$q .= ' ADD ' . $type;
 if (trim ($_POST['index_name']) != '') {
     $q .= ' `'. trim ($_POST['index_name']). '`';
 }
@@ -47,11 +47,13 @@ foreach ($_POST['columns'] as $id => $column) {
 }
 $q .= ')';
 
-if (execq($q, false, false)) {
+$q = new RawQuery($q);
+$q->set_internal(true);
+
+try {
+    execq($q);
     $_SESSION['setup']['msg'] = 'Index created';
-    
-    $db = Database::parseXML ('../tables.xml');
-    $log_message = 'Added index on '. $_SESSION['setup']['table_edit']['chosen_table']. ': [';
+    $log_message = 'Added index on '. $_POST['t'] . ': [';
     $col_num = 0;
     foreach ($_POST['columns'] as $col) {
         if ($col_num++ > 0) $log_message .= ', ';
@@ -60,11 +62,11 @@ if (execq($q, false, false)) {
     $log_message .= ']';
     log_action ($db, $log_message, $q);
     
-} else {
+} catch (QueryException $ex) {
     $conn = ConnManager::get_active();
     $_SESSION['setup']['err'] = 'Index not created due to a ' .
-        'database error:<br>' . $conn->last_error();
+        'database error:<br>' . $ex->getMessage();
 }
 
-redirect ('table_edit_indexes.php');
+redirect($url);
 ?>

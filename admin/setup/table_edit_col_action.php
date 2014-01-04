@@ -12,7 +12,7 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 $db = Database::parseXML ('../tables.xml');
 
 // check table is ok
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->getTable($_GET['t']);
 if ($table == null) {
     redirect ('./');
 }
@@ -24,23 +24,19 @@ if ($column == null) {
 }
 
 // go to the appropriate page
+$suffix = '?t=' . urlencode($_GET['t']) . '&col=' . urlencode($_GET['col']);
 switch ($_GET['action']) {
-    case 'Edit':
-        $_SESSION['setup']['table_edit']['chosen_column'] = $_GET['col'];
-        redirect ('table_edit_col_edit.php');
-        break;
-        
-    case 'Link':
-        $_SESSION['setup']['table_edit']['chosen_column'] = $_GET['col'];
-        redirect ('table_edit_col_link.php');
-        break;
-        
-    case 'Del';
-        redirect ('table_edit_delete_column.php?col=' . $_GET['col']);
-        break;
-        
-    default:
-        echo 'Invalid action!';
+case 'Edit':
+    redirect('table_edit_col_edit.php' . $suffix);
+
+case 'Link':
+    redirect('table_edit_col_link.php' . $suffix);
+
+case 'Del';
+    redirect('table_edit_delete_column.php' . $suffix);
+
+default:
+    echo 'Invalid action!';
 }
 
 ?>

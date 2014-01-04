@@ -91,7 +91,7 @@ if ($permissions_ok) {
             }
             
             echo "<option value=\"", $table->getName (), "\"";
-            if ($table->getName() == @$_SESSION['setup']['table_edit']['chosen_table']) {
+            if ($table->getName() == @$_GET['t']) {
                 echo ' selected="selected"';
             }
             echo ">", $table->getName(), ' (', $table->getEngName(),
@@ -137,13 +137,13 @@ if ($permissions_ok) {
     }
     
     
-    if (@$_SESSION['setup']['table_edit']['chosen_table'] == '') {
+    if (@$_GET['t'] == '') {
 ?>
         <li><a href="../">Administration</a></li>
 <?php
     } else {
 ?>
-        <li><a href="../main.php?t=<?= urlencode ($_SESSION['setup']['table_edit']['chosen_table']); ?>">Administration</a></li>
+        <li><a href="../main.php?t=<?= urlencode($_GET['t']); ?>">Administration</a></li>
 <?php
     }
 ?>

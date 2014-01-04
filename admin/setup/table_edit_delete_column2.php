@@ -10,43 +10,37 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-
-if ($_SESSION['setup']['table_edit']['chosen_table'] == '') {
-    redirect ('./');
-}
-
 $db = Database::parseXML ('../tables.xml');
-
-$curr_tbl = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
-if ($curr_tbl == null) {
-    $_SESSION['setup']['err'] = 'No table specified in session variable';
-    redirect ('./');
+$table = $db->getTable($_POST['t']);
+if ($table == null) {
+    $_SESSION['setup']['err'] = 'Invalid table specified';
+    redirect('./');
 }
 
-$column = $curr_tbl->get ($_GET['col']);
+$column = $table->get($_POST['col']);
 if ($column == null) {
     $_SESSION['setup']['err'] = 'Unknown column specified';
-    redirect ('./');
+    redirect('./');
 }
 
-
-if ($curr_tbl->removeColumn ($column)) {
-    
-    $q = "ALTER TABLE `". $curr_tbl->getName (). "` DROP COLUMN `". $_GET['col']. '`';
+$url = 'table_edit_cols.php?t=' . urlencode($_POST['t']);
+if ($table->removeColumn($column)) {
+    $q = "ALTER TABLE `" . $table->getName() . "` DROP COLUMN `" .
+        $_POST['col'] . '`';
     $res = execq($q);
-    if (! $res) {
+    if (!$res) {
         $_SESSION['setup']['err'] = 'Unable to remove column due to a database error.';
     } else {
         if ($db->dumpXML ('../tables.xml', null)) {
-            $log_message = "Removed column ". $curr_tbl->getName (). '.'. $_GET['col'];
+            $log_message = "Removed column ". $table->getName (). '.'. $_POST['col'];
             log_action ($db, $log_message, $q);
         }
-        redirect ('table_edit_cols.php');
+        redirect($url);
     }
     
 } else {
     $_SESSION['setup']['err'] = 'Unable to remove column.';
 }
 
-redirect ('table_edit_cols.php');
+redirect($url);
 ?>

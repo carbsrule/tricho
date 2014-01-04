@@ -12,8 +12,8 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once 'order_functions.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
-$db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$db = Database::parseXML('../tables.xml');
+$table = $db->getTable($_GET['t']);
 
 list ($in_list, $out_list) = get_in_out_lists ($table, $_GET['list']);
 
@@ -92,6 +92,7 @@ if ($ordernum) {
     $_SESSION['setup']['ordernum_changed'] = true;
 }
 
-
-$db->dumpXML ('../tables.xml', "table_edit_order_iframe.php?list={$_GET['list']}");
+$url = 'table_edit_order_iframe.php?t=' . urlencode($_GET['t']) .
+    "&list={$_GET['list']}";
+$db->dumpXML ('../tables.xml', $url);
 ?>

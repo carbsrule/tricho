@@ -38,14 +38,17 @@ $alts = $table->getAltButtons ();
 <?php
 foreach ($options as $id => $option) {
     echo "    <tr>\n";
-    echo "        <td>{$option}</td><td><input type=\"text\" name=\"button[{$option}]\" value=\"",
-        htmlspecialchars($alts[$option]), "\"></td>\n";
+    echo "        <td>{$option}</td>",
+        "<td><input type=\"text\" name=\"button[{$option}]\" value=\"",
+        hsc(@$alts[$option]), "\"></td>\n";
     echo "    </tr>\n";
 }
 ?>
 <tr><td colspan="2" align="right"><input type="submit" value="Continue"></td></tr>
-
 </table>
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
+</form>
+
 <?php
 require 'foot.php';
 ?>

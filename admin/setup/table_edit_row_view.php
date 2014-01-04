@@ -85,6 +85,7 @@ foreach ($cols as $col) {
 </td></tr>
 
 </table>
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
 </form>
 
 

@@ -10,26 +10,21 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-if ($_POST['action'] == 'Cancel') {
-    redirect ('table_edit.php');
-}
+$db = Database::parseXML('../tables.xml');
+$table = $db->getTable($_POST['t']);
+if (!$table) redirect('./');
 
-
-// get our current table
-$db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
-
+$url = 'table_edit_main_view.php?t=' . urlencode($_POST['t']);
+if ($_POST['action'] == 'Cancel') redirect($url);
 
 // clear the current view
 $table->clearView('list');
-
 
 if (@count ($_POST['desc']) > 0) {
     
     // iterate through the posted arrays and do some cleva stuff
     foreach ($_POST['desc'] as $index => $desc_item) {
         list ($type, $params) = explode ('!!!', $desc_item, 2);
-        
         
         // Process according to type
         switch ($type) {
@@ -60,5 +55,5 @@ if (@count ($_POST['desc']) > 0) {
 
 }
 
-$db->dumpXML ('../tables.xml', 'table_edit_main_view.php');
+$db->dumpXML('../tables.xml', $url);
 ?>

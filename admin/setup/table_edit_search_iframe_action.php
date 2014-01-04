@@ -12,7 +12,7 @@ require 'order_functions.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
 $db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->getTable($_GET['t']);
 
 list ($in_list, $out_list) = get_in_out_lists ($table, "search");
 
@@ -38,7 +38,7 @@ if ($_GET['sect'] == 'in') {
 }
 
 // echo "(After) Table: <pre>"; print_r ($table); echo "</pre><br>\n";
-
-$db->dumpXML ('../tables.xml', 'table_edit_search_iframe.php');
+$url = 'table_edit_search_iframe.php?t=' . urlencode($_GET['t']);
+$db->dumpXML('../tables.xml', $url);
 
 ?>

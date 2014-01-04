@@ -45,8 +45,10 @@ foreach ($pages as $id => $option) {
 }
 ?>
 <tr><td colspan="2" align="right"><input type="submit" value="Continue"></td></tr>
-
 </table>
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
+</form>
+
 <?php
 require 'foot.php';
 ?>

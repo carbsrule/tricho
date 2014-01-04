@@ -15,16 +15,15 @@ require_once 'column_definition.php';
 
 $session = &$_SESSION['setup']['table_edit'];
 
-if ($session['chosen_table'] == '') redirect ('./');
-
 $db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($session['chosen_table']);
+$table = $db->getTable($_POST['t']);
 if ($table == null) redirect ('./');
 
 if ($_POST['action'] == 'cancel') {
-    unset ($session['add_column']);
-    redirect (ROOT_PATH_WEB. ADMIN_DIR. 'setup/table_edit_cols.php');
+    unset($session['add_column'][$_POST['t']]);
+    redirect('table_edit_cols.php?t=' . urlencode($_POST['t']));
 }
+$form_url = 'table_edit_col_add.php?t=' . urlencode($_POST['t']);
 
 $config = array ();
 $class = $_POST['class'];
@@ -40,8 +39,8 @@ foreach ($_POST as $field => $value) {
     $config[$field] = $value;
 }
 if (!@$_POST['set_default']) $config['sql_default'] = null;
-$session['add_column'] = $config;
-$col = column_config_to_meta ($table, 'add', 'table_edit_col_add.php', $config);
+$session['add_column'][$_POST['t']] = $config;
+$col = column_config_to_meta ($table, 'add', $form_url, $config);
 
 // warn if duplicate english name
 if ($col->hasDuplicateEnglishName()) {
@@ -49,9 +48,9 @@ if ($col->hasDuplicateEnglishName()) {
         '<em>' . $col->getEngName() . '</em> already exists';
 }
 
-$q = column_def_add ($table, $col, 'table_edit_col_add.php', $config);
+$q = column_def_add ($table, $col, $form_url, $config);
 column_def_update_views ($col, $config);
-unset ($session['add_column']);
+unset ($session['add_column'][$_POST['t']]);
 
 try {
     $db->dumpXML ('../tables.xml', null);
@@ -61,5 +60,5 @@ try {
     $_SESSION['setup']['err'] = 'Failed to save XML';
 }
 
-redirect (ROOT_PATH_WEB. ADMIN_DIR. 'setup/table_edit_cols.php');
+redirect('table_edit_cols.php?t=' . urlencode($_POST['t']));
 ?>

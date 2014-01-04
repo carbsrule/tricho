@@ -10,15 +10,12 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-if ($_POST['action'] == 'Cancel') {
-    redirect ('table_edit.php');
-}
+$db = Database::parseXML('../tables.xml');
+$table = $db->getTable($_POST['t']);
+if (!$table) redirect('./');
 
-
-// get our current table
-$db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
-
+$url = 'table_edit_csv.php?t=' . urlencode($_POST['t']);
+if ($_POST['action'] == 'Cancel') redirect($url);
 
 // clear the current view
 $table->clearView('export');
@@ -58,5 +55,5 @@ if (@count($_POST['desc']) > 0) {
 }
 
 
-$db->dumpXML ('../tables.xml', 'table_edit_csv.php');
+$db->dumpXML('../tables.xml', $url);
 ?>

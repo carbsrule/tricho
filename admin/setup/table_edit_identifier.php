@@ -50,8 +50,9 @@ echo "<input type=\"button\" value=\"Cancel\" onclick=\"forms.link.action.value=
 echo "<input type=\"submit\" value=\"Save\">\n";
 echo "</td></tr>\n";
 
-echo "</table>";
-echo "</form>";
+echo "</table>\n";
+echo '<input type="hidden" name="t" value="', hsc($_GET['t']), "\">\n";
+echo "</form>\n";
 
 
 

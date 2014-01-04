@@ -120,6 +120,7 @@ foreach ($columns as $col) {
 ?></td>
         <td>
             <form method="get" action="table_edit_col_action.php">
+            <input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
             <input type="hidden" name="col" value="<?= $col->getName (); ?>">
             <input type="submit" name="action" value="Edit">
 <?php
@@ -138,7 +139,8 @@ foreach ($columns as $col) {
 </table>
 
 <br>
-<form action="table_edit_col_add.php">
+<form method="get" action="table_edit_col_add.php">
+    <input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
     <input type="submit" value="Add another column">
 </form>
 

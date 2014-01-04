@@ -23,23 +23,22 @@ if ($table->getAccessLevel () == TABLE_ACCESS_SETUP_FULL and
     redirect ('./');
 }
 
+$table = urlencode($_GET['table']);
 switch ($_GET['action']) {
-    case 'Edit':
-        $_SESSION['setup']['table_edit']['chosen_table'] = $_GET['table'];
-        redirect ('table_edit_cols.php');
+case 'Edit':
+    redirect('table_edit_cols.php?t=' . $table);
+
+case 'Copy':
+    redirect('table_copy.php?table=' . $table);
     
-    case 'Copy':
-        redirect('table_copy.php?table=' . urlencode($_GET['table']));
-        
-    case 'EditMainView':
-        $_SESSION['setup']['table_edit']['chosen_table'] = $_GET['table'];
-        redirect ('table_edit_main_view.php');
-        
-    case 'Delete':
-        redirect ('table_del0.php?table=' . urlencode ($_GET['table']));
-        
-    default:
-        $_SESSION['setup']['err'] = 'Unknown action';
-        redirect ('./');
+case 'EditMainView':
+    redirect('table_edit_main_view.php?t=' . $table);
+    
+case 'Delete':
+    redirect('table_del0.php?table=' . $table);
+    
+default:
+    $_SESSION['setup']['err'] = 'Unknown action';
+    redirect('./');
 }
 ?>

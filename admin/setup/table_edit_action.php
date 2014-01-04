@@ -13,30 +13,29 @@ require_once 'setup_functions.php';
 
 $db = Database::parseXML ('../tables.xml');
 
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
-
+$table = $db->getTable($_POST['t']);
 if ($table == null) {
-    redirect ('./');
+    redirect('./');
 }
-
-$_POST['table_name'] = trim ($_POST['table_name']);
+$_POST['table_name'] = trim($_POST['table_name']);
 
 // check for single name
 if (trim ($_POST['table_name_single']) == '') {
     $_SESSION['setup']['err'] = 'You need a single name for your table.';
-    redirect ('table_edit.php');
+    redirect('table_edit.php?t=' . urlencode($_POST['t']));
 }
 
 $q = '';
-$old_name = $_SESSION['setup']['table_edit']['chosen_table'];
+$form_url = 'table_edit.php?t=' . urlencode($_POST['t']);
+$old_name = $_POST['t'];
 if ($_POST['table_name'] != $old_name) {
     // rename table in database
     if (table_name_valid ($_POST['table_name'])) {
-        $q = "ALTER TABLE `{$_SESSION['setup']['table_edit']['chosen_table']}`
+        $q = "ALTER TABLE `{$_POST['t']}`
             RENAME TO `" . $_POST['table_name'] . "`";
         if (execq($q, false)) {
-            $table->setName ($_POST['table_name']);
-            $_SESSION['setup']['table_edit']['chosen_table'] = $_POST['table_name'];
+            $table->setName($_POST['table_name']);
+            $form_url = 'table_edit.php?t=' . urlencode($_POST['table_name']);
         } else {
             $_SESSION['setup']['err'] = 'Table name was not changed due to a database error';
         }
@@ -114,6 +113,9 @@ try {
     log_action ($db, $log_message, $q);
 } catch (FileNotWriteableException $ex) {
     $_SESSION['setup']['err'] = 'Failed to save XML';
+    
+    // Set this again in case a table name change failed to be saved in the XML
+    $form_url = 'table_edit.php?t=' . urlencode($_POST['t']);
 }
-redirect ('table_edit.php');
+redirect($form_url);
 ?>

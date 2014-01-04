@@ -35,13 +35,14 @@ while ($row = fetch_assoc($res)) {
     if ($row['Sub_part'] != null) echo ' (' . $row['Sub_part'] . ')';
 }
 
-echo "</p>";
+echo "?</p>";
 ?>
 
 <table><tr>
-    <form method="get" action="table_edit_indexes.php"><td><input type="submit" value="&lt;&lt; No"></td></form>
+    <form method="get" action="table_edit_indexes.php"><td><input type="submit" value="&lt;&lt; No"><input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>"></td></form>
     <form method="post" action="table_del_index_action.php">
-        <input type="hidden" name="index" value="<?= $index; ?>">
+        <input type="hidden" name="t" value="<?= urlencode($_GET['t']); ?>">
+        <input type="hidden" name="index" value="<?= urlencode($index); ?>">
         <td><input type="submit" value="Yes &gt;&gt;"></td>
     </form>
 </tr></table>

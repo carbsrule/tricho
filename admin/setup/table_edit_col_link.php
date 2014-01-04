@@ -10,10 +10,10 @@ require 'head.php';
 $page_opts = array ('tab' => 'cols');
 require 'table_head.php';
 
-$curr_tbl = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$curr_tbl = $db->getTable($_GET['t']);
 if ($curr_tbl == null) redirect ('./');
 
-$curr_col = $curr_tbl->get ($_SESSION['setup']['table_edit']['chosen_column']);
+$curr_col = $curr_tbl->get($_GET['t']);
 if ($curr_col == null) redirect ('./');
 ?>
 <script language="Javascript" src="table_edit_col_link.js"></script>

@@ -75,6 +75,7 @@ foreach ($cols as $col) {
 </td></tr>
 
 </table>
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
 </form>
 
 <p>&nbsp;</p>
@@ -88,11 +89,11 @@ foreach ($cols as $col) {
     <tr>
         <td>
             <h3>Search options</h3>
-            <iframe src="table_edit_search_iframe.php" width="400"></iframe>
+            <iframe src="table_edit_search_iframe.php?t=<?= urlencode($_GET['t']); ?>" width="400"></iframe>
         </td>
         <td>
             <h3>Order options</h3>
-            <iframe src="table_edit_order_iframe.php?list=order" width="400"></iframe>
+            <iframe src="table_edit_order_iframe.php?t=<?= urlencode($_GET['t']); ?>&amp;list=order" width="400"></iframe>
         </td>
     </tr>
 </table>

@@ -10,22 +10,24 @@ require 'head.php';
 $page_opts = array('tab' => 'cols');
 require 'table_head.php';
 
-$curr_tbl = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->get($_GET['t']);
+if ($table == null) {
+    report_error ("Unknown table");
+    die ();
+}
 
-if ($curr_tbl == null) redirect ('./');
-
-$column = $curr_tbl->get ($_GET['col']);
-
+$column = $table->get($_GET['col']);
 if ($column == null) {
     report_error ("Unknown column");
     die ();
 }
 
 ?>
-<form method="get" action="table_edit_delete_column2.php">
-<input type="hidden" name="col" value="<?= $_GET['col']; ?>">
+<form method="post" action="table_edit_delete_column2.php">
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
+<input type="hidden" name="col" value="<?= hsc($_GET['col']); ?>">
 <p>Are you sure you want to delete the column <?= $_GET['col']; ?>?</p>
-<p> <input type="button" onclick="window.location = 'table_edit_cols.php';" value="&lt; NO">
+<p> <input type="button" onclick="window.location = 'table_edit_cols.php?t=<?= urlencode($_GET['t']); ?>';" value="&lt; NO">
     <input type="submit" value="YES &gt;"> </p>
 </form>
 

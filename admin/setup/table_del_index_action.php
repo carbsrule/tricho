@@ -9,15 +9,15 @@ require_once '../../tricho.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
 $db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->getTable($_POST['t']);
 if ($table == null) redirect ('./');
 
 $index = trim ($_POST['index']);
 
-
+$url = 'table_edit_indexes.php?t=' . urlencode($_POST['t']);
 if ($index == '') {
     $_SESSION['setup']['err'] = 'Invalid index';
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 
 // Check before removing the key to see if there is a constraint that prevents its removal
@@ -48,7 +48,7 @@ if ($table_auto_inc_col != null) {
         $_SESSION['setup']['err'] = "Cannot delete the index <em>{$_POST['index']}</em>, as it alone ".
             "contains an AUTO INCREMENT column. Add another unique index on the column ".
             "<em>{$table_auto_inc_col}</em> if you want to remove the index <em>{$_POST['index']}</em>.";
-        redirect ('table_edit_indexes.php');
+        redirect($url);
     }
 }
 
@@ -57,7 +57,7 @@ if (execq($q, false, false, false, false)) {
     $_SESSION['setup']['msg'] = "Index <em>{$_POST['index']}</em> deleted";
     
     $db = Database::parseXML ('../tables.xml');
-    $log_message = "Removed index {$index} from {$_SESSION['setup']['table_edit']['chosen_table']}";
+    $log_message = "Removed index {$index} from {$table->getName()}";
     log_action ($db, $log_message, $q);
     
 } else {
@@ -67,6 +67,6 @@ if (execq($q, false, false, false, false)) {
 }
 
 
-redirect ('table_edit_indexes.php');
+redirect($url);
 
 ?>

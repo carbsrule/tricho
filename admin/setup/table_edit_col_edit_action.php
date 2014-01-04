@@ -12,22 +12,31 @@ require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 require_once 'setup_functions.php';
 require_once 'column_definition.php';
 
-$session = &$_SESSION['setup']['table_edit'];
-if ($session['chosen_table'] == '') redirect ('./');
-$db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($session['chosen_table']);
-if ($table == null) redirect ('./');
-$column = $table->get ($session['chosen_column']);
-if ($column == null) redirect ('./');
+@list($table, $column) = explode('.', $_POST['col']);
+$db = Database::parseXML('../tables.xml');
+$table = $db->get($table);
+if (!$table) redirect('./');
+
+$column = $table->get($column);
+if (!$column) redirect('./');
+
+$id = $_POST['col'];
+unset($_POST['col']);
+if (!isset($_SESSION['setup']['table_edit']['edit_column'])) {
+    $_SESSION['setup']['table_edit']['edit_column'] = array();
+}
+$session = &$_SESSION['setup']['table_edit']['edit_column'];
 $old_sql_defn = array (
     'name' => $column->getName (),
     'defn' => $column->getSqlDefn ()
 );
 
 if ($_POST['action'] == 'cancel') {
-    unset ($session['edit_column']);
-    redirect (ROOT_PATH_WEB. ADMIN_DIR. 'setup/table_edit_cols.php');
+    unset($session[$id]);
+    redirect('table_edit_cols.php?t=' . $table->getName());
 }
+$form_url = 'table_edit_col_edit.php?t=' . urlencode($table->getName()) .
+    '&col=' . urlencode($column->getName());
 
 $config = array ();
 $class = $_POST['class'];
@@ -44,8 +53,8 @@ foreach ($_POST as $field => $value) {
 }
 if (!@$_POST['set_default']) $config['sql_default'] = null;
 $config['old_name'] = $column->getName();
-$session['edit_column'] = $config;
-$new_col = column_config_to_meta ($table, 'edit', 'table_edit_col_edit.php', $config);
+$session[$id] = $config;
+$new_col = column_config_to_meta ($table, 'edit', $form_url, $config);
 $table->replaceColumn($column, $new_col);
 
 // warn if duplicate english name
@@ -53,9 +62,9 @@ if ($new_col->hasDuplicateEnglishName()) {
     $_SESSION['setup']['warn'][] = 'A column with the english name ' .
         '<em>' . $new_col->getEngName() . '</em> already exists';
 }
-$q = column_def_edit ($new_col, $old_sql_defn, 'table_edit_col_edit.php', $config);
+$q = column_def_edit ($new_col, $old_sql_defn, $form_url, $config);
 column_def_update_views ($new_col, $config);
-unset ($session['edit_column']);
+unset($session[$id]);
 
 $db = $table->getDatabase ();
 try {
@@ -69,5 +78,5 @@ try {
     $_SESSION['setup']['err'] = 'Failed to save XML';
 }
 
-redirect (ROOT_PATH_WEB. ADMIN_DIR. 'setup/table_edit_cols.php');
+redirect('table_edit_cols.php?t=' . $table->getName());
 ?>

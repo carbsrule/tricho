@@ -159,7 +159,7 @@ if (count ($lines) == 0) {
         <br><textarea name="comments" style="width: 100%; height: 5em;"><?= hsc(rem_br($table->getComments ())); ?></textarea>
     </td></tr>
     <tr><td colspan="2">
-        <br><a href="table_show_create_query.php">Show table create query</a>
+        <br><a href="table_show_create_query.php?t=<?= urlencode($_GET['t']); ?>">Show table create query</a>
     </td></tr>
     </table>
 
@@ -226,7 +226,7 @@ foreach ($options as $id => $option) {
     </tr>
 
 </table>
-
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
 </form>
 
 <?php

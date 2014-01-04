@@ -5,19 +5,19 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-if (@$_SESSION['setup']['table_edit']['chosen_table'] == '') {
-    echo '<p class="error">No table currently set.</p>';
+if (@$_GET['t'] == '') {
+    echo '<p class="error">Invalid table specified.</p>';
     require 'foot.php';
     exit;
 }
 
-$db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$db = Database::parseXML('../tables.xml');
+$table = $db->getTable($_GET['t']);
 
 if ($table == null) redirect ('./');
 $tables = $db->getTables ();
 
-echo "<h2>Edit table {$_SESSION['setup']['table_edit']['chosen_table']} ({$table->getEngName()})</h2>";
+echo "<h2>Edit table {$_GET['t']} ({$table->getEngName()})</h2>";
 
 // Get total columns
 $columns = $table->getColumns ();
@@ -108,15 +108,22 @@ class EditTableTab {
     
     function draw() {
         global $page_opts;
+        $url = $this->url;
+        if (strpos($url, '?') !== false) {
+            $url .= '&amp;';
+        } else {
+            $url .= '?';
+        }
+        $url .= 't=' . urlencode($_GET['t']);
         if ($page_opts['tab'] == $this->name) {
-            echo "<li class=\"on\"><a href=\"{$this->url}\">{$this->title}</a></li>\n";
+            echo "<li class=\"on\"><a href=\"{$url}\">{$this->title}</a></li>\n";
             if (preg_match ('/Columns/', $this->title) > 0) {
                 $page_opts['cn'] = 'Columns';
             } else {
                 $page_opts['cn'] = $this->title;
             }
         } else {
-            echo "<li><a href=\"{$this->url}\">{$this->title}</a></li>\n";
+            echo "<li><a href=\"{$url}\">{$this->title}</a></li>\n";
         }
     }
     

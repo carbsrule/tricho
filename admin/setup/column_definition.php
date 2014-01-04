@@ -689,10 +689,7 @@ function column_def_edit (Column $col, $old_col, $form_url, $config) {
             if ($sql_position != '') $q .= ' '. $sql_position;
             $res = execq($q, false, false);
             
-            if ($res) {
-                $session['chosen_column'] = $config['name'];
-            
-            } else {
+            if (!$res) {
                 $conn = ConnManager::get_active();
                 $err = 'Column definition was not changed due to a ' .
                     'database error:<br>' . $conn->last_error() .

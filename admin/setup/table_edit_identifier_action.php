@@ -10,16 +10,12 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
-// if the user cancelled, do a cancel
-if ($_POST['action'] != 'Save') {
-    redirect ('./table_edit.php');
-}
+$db = Database::parseXML('../tables.xml');
+$table = $db->getTable($_POST['t']);
+if ($table == null) redirect('./');
 
-// get our selected table
-$db = Database::parseXML ('../tables.xml');
-$curr_tbl = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
-if ($curr_tbl == null) redirect ('./');
-
+$url = 'table_edit_identifier.php?t=' . urlencode($_POST['t']);
+if ($_POST['action'] != 'Save') redirect($url);
 
 // determine the identifier
 $desc = array ();
@@ -29,7 +25,7 @@ if (isset($_POST['desc'])) {
         
         if ($type == 'c') {
             // column
-            $temp = $curr_tbl->get ($value);
+            $temp = $table->get($value);
             if ($temp != null) $desc[] = $temp;
             
         } elseif ($type == 't') {
@@ -40,8 +36,6 @@ if (isset($_POST['desc'])) {
 }
 
 // set the identifier
-$curr_tbl->setRowIdentifier ($desc);
-
-// write our xml
-$db->dumpXML ('../tables.xml', 'table_edit_identifier.php');
+$table->setRowIdentifier($desc);
+$db->dumpXML('../tables.xml', $url);
 ?>

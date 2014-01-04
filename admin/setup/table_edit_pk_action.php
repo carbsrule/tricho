@@ -11,8 +11,9 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
 $db = Database::parseXML ('../tables.xml');
-$table = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->getTable($_POST['t']);
 if ($table == null) redirect ('./');
+$url = 'table_edit_indexes.php?t=' . urlencode($table->getName());
 
 $new_index = array ();
 $new_index_cols = array ();
@@ -26,14 +27,14 @@ if (@is_array ($_POST['fields'])) {
             $new_index[] = $new_col;
         } else {
             $_SESSION['setup']['err'] = "Unknown column {$field_name}";
-            redirect ('table_edit_indexes.php');
+            redirect($url);
         }
     }
 }
 
 if (count($new_index) == 0) {
     $_SESSION['setup']['err'] = "You must select at least one column for the primary key";
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 
 
@@ -63,7 +64,7 @@ $update_database = false;
 // if the XML definition hasn't changed, and the Database matches the XML, there's nothing to do.
 if ($sorted_old_cols == $sorted_db_cols and $sorted_new_cols == $sorted_db_cols) {
     $_SESSION['setup']['msg'] = "Primary key definition unchanged";
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 
 
@@ -105,47 +106,48 @@ if ($update_database) {
             $_SESSION['setup']['err'] = "Cannot modify the primary key, as it alone contains an ".
                 "AUTO INCREMENT column. Add another index on <em>{$table_auto_inc_col}</em> if you wish to ".
                 "change the primary key for this table";
-            redirect ('table_edit_indexes.php');
+            redirect($url);
         }
     }
     
     // Remove the existing primary key from the database, if there is one
     if (count ($sorted_db_cols) > 0) {
-        $q = "ALTER TABLE `{$_SESSION['setup']['table_edit']['chosen_table']}` DROP PRIMARY KEY";
+        $q = "ALTER TABLE `{$_POST['t']}` DROP PRIMARY KEY";
         $query_list[] = $q;
         if (!execq($q)) {
             $conn = ConnManager::get_active();
             $_SESSION['setup']['err'] = 'Database error removing ' .
                 'old PK: ' . $conn->last_error();
-            redirect ('table_edit_indexes.php');
+            redirect($url);
         }
     }
     
     // Add the new primary key, made up of the columns requested
-    $q = "ALTER TABLE `{$_SESSION['setup']['table_edit']['chosen_table']}` ".
+    $q = "ALTER TABLE `{$_POST['t']}` ".
         "ADD PRIMARY KEY (". implode (',', $new_index_cols). ")";
     $query_list[] = $q;
     if (!execq($q)) {
         $conn = ConnManager::get_active();
         $_SESSION['setup']['err'] = 'Database error adding new ' .
             'PK: ' . $conn->last_error();
-        redirect ('table_edit_indexes.php');
+        redirect($url);
     }
 }
 
 if ($update_xml) {
     
     // dump the XML
-    if ($db->dumpXML ('../tables.xml', null)) {
-        $log_message = "Modified Primary Key on {$_SESSION['setup']['table_edit']['chosen_table']}";
+    try {
+        $db->dumpXML('../tables.xml', null);
+        $log_message = "Modified Primary Key on {$_POST['t']}";
         log_action ($db, $log_message, implode (";\n", $query_list));
-    } else {
+    } catch (FileNotWriteableException $ex) {
         $_SESSION['setup']['err'] = 'Failed to write XML';
     }
-    redirect ('table_edit_indexes.php');
+    redirect($url);
     
 } else {
     $_SESSION['setup']['msg'] = 'Database updated';
-    redirect ('table_edit_indexes.php');
+    redirect($url);
 }
 ?>

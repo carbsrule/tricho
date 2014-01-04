@@ -10,7 +10,8 @@ require_once ROOT_PATH_FILE . 'tricho/data_objects.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);
 
 $db = Database::parseXML('../tables.xml');
-$table = $db->getTable($_SESSION['setup']['table_edit']['chosen_table']);
+$table = $db->getTable($_POST['t']);
+if (!$table) redirect('./');
 
 // clear existing alternate pages
 list($page_urls, $seps) = $table->getPageUrls();
@@ -29,5 +30,6 @@ foreach ($page_urls as $id => $page) {
 // echo "<pre>", print_r ($table->getAltPages (), true), "</pre>\n";
 
 // store xml
-$db->dumpXML('../tables.xml', 'table_edit.php');
+$url = 'table_edit_alt_pages.php?t=' . urlencode($_POST['t']);
+$db->dumpXML('../tables.xml', $url);
 ?>

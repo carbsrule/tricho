@@ -11,20 +11,24 @@ require 'head.php';
 $page_opts = array ('tab' => 'cols');
 require 'table_head.php';
 
-$session = &$_SESSION['setup']['table_edit'];
-
-$curr_col = $table->get ($session['chosen_column']);
+$curr_col = $table->get($_GET['col']);
 if ($curr_col == null) {
     report_error ("Invalid column");
     require 'foot.php';
     exit;
 }
 
+$id = "{$_GET['t']}.{$_GET['col']}";
+if (!isset($_SESSION['setup']['table_edit']['edit_column'])) {
+    $_SESSION['setup']['table_edit']['edit_column'] = array();
+}
+$session = &$_SESSION['setup']['table_edit']['edit_column'];
+
 require 'setup_functions.php';
 require 'column_definition.php';
 
-if (isset ($session['edit_column'])) {
-    $meta = $session['edit_column'];
+if (isset($session[$id])) {
+    $meta = $session[$id];
 } else {
     $meta = $curr_col->getConfigArray ();
     $meta['insert_after'] = 'retain';
@@ -32,7 +36,9 @@ if (isset ($session['edit_column'])) {
 
 if ($meta['class'] == 'LinkColumn') $meta['sqltype'] = 'LINK';
 
-column_def_form ($curr_col, 'edit', 'table_edit_col_edit_action.php', $meta);
+$action = 'table_edit_col_edit_action.php';
+$hidden_fields = array('col' => "{$_GET['t']}.{$_GET['col']}");
+column_def_form($curr_col, 'edit', $action, $meta, $hidden_fields);
 
 require 'foot.php';
 ?>

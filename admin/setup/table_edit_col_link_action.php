@@ -17,11 +17,11 @@ if ($_POST['action'] != 'Save') {
 
 // get our selected table
 $db = Database::parseXML ('../tables.xml');
-$curr_tbl = $db->getTable ($_SESSION['setup']['table_edit']['chosen_table']);
+$curr_tbl = $db->getTable($_POST['t']);
 if ($curr_tbl == null) redirect ('./');
 
 // get our selected column
-$curr_col = $curr_tbl->get ($_SESSION['setup']['table_edit']['chosen_column']);
+$curr_col = $curr_tbl->get($_POST['col']);
 if ($curr_col == null) redirect ('./');
 
 

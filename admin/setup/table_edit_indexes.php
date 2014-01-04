@@ -21,8 +21,7 @@ $columns = $table->getColumns ();
 echo "<script language=\"Javascript\" src=\"table_edit_indexes.js\"></script>\n";
 
 echo "<form method=\"post\" name=\"indexes\" action=\"table_edit_pk_action.php\">\n";
-
-
+echo '<input type="hidden" name="t" value="', hsc($_GET['t']), "\">\n";
 
 // Primary Key index
 echo "<h4>Primary key</h4>\n";
@@ -92,8 +91,9 @@ if (count($indexes) > 0) {
         echo "    <td>{$name}</td>\n";
         echo "    <td>{$type}</td>\n";
         echo "    <td>{$fields}</td>\n";
-        echo "    <td><input type=\"button\" onclick=\"window.location='table_del_index.php?i=",
-            addslashes ($name), "';\" value=\"Delete\"></td>\n";
+        echo "    <td><input type=\"button\" onclick=\"window.location=",
+            "'table_del_index.php?t=", urlencode($_GET['t']), "&amp;i=",
+            urlencode($name), "';\" value=\"Delete\"></td>\n";
         echo "</tr>\n";
     }
     echo "</table>\n";
@@ -127,7 +127,7 @@ echo "<form method=\"post\" action=\"table_add_index.php\" name=\"new_index\">\n
                         </select>
                     </td>
                 </tr>
-                <tr><td colspan="2" align="right"><input type="submit" value="Add index"></td></tr>
+                <tr><td>&nbsp;</td><td><input type="submit" value="Add index"></td></tr>
             </table>
         </td>
         
@@ -181,9 +181,10 @@ foreach ($columns as $id => $col) {
         </td>
     </tr>
 </table>
-<?php
-echo "</form>\n";
+<input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">
+</form>
 
+<?php
 echo "<script language=\"javascript\">\n";
 echo "update_index_col_options ();\n";
 echo "var up_image = '" . ROOT_PATH_WEB . IMAGE_ARROW_UP . "';\n";
