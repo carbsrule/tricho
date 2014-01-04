@@ -248,7 +248,7 @@ foreach ($view_items as $item) {
 }
 
 echo "<tr class=\"buttons\"><td>&nbsp;</td><td>";
-echo "<input type=\"submit\" value=\"{$button_text['add']}\">";
+echo "<input type=\"submit\" value=\"{$button_text['add']}\"> ";
 echo "<input type=\"submit\" value=\"{$button_text['cancel']}\" name=\"cancel\"> ";
 echo "</td></tr>\n";
 
