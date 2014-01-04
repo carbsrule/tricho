@@ -333,6 +333,8 @@ class MainTable {
             foreach ($descriptors as $part) {
                 if ($part instanceof Column) {
                     $part = new AliasedColumn($target_table, $part);
+                } else {
+                    $part = new QueryFieldLiteral($part);
                 }
                 $this->concat_func->addParam($part);
             }
