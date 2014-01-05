@@ -156,7 +156,8 @@ class Database {
                 }
                 $target_col = $target_table->get($col_name);
                 if (!$target_col) {
-                    throw new Exception('Unknown column: ' . $col_name);
+                    $err = 'Unknown column: ' . $table_name . '.' . $col_name;
+                    throw new Exception($err);
                 }
                 $col->setTarget($target_col);
             }

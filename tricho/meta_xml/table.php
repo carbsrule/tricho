@@ -2096,6 +2096,9 @@ class Table implements QueryTable {
             }
         }
         if (!$found) return;
+        
+        // All references to the old column have to be updated to point to
+        // the new column.
         foreach ($this->list_view as $item) {
             if (!($item instanceof ColumnViewItem)) continue;
             if ($item->getColumn() === $old) {
@@ -2127,8 +2130,34 @@ class Table implements QueryTable {
             }
         }
         
-        //TODO: when Link(ed)Columns are implemented, need to update any relevant
-        // links to point to the new column
+        $pk = $this->indices['PRIMARY KEY'];
+        foreach ($pk as $key => $col) {
+            if ($col === $old) {
+                $pk[$key] = $new;
+                $this->indices['PRIMARY KEY'] = $pk;
+                break;
+            }
+        }
+        
+        foreach ($this->row_identifier as $key => $item) {
+            if ($item === $old) $this->row_identifier[$key] = $new;
+        }
+        
+        foreach ($this->order['search'] as $key => $item) {
+            if ($item !== $old) continue;
+            $this->order['search'][$key] = $new;
+        }
+        
+        foreach ($this->order['view'] as $key => $item) {
+            list($col, $dir) = $item;
+            if ($col !== $old) continue;
+            $this->order['view'][$key] = array($new, $dir);
+        }
+        
+        $links = $old->getBacklinks();
+        foreach ($links as $col) {
+            $col->setTarget($new);
+        }
     }
     
     
@@ -3232,7 +3261,7 @@ class Table implements QueryTable {
     function getPKnames () {
         $pk_names = array ();
         $pk_cols = $this->getIndex ('PRIMARY KEY');
-        if ($pk_cols[0] == null) return array ();
+        if (@$pk_cols[0] == null) return array ();
         foreach ($pk_cols as $col) {
             $pk_names[] = $col->getName ();
         }

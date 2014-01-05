@@ -1021,5 +1021,25 @@ abstract class Column implements QueryField, ColumnInterface {
      function getTD($data, $pk) {
          return '<td>' . hsc($data) . '</td>';
      }
+     
+     
+     /**
+      * Gets an array of backlinks to this column from other tables
+      * in the database
+      * @return array of LinkColumns
+      */
+     function getBacklinks() {
+         $backlinks = array();
+         $tables = $this->table->getDatabase()->getTables();
+         foreach ($tables as $table) {
+             if ($table === $this->table) continue;
+             foreach ($table->getColumns() as $col) {
+                 if (!($col instanceof LinkColumn)) continue;
+                 if ($col->getTarget() !== $this) continue;
+                 $backlinks[] = $col;
+             }
+         }
+         return $backlinks;
+     }
 }
 ?>
