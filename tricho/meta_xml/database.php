@@ -111,10 +111,6 @@ class Database {
     static function fromXMLNode (DOMElement $node) {
         $db = new Database ();
         
-        $db->xml_load_data = array (
-            'links' => array ()
-        );
-        
         // N.B. deprecated options are ignored: menutype, data_check, convert_output
         if ($node->hasAttribute ('primary_headings')) {
             $db->setShowPrimaryHeadings (to_bool ($node->getAttribute ('primary_headings')));
@@ -165,23 +161,6 @@ class Database {
                 $col->setTarget($target_col);
             }
         }
-        
-        if (isset ($db->xml_load_data['links'])) {
-            foreach ($db->xml_load_data['links'] as $child => $parent) {
-                $child_table = $db->get ($child_name);
-                $parent_table = $db->get ($parent_name);
-                if ($child_table == null) {
-                    throw new Exception ('Missing child table '. $child);
-                } else if ($parent_table == null) {
-                    throw new Exception ('Missing parent table table '. $parent. ' for '. $child);
-                } else {
-                    $child_table->setParent ();
-                }
-            }
-        }
-        
-        
-        unset ($db->xml_load_data);
         return $db;
     }
     
