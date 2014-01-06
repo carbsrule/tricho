@@ -158,7 +158,12 @@ class QueryFunction extends AliasedField {
      * @return string e.g. <th>Awesome column</th>
      */
     function getTH() {
-        return '<th>' . hsc($this->getAlias()) . '</th>';
+        if ($this->source != null) {
+            $str = $this->source->getEngName();
+        } else {
+            $str = $this->getAlias();
+        }
+        return '<th>' . hsc($str) . '</th>';
     }
     
     
