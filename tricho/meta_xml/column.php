@@ -457,6 +457,17 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
+     * Gets the full name (table.column)
+     * @return string
+     */
+    function getFullName() {
+        $name = ($this->table == null)? '???': $this->table->getName();
+        $name .= '.' . $this->name;
+        return $name;
+    }
+    
+    
+    /**
      * @author benno, 2013-01-08
      */
     function hasDuplicateEnglishName() {
@@ -1040,6 +1051,15 @@ abstract class Column implements QueryField, ColumnInterface {
              }
          }
          return $backlinks;
+     }
+     
+     
+     /**
+      * Gets info relevant to this column type to display in the column list
+      * in the setup area
+      */
+     function getInfo() {
+         return '';
      }
 }
 ?>

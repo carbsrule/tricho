@@ -290,9 +290,9 @@ class ImageColumn extends FileColumn {
             $name = @trim($data['name']);
             if ($name == '') continue;
             $min = '';
-            if ($data['min_size'] == 'max') {
+            if (@$data['min_size'] == 'max') {
                 $min = 'max';
-            } else if ($data['min_size'] == 'match') {
+            } else if (@$data['min_size'] == 'match') {
                 $dimensions = array();
                 if (is_array($data['min_size_dim'])) {
                     if (in_array('w', $data['min_size_dim'])) $dimensions[] = 'width';
@@ -303,7 +303,7 @@ class ImageColumn extends FileColumn {
                         $min = reset($dimensions);
                     }
                 }
-            } else if ($data['min_size'] == 'dim') {
+            } else if (@$data['min_size'] == 'dim') {
                 $min = ((int) $data['min_size_dim_w']) . 'x' . ((int) $data['min_size_dim_h']);
             }
             $variant = array(
@@ -472,6 +472,27 @@ class ImageColumn extends FileColumn {
             return;
         }
         apply_file_security($variant_path);
+    }
+    
+    
+    function getInfo() {
+        $variant = reset($this->variants);
+        @list($w, $h) = explode('x', $variant['max_size']);
+        $w = (int) $w;
+        $h = (int) $h;
+        $max = '';
+        if ($w > 0) {
+            if ($h > 0) {
+                $max = "{$w}&times;{$h}";
+            } else {
+                $max = "width {$w}";
+            }
+        } else if ($h > 0) {
+            $max = "height {$h}";
+        }
+        $loc = parent::getInfo();
+        if ($loc) $loc .= ', ';
+        return $loc . ($max != ''? "max {$max}": 'no max');
     }
 }
 ?>

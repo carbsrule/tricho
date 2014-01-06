@@ -129,5 +129,17 @@ abstract class NumericColumn extends InputColumn {
     function getTD($data, $pk) {
         return '<td align="right">' . hsc($data) . '</td>';
     }
+    
+    function getInfo() {
+        if ($this->min !== null) {
+            if ($this->max !== null) {
+                return $this->min . ' &#8596; ' . $this->max;
+            }
+            return '&gt;=' . $this->min;
+        } else if ($this->max !== null) {
+            return '&lt;=' . $this->max;
+        }
+        return '';
+    }
 }
 ?>

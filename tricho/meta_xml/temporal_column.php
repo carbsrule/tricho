@@ -297,4 +297,10 @@ abstract class TemporalColumn extends Column {
     function getMaxYear() {
         return $this->max_year;
     }
+    
+    
+    function getInfo() {
+        if (!$this->has_date) return '';
+        return $this->min_year . ' &#8596; ' . $this->max_year;
+    }
 }

@@ -209,4 +209,9 @@ class LinkColumn extends Column {
         }
         return array($this->name => $value);
     }
+    
+    
+    function getInfo() {
+        return '&#8658; ' . $this->target->getFullName();
+    }
 }

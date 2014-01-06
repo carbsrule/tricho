@@ -130,5 +130,11 @@ class EmailColumn extends StringColumn {
         }
         return array($this->name => $input);
     }
+    
+    
+    function getInfo() {
+        if ($this->validation_type == 'dns') return 'DNS lookup';
+        return 'Basic checks';
+    }
 }
 ?>

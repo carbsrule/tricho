@@ -16,8 +16,9 @@ require 'table_head.php';
         <th>&nbsp;</th>
         <th>&nbsp;</th>
         <th>Name</th>
-        <th colspan="2" align="left">Type</th>
+        <th>Class</th>
         <th>Info</th>
+        <th>Type</th>
         <th>Actions</th>
     </tr>
     
@@ -45,44 +46,8 @@ foreach ($columns as $col) {
         echo $col->getName ();
     }
 ?></td>
-        <td>
-            <small>
-<?php
-    echo get_class ($col);
-    
-    switch ($col->getOption ()) {
-        case 'richtext':
-            echo '[mce]';
-            break;
-            
-        case 'richtext2':
-            echo '[xstd]';
-            break;
-            
-        case 'file':
-            echo '[file:', $col->getParam ('storage_location'), ']';
-            break;
-            
-        case 'image':
-            echo '[img:', $col->getParam ('storage_location');
-            if ($col->getParam ('size')) echo ':', $col->getParam ('size');
-            echo ']';
-            break;
-            
-        case 'password':
-            $enc = $col->getParam ('encryption_mechanism');
-            if ($enc != '') echo '[', strtoupper ($enc), ']';
-            break;
-    }
-    
-    if ($col instanceof TemporalColumn and $col->hasDate()) {
-        $min_year = $col->getMinYear();
-        $max_year = $col->getMaxYear();
-        echo "[{$min_year}:{$max_year}]";
-    }
-?>
-            </small>
-        </td>
+        <td><small><?= get_class($col); ?></small></td>
+        <td><small><?= $col->getInfo(); ?></small></td>
         <td>
             <small><?php
     echo sql_type_string_from_defined_constant ($col->getSqlType ());
@@ -92,32 +57,6 @@ foreach ($columns as $col) {
     echo ' ', implode (' ', $col->getSqlAttributes ());
 ?></small>
         </td>
-        <td><?php
-    $link_data = $col->getLink ();
-    if ($link_data != null) {
-        // show link for linked columns
-        echo ' -&gt; ', $link_data->getToColumn ()->getTable ()->getName (), '.', $link_data->getToColumn ()->getName ();
-        if ($link_data->isParent()) {
-            echo ' (parent)';
-        }
-    } else {
-        // show mask for image/file columns
-        $option = $col->getOption ();
-        switch ($option) {
-            case 'file':
-            case 'image':
-                echo $table_mask. '.'. $col->getMask ();
-                break;
-                
-            case 'ordernum':
-                echo 'Order #';
-                break;
-             
-            default:
-                echo '&nbsp;';
-        }
-    }
-?></td>
         <td>
             <form method="get" action="table_edit_col_action.php">
             <input type="hidden" name="t" value="<?= hsc($_GET['t']); ?>">

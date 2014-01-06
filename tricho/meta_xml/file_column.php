@@ -439,5 +439,12 @@ class FileColumn extends Column {
         file_put_contents ($file_name, $file->getData ());
         apply_file_security ($file_name);
     }
+    
+    
+    function getInfo() {
+        $loc = $this->storage_location;
+        if (!$loc) return '<p class="error">No storage</p>';
+        return $loc . '/' . $this->getFullMask() . '.*';
+    }
 }
 ?>

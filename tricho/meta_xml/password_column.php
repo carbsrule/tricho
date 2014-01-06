@@ -310,5 +310,10 @@ class PasswordColumn extends InputColumn {
         
         return $fields;
     }
+    
+    
+    function getInfo() {
+        return self::$encryption_methods[$this->encryption_method]['name'];
+    }
 }
 ?>
