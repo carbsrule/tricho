@@ -132,6 +132,8 @@ if (count($queries) > 0) {
             $result = null;
             if ($query_allowed) {
                 try {
+                    $query = new RawQuery($query);
+                    $query->set_internal(true);
                     $result = execq($query);
                 } catch (QueryException $qe) {
                     $reason = $qe->getMessage();
