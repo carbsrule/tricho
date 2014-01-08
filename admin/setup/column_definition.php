@@ -223,7 +223,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     foreach (get_available_collation_mappings() as $charset => $collations) {
         echo '<optgroup label="', hsc($charset), "\">\n";
         foreach ($collations as $collation) {
-            if ($collation == $config['collation']) {
+            if ($collation == @$config['collation']) {
                 $selected = ' selected="selected"';
             } else {
                 $selected = '';
