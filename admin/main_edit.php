@@ -78,14 +78,12 @@ $pk_clause = implode (' AND ', $prim_key_clauses);
 $file_uploads_required = false;
 $tinymce_fields = array ();
 foreach ($view_items as $item) {
-    if ($item instanceof ColumnViewItem) {
-        $col = $item->getColumn ();
-        if ($col->getOption () == 'richtext') {
-            $tinymce_fields[] = $col;
-        }
-        if ($col instanceOf FileColumn) {
-            $file_uploads_required = true;
-        }
+    if (!($item instanceof ColumnViewItem)) continue;
+    $col = $item->getColumn();
+    if ($col instanceof TinymceColumn) {
+        $tinymce_fields[] = $col;
+    } else if ($col instanceof FileColumn) {
+        $file_uploads_required = true;
     }
 }
 
@@ -94,10 +92,10 @@ $has_a_richtext_editor = false;
 if (count($tinymce_fields) > 0) {
     $has_a_richtext_editor = true;
 ?>
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
 <!--
 <?php
-init_tinymce ($tinymce_fields);
+init_tinymce($tinymce_fields);
 ?>
 //-->
 </script>

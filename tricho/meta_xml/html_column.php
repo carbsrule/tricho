@@ -128,14 +128,23 @@ class HtmlColumn extends InputColumn {
     function setAllowedTags($tags) {
         $this->allowed_tags = (string) $tags;
     }
+    function getAllowedTags() {
+        return str_replace(' ', '', $this->allowed_tags);
+    }
     
     
     function setReplaceTags($tags) {
         $this->replace_tags = (string) $tags;
     }
+    function getReplaceTags() {
+        return str_replace(' ', '', $this->replace_tags);
+    }
     
     
     function setRemoveTags($tags) {
         $this->remove_tags = (string) $tags;
+    }
+    function getRemoveTags() {
+        return str_replace(' ', '', $this->remove_tags);
     }
 }

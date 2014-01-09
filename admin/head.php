@@ -55,11 +55,16 @@ if (is_dir ($skin_dir)) {
     }
 }
 
-if (@is_file (ROOT_PATH_FILE. 'tinymce/tiny_mce.js')) {
+$_tmces = array('tinymce.js', 'tiny_mce.js', 'tinymce.min.js');
+foreach ($_tmces as $_tmce) {
+    if (@is_file(ROOT_PATH_FILE . 'tinymce/' . $_tmce)) {
 ?>
-        <script language="JavaScript" type="text/javascript" src="<?= ROOT_PATH_WEB; ?>tinymce/tiny_mce.js"></script>
+        <script type="text/javascript" src="<?= ROOT_PATH_WEB; ?>tinymce/<?= $_tmce; ?>"></script>
 <?php
+        break;
+    }
 }
+unset($_tmces, $_tmce);
 
 $scripts = array (
     ADMIN_DIR. 'functions.js',
