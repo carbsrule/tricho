@@ -155,8 +155,7 @@ class HtmlDom {
 
         $tag_attr_pairs = preg_split ('/,\s*/', $tags_allow);
         foreach ($tag_attr_pairs as $pair) {
-            
-            list ($tag, $attribs_str) = preg_split ('/:\s*/', $pair, 2);
+            @list($tag, $attribs_str) = preg_split('/:\s*/', $pair, 2);
             
             if (preg_match ('/^[a-zA-Z]+$/', $tag)) {
                 $tags_allowed[$tag] = array ();
@@ -171,7 +170,7 @@ class HtmlDom {
         
         $replacements = preg_split ('/,\s*/', $tags_replace);
         foreach ($replacements as $replace_str) {
-            list ($tag, $replacement_tag) = preg_split ('/=\s*/', $replace_str, 2);
+            @list($tag, $replacement_tag) = preg_split('/=\s*/', $replace_str, 2);
             if (preg_match ('/^[a-zA-Z]+$/', $tag)
                         and preg_match ('/^[a-zA-Z]+$/', $replacement_tag)) {
                 $tag_replacements[$tag] = $replacement_tag;
@@ -220,7 +219,7 @@ class HtmlDom {
             }
         }
         
-        if ($node != null) {
+        if ($node != null and $node->hasChildNodes()) {
             
             $children_to_fix = array ();
             $children = $node->childNodes;
