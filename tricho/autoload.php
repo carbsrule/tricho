@@ -18,6 +18,15 @@ function tricho_autoload ($class_name) {
             if (is_dir($ext_dir . $ext)) $extensions[] = $ext;
         }
     }
+    
+    if (substr($class_name, 0, 7) == 'tricho\\') {
+        $file = $root_path . str_replace('\\', '/', $class_name) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+    
     $file_name = class_name_to_file_name($class_name);
     
     $is_column = false;
