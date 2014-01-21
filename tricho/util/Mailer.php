@@ -781,7 +781,8 @@ class MailerAttachment {
         }
         
         // Determine MIME type from cname
-        $ext = array_pop(explode('.', $cname));
+        $dotted_parts = explode('.', $cname);
+        $ext = array_pop($dotted_parts);
         switch ($ext) {
             case 'gif': $mimetype = 'image/gif'; break;
             case 'jpg': $mimetype = 'image/jpeg'; break;
