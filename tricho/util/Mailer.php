@@ -440,7 +440,7 @@ class Mailer {
      * @return mixed True if the send was a success, an array containing error
      * messages otherwise.
      */
-    public function send($email, $subject) {
+    public function send($email, $subject = '') {
         if (!($this->message[Mailer::TEXT] or $this->message[Mailer::HTML])) {
             return array('No message text provided');
         }
@@ -459,6 +459,23 @@ class Mailer {
         }
         if (count($errs) != 0) return $errs;
         
+        if ($subject == '') {
+            if (!$this->message[Mailer::HTML]) {
+                return array('No HTML message set, and no subject specified');
+            }
+            $doc = new \DOMDocument();
+            $doc->loadHTML($this->message[Mailer::HTML]);
+            $head = $doc->getElementsByTagName('head')->item(0);
+            $title = false;
+            if ($head) {
+                $title = $head->getElementsByTagName('title')->item(0);
+                if ($title) $title = $title->firstChild->data;
+            }
+            if (!$head or !$title) {
+                return array('Unable to extract subject from HTML message');
+            }
+            $subject = $title;
+        }
         
         // Determine if the Mail mime is needed
         $need_mail_mine = false;
@@ -512,7 +529,8 @@ class Mailer {
      * the set parameters
      * 
      * @param string $email The email address to send the message to
-     * @param string $subject The subject to use for the e-mail message
+     * @param string $subject The subject to use for the e-mail message. By
+     *        default, the title in the HTML of the message will be used.
      * @return mixed True if the send was a success, an array containing error
      *         messages otherwise.
      */
