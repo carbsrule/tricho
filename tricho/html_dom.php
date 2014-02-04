@@ -152,12 +152,12 @@ class HtmlDom {
         $tags_allowed         = array ();
         $tag_replacements = array ();
         $tags_denied            = array ();
-
-        $tag_attr_pairs = preg_split ('/,\s*/', $tags_allow);
+        
+        $tag_pattern = '/^[a-z]+[0-9]?$/i';
+        $tag_attr_pairs = preg_split('/,\s*/', $tags_allow);
         foreach ($tag_attr_pairs as $pair) {
             @list($tag, $attribs_str) = preg_split('/:\s*/', $pair, 2);
-            
-            if (preg_match ('/^[a-zA-Z]+$/', $tag)) {
+            if (preg_match($tag_pattern, $tag)) {
                 $tags_allowed[$tag] = array ();
                 $attribs_allowed = preg_split ('/;\s*/', $attribs_str);
                 foreach ($attribs_allowed as $attrib) {
@@ -168,18 +168,18 @@ class HtmlDom {
             }
         }
         
-        $replacements = preg_split ('/,\s*/', $tags_replace);
+        $replacements = preg_split('/,\s*/', $tags_replace);
         foreach ($replacements as $replace_str) {
             @list($tag, $replacement_tag) = preg_split('/=\s*/', $replace_str, 2);
-            if (preg_match ('/^[a-zA-Z]+$/', $tag)
-                        and preg_match ('/^[a-zA-Z]+$/', $replacement_tag)) {
+            if (preg_match($tag_pattern, $tag)
+                    and preg_match($tag_pattern, $replacement_tag)) {
                 $tag_replacements[$tag] = $replacement_tag;
             }
         }
         
-        $denied = preg_split ('/,\s*/', $tags_deny);
+        $denied = preg_split('/,\s*/', $tags_deny);
         foreach ($denied as $tag) {
-            if (preg_match ('/^[a-zA-Z]+$/', $tag)) {
+            if (preg_match($tag_pattern, $tag)) {
                 $tags_denied[$tag] = $tag;
             }
         }
