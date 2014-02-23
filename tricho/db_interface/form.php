@@ -23,6 +23,8 @@ class Form {
     protected $type;
     protected $table;
     protected $items;
+    protected $step;
+    protected $final;
     protected $presets;
     protected $modifier;
     
@@ -40,6 +42,11 @@ class Form {
     
     function getID() {
         return $this->id;
+    }
+    
+    
+    function getStep() {
+        return $this->step;
     }
     
     
@@ -165,6 +172,20 @@ class Form {
             throw new UnexpectedValueException($err);
         }
         $this->setTable($table);
+        $this->final = true;
+        $step = (int) @$form->getAttribute('step');
+        if ($step > 0) {
+            $this->step = $step;
+            if (!$form->hasAttribute('final')) $this->final = false;
+        } else {
+            $this->step = 1;
+        }
+        
+        $step = @$_SESSION['forms'][$this->id]['step'];
+        if ($this->step > 1 and $this->step > $step) {
+            throw new FormStepException('Step(s) skipped');
+        }
+        
         $modifier = $form->getAttribute('modifier');
         if ($modifier != '') $this->setModifier(new $modifier());
         
@@ -363,8 +384,23 @@ class Form {
             throw new Exception('Invalid configuration');
         }
         
-        $source_data = array();
-        $db_data = array();
+        if (!isset($_SESSION['forms'][$this->id])) {
+            $_SESSION['forms'][$this->id] = array();
+        }
+        $session = &$_SESSION['forms'][$this->id];
+        
+        if ($this->step > 1 and $this->step > @$session['step']) {
+            redirect($this->form_url);
+        }
+        
+        // Session data needs to be retained, otherwise multi-step forms won't
+        // work, as only the data entered on the final step will be saved in
+        // the DB
+        if (@count($session['values']) > 0) {
+            $db_data = $source_data = $session['values'];
+        } else {
+            $db_data = $source_data = array();
+        }
         $errors = array();
         
         if ($this->modifier) {
@@ -402,7 +438,7 @@ class Form {
                     $value = $col->collateInput($source[$col->getPostSafeName()], $input);
                 }
                 
-                $extant_value = @$_SESSION['forms'][$this->id]['values'][$col->getName()];
+                $extant_value = @$session['values'][$col->getName()];
                 if ($col instanceOf FileColumn and $col->isInputEmpty($value)) {
                     if ($extant_value instanceof UploadedFile) {
                         $source_data[$col->getName()] = $extant_value;
@@ -427,15 +463,17 @@ class Form {
         }
         
         if (count($errors) > 0) {
-            $_SESSION['forms'][$this->id]['values'] = $source_data;
-            $_SESSION['forms'][$this->id]['errors'] = $errors;
-            $url = $this->form_url;
-            if (strpos($url, '?') !== false) {
-                $url .= '&';
-            } else {
-                $url .= '?';
-            }
-            $url .= $this->id_field . '=' . $this->id;
+            $session['values'] = $source_data;
+            $session['errors'] = $errors;
+            $url = url_append_param($this->form_url, $this->id_field, $this->id);
+            redirect($url);
+        }
+        
+        if (!$this->final) {
+            $session['values'] = $source_data;
+            $session['errors'] = array();
+            $session['step'] = $this->step + 1;
+            $url = url_append_param($this->success_url, $this->id_field, $this->id);
             redirect($url);
         }
         
@@ -472,5 +510,12 @@ class Form {
         
         redirect($this->success_url);
     }
+}
+
+
+/**
+ * Thrown when a user tries to skip a step in a multi-form process.
+ */
+class FormStepException extends Exception {
 }
 ?>

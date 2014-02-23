@@ -2119,4 +2119,15 @@ function array_remove($needle, array &$haystack, $strict = false) {
         unset($haystack[$key]);
     }
 }
+
+
+function url_append_param($url, $name, $value) {
+    if (strpos($url, '?') !== false) {
+        $url .= '&';
+    } else {
+        $url .= '?';
+    }
+    $url .= urlencode($name) . '=' . urlencode($value);
+    return $url;
+}
 ?>
