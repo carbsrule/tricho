@@ -296,6 +296,17 @@ class HtmlDom {
     
     
     /**
+     * Creates a text node and appends it to a parent element.
+     */
+    static function appendNewText(DOMElement $parent, $text) {
+        $doc = $parent->ownerDocument;
+        $node = $doc->createTextNode($text);
+        $parent->appendChild($node);
+        return $node;
+    }
+    
+    
+    /**
      * Gets an element's attributes as an array, for easy access
      * @param DOMElement $element
      * @return array
