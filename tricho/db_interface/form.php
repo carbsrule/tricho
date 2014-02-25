@@ -28,6 +28,12 @@ class Form {
     protected $presets;
     protected $modifier;
     
+    /**
+     * The DOMDocument created by Form::generateDoc, which can be manipulated
+     * by Column::attachInputField.
+     */
+    protected $doc = null;
+    
     
     function __construct($id = '', $method = '') {
         if ($method != '') $this->setMethod($method);
@@ -47,6 +53,11 @@ class Form {
     
     function getStep() {
         return $this->step;
+    }
+    
+    
+    function getDoc() {
+        return $this->doc;
     }
     
     
@@ -250,13 +261,24 @@ class Form {
     }
     
     
+    /**
+     * Initialises a DOMDocument with a FORM element for storing input fields.
+     * @return DOMElement The FORM element
+     */
+    function initDocForm() {
+        $this->doc = new DOMDocument();
+        $form = $this->doc->createElement('form');
+        $this->doc->appendChild($form);
+        return $form;
+    }
+    
+    
     function generateDoc($values = '', $errors = '') {
         if (!is_array($values)) $values = array();
         if (!is_array($errors)) $errors = array();
-        $doc = new DOMDocument();
+        $form = $this->initDocForm();
+        $doc = $form->ownerDocument;
         $inner_doc = new DOMDocument();
-        $form = $doc->createElement('form');
-        $doc->appendChild($form);
         $form->setAttribute('method', $this->method);
         $form->setAttribute('action', $this->action_url);
         $input = $doc->createElement('input');
@@ -294,8 +316,11 @@ class Form {
                 $p->appendChild($text);
             }
             
-            // TODO: this is nasty. If the end goal is to use DOM, then
-            // columns need their own methods to create DOMNodes
+            // Have columns make their own DOMNodes where possible
+            if (method_exists($col, 'attachInputField')) {
+                $col->attachInputField($this, $value);
+                continue;
+            }
             if (method_exists($col, 'getMultiInputs')) {
                 $inputs = $col->getMultiInputs($this, $value);
             } else {

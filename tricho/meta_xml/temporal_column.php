@@ -189,13 +189,13 @@ abstract class TemporalColumn extends Column {
     }
     
     
-    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         static $months = array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
             5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep',
             10 => 'Oct', 11 => 'Nov', 12 => 'Dec');
         
         // Only applies to DatetimeColumns
-        if ($this->sqltype == SQL_TYPE_INT and $input_value > 0) {
+        if ($this->sqltype == SQL_TYPE_INT and preg_match('/^[0-9]+$/', $input_value)) {
             $input_value = date('Y-m-d H:i:s', $input_value);
         }
         
@@ -207,39 +207,63 @@ abstract class TemporalColumn extends Column {
             $time = $input_value;
         }
         $fieldname = $this->getPostSafeName();
+        $doc = $form->getDoc();
+        if ($doc == null) {
+            $form_el = $form->initDocForm();
+        } else {
+            $form_el = $doc->getElementsByTagName('form')->item(0);
+        }
+        $p = HtmlDom::appendNewChild($form_el, 'p', array('class' => 'input'));
         
         if ($this->has_date) {
             @list($y, $m, $d) = explode('-', $date);
             $y = (int) $y;
             $m = (int) $m;
             $d = (int) $d;
-            $date = "<select name=\"{$fieldname}[d]\">\n";
-            $date .= "<option value=\"\">D</option>\n";
+            
+            $select = HtmlDom::appendNewChild($p, 'select');
+            $select->setAttribute('name', "{$fieldname}[d]");
+            $attrs = array('value' => '');
+            $option = HtmlDom::appendNewChild($select, 'option', $attrs);
+            HtmlDom::appendNewText($option, 'D');
             for ($i = 1; $i <= 31; ++$i) {
                 $val = str_pad($i, 2, '0', STR_PAD_LEFT);
-                $date .= '    <option value="' . $val . '"';
-                if ($i == $d) $date .= ' selected="selected"';
-                $date .= ">{$i}</option>\n";
+                $attrs = array('value' => $val);
+                if ($i == $d) $attrs['selected'] = 'selected';
+                $option = HtmlDom::appendNewChild($select, 'option', $attrs);
+                HtmlDom::appendNewText($option, $i);
             }
-            $date .= "</select>\n";
+            HtmlDom::appendNewText($p, ' ');
             
-            $date .= "<select name=\"{$fieldname}[m]\">\n";
-            $date .= "<option value=\"\">M</option>\n";
+            $select = HtmlDom::appendNewChild($p, 'select');
+            $select->setAttribute('name', "{$fieldname}[m]");
+            $attrs = array('value' => '');
+            $option = HtmlDom::appendNewChild($select, 'option', $attrs);
+            HtmlDom::appendNewText($option, 'M');
             for ($i = 1; $i <= 12; ++$i) {
                 $val = str_pad($i, 2, '0', STR_PAD_LEFT);
-                $date .= '    <option value="' . $val . '"';
-                if ($i == $m) $date .= ' selected="selected"';
-                $date .= ">{$months[$i]}</option>\n";
+                $attrs = array('value' => $val);
+                if ($i == $m) $attrs['selected'] = 'selected';
+                $option = HtmlDom::appendNewChild($select, 'option', $attrs);
+                HtmlDom::appendNewText($option, $months[$i]);
             }
-            $date .= "</select>\n";
+            HtmlDom::appendNewText($p, ' ');
             
-            $date .= "<input type=\"text\" name=\"{$fieldname}[y]\" " .
-                ' class="year" size="3" maxlength="4"';
+            $attrs = array(
+                'type' => 'text',
+                'name' => "{$fieldname}[y]",
+                'class' => 'year',
+                'size' => 3,
+                'maxlength' => 4
+            );
             if ($input_value != '') {
-                $val = str_pad($y, 4, '0', STR_PAD_LEFT);
-                $date .= " value=\"{$val}\"";
+                $attrs['value'] = str_pad($y, 4, '0', STR_PAD_LEFT);
+            } else {
+                $attrs['value'] = 'YYYY';
+                $attrs['onfocus'] = "if(this.value == 'YYYY') this.value='';";
+                $attrs['onblur'] = "if(this.value == '') this.value='YYYY';";
             }
-            $date .= ">\n";
+            HtmlDom::appendNewChild($p, 'input', $attrs);
         }
         
         if ($this->has_time) {
@@ -263,23 +287,32 @@ abstract class TemporalColumn extends Column {
                 $val = '';
                 $ap = '';
             }
-            $time = "<input type=\"text\" name=\"{$fieldname}[t]\" " .
-                " class=\"hour_min\" size=\"6\" value=\"{$val}\"> ";
-            foreach (array('AM', 'PM') as $half) {
-                $time .= "<label for=\"{$fieldname}_{$half}\">" .
-                    "<input type=\"radio\" name=\"{$fieldname}[ap]\" " .
-                    "id=\"{$fieldname}_{$half}\" value=\"{$half}\"";
-                if ($ap == $half) $time .= ' checked="checked"';
-                $time .= ">{$half}</label>";
+            
+            if ($this->has_date) {
+                HtmlDom::appendNewText($p, ' at ');
             }
-            $time .= "\n";
-        }
-        
-        if ($this->has_date) {
-            if ($this->has_time) return "{$date} at {$time}";
-            return $date;
-        } else {
-            return $time;
+            $attrs = array(
+                'type' => 'text',
+                'name' => "{$fieldname}[t]",
+                'class' => 'hour_min',
+                'size' => 6,
+                'value' => $val
+            );
+            HtmlDom::appendNewChild($p, 'input', $attrs);
+            
+            foreach (array('AM', 'PM') as $half) {
+                $attrs = array('for' => "{$fieldname}_{$half}");
+                $label = HtmlDom::appendNewChild($p, 'label', $attrs);
+                $attrs = array(
+                    'type' => 'radio',
+                    'name' => "{$fieldname}[ap]",
+                    'id' => "{$fieldname}_{$half}",
+                    'value' => $half
+                );
+                if ($ap == $half) $attrs['checked'] = 'checked';
+                HtmlDom::appendNewChild($label, 'input', $attrs);
+                HtmlDom::appendNewText($label, $half);
+            }
         }
     }
     

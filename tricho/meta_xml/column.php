@@ -764,6 +764,21 @@ abstract class Column implements QueryField, ColumnInterface {
      * @return string HTML for the input field.
      */
     function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
+        if (method_exists($this, 'attachInputField')) {
+            $this->attachInputField($form, $input_value, $primary_key, $field_params);
+            $form_doc = $form->getDoc();
+            $form_el = $form_doc->getElementsByTagName('form')->item(0);
+            $p_els = $form_el->getElementsByTagName('p');
+            for ($i = $p_els->length - 1; $i >= 0; --$i) {
+                $p = $p_els->item($i);
+                if (@$p->getAttribute('class') == 'input') {
+                    $input = $form_doc->saveHTML($p);
+                    $input = preg_replace('#^<p[^>]*>#', '', $input);
+                    $input = preg_replace('#</p>$#', '', $input);
+                    return $input;
+                }
+            }
+        }
         throw new Exception('Must be overridden');
     }
     
