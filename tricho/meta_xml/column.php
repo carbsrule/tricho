@@ -737,6 +737,29 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
+     * Common code to run at the start of each subclass' attachInputField
+     * method. This sets up a DOMDocument with a <<form>> element if necessary,
+     * then appends a <<p class="input">> in which the input will be stored.
+     * @param Form $form the form to which the input belongs
+     * @return DOMElement the <<p>> created to contain the input field(s)
+     */
+    static function initInput(Form $form) {
+        $doc = $form->getDoc();
+        if ($doc == null) {
+            $form_el = $form->initDocForm();
+        } else {
+            $form_el = $doc->getElementsByTagName('form')->item(0);
+            if (!$form_el) {
+                $err = 'Form has DOMDocument with no form element';
+                throw new Exception($err);
+            }
+        }
+        $p = HtmlDom::appendNewChild($form_el, 'p', array('class' => 'input'));
+        return $p;
+    }
+    
+    
+    /**
      * Get an input field appropriate for this column.
      *
      * The HTML returned may be a plain text input field, a text area,

@@ -193,6 +193,7 @@ abstract class TemporalColumn extends Column {
         static $months = array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
             5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep',
             10 => 'Oct', 11 => 'Nov', 12 => 'Dec');
+        $p = self::initInput($form);
         
         // Only applies to DatetimeColumns
         if ($this->sqltype == SQL_TYPE_INT and preg_match('/^[0-9]+$/', $input_value)) {
@@ -207,13 +208,6 @@ abstract class TemporalColumn extends Column {
             $time = $input_value;
         }
         $fieldname = $this->getPostSafeName();
-        $doc = $form->getDoc();
-        if ($doc == null) {
-            $form_el = $form->initDocForm();
-        } else {
-            $form_el = $doc->getElementsByTagName('form')->item(0);
-        }
-        $p = HtmlDom::appendNewChild($form_el, 'p', array('class' => 'input'));
         
         if ($this->has_date) {
             @list($y, $m, $d) = explode('-', $date);
