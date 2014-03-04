@@ -93,7 +93,7 @@ if (!$return_404) {
             if (is_readable ($file_loc)) {
                 
                 // hard set disposition if user agent asks specifically
-                $_GET['dl'] = strtolower ($_GET['dl']);
+                $_GET['dl'] = strtolower(@$_GET['dl']);
                 if ($_GET['dl'] == 'y') {
                     $disposition = 'attachment';
                 } else if ($_GET['dl'] == 'n') {
