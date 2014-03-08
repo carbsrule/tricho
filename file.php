@@ -81,7 +81,7 @@ if (!$return_404) {
     if ($row = @fetch_assoc($res)) {
     
         $file_name = $row[$column->getName ()];
-        $type = $file_types[get_file_extension ($file_name)];
+        $type = @$file_types[get_file_extension($file_name)];
         if ($type == '') $type = 'application/octet-stream';
         
         $file_loc = $column->getStorageLocation ();
