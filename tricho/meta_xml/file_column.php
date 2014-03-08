@@ -221,7 +221,7 @@ class FileColumn extends Column {
      * @param string $input_value the value to be displayed
      * @return string The HTML text to be used to display the value.
      * @todo code something that will make the link query have a where clause
-     * @todo add a primary key field, as per getInputField?
+     * @todo add a primary key field, as per attachInputField?
      */
     function displayValue ($input_value = '') {
         $file = $this->getTable ()->getMask (). '.'. $this->getMask (). '.'. $_GET['id'];
@@ -330,35 +330,57 @@ class FileColumn extends Column {
     }
     
     
-    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
-        $input = '<input type="hidden" name="MAX_FILE_SIZE" value="'.
-            $this->getMaxFileSize(). '">';
-
-        $input .= '<input type="file" name="'. $this->name;
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+        
+        $form_el = $form->getDoc()->getElementsByTagName('form')->item(0);
+        $form_el->setAttribute('enctype', 'multipart/form-data');
+        
+        $params = array(
+            'type' => 'hidden',
+            'name' => 'MAX_FILE_SIZE',
+            'value' => $this->getMaxFileSize()
+        );
+        HtmlDom::appendNewChild($p, 'input', $params);
+        
+        $params = array(
+            'type' => 'file',
+            'name' => $this->name,
+            'id' => $form->getFieldId()
+        );
         if (isset($field_params['change_event'])) {
-            $out_txt .= ' onchange="'. $field_params['change_event']. '"';
+            $params['onchange'] = $field_params['change_event'];
         }
-        $input .= '"> ';
+        HtmlDom::appendNewChild($p, 'input', $params);
         
         // display the current file if there is one
         if ($input_value instanceof UploadedFile) {
-            $input .= 'Unsaved file: '. $input_value->getName ();
+            $text = 'Unsaved file: ' . $input_value->getName();
+            HtmlDom::appendNewText($p, $text);
         } else if ($primary_key !== null and $input_value != '') {
-            $file_path = '../'. $this->storage_location;
-            if (substr ($file_path, -1) != '/') $file_path .= '/';
-            $file_name = $this->getFullMask (). '.'. implode (',', $primary_key);
+            $file_path = \tricho\Runtime::get('root_path') .
+                $this->storage_location;
+            if (substr($file_path, -1) != '/') $file_path .= '/';
+            $file_name = $this->getFullMask() . '.' .
+                implode(',', $primary_key);
             $file_path .= $file_name;
             
-            if (file_exists ($file_path)) {
-                $input .= "Current file: <a href=\"../file.php?f={$file_name}\">{$input_value}</a>";
+            if (file_exists($file_path)) {
+                HtmlDom::appendNewText($p, 'Current file: ');
+                $params = array(
+                    'href' => ROOT_PATH_WEB . 'file.php?f=' . $file_name
+                );
+                $a = HtmlDom::appendNewChild($p, 'a', $params);
+                HtmlDom::appendNewText($a, $input_value);
             } else {
-                $input .= "<span class=\"error\">File {$input_value} doesn't exist</span>";
+                $params = array('class' => 'error');
+                $span = HtmlDom::appendNewChild($p, 'span', $params);
+                $text = "File {$input_value} doesn't exist";
+                HtmlDom::appendNewText($span, $text);
             }
         } else if ($form->getType() == 'edit') {
-            $input .= "No file";
+            HtmlDom::appendNewText($p, 'No file');
         }
-        
-        return $input;
     }
     
     
@@ -418,17 +440,9 @@ class FileColumn extends Column {
      * @param mixed $pk The primary key of the value. Can be a string (only if
      *        the table has 1 PK column), or an array of strings
      */
-    function saveData ($file, $pk) {
-        if (!($file instanceof UploadedFile)) {
-            $backtrace = debug_backtrace();
-            foreach ($backtrace as &$step) {
-                if (is_object($step['object'])) $step['object'] = get_class($step['object']);
-                unset($step['args']);
-            }
-            echo "<pre>", print_r($backtrace, true), "</pre>\n";
-        }
-        
-        $file_name = '../' . $this->storage_location;
+    function saveData(UploadedFile $file, $pk) {
+        $file_name = \tricho\Runtime::get('root_path') .
+            $this->storage_location;
         if (substr ($file_name, - 1) != '/') $file_name .= '/';
         $file_name .= $this->getFullMask () . '.';
         if (is_array ($pk)) {

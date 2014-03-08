@@ -213,8 +213,54 @@ class PasswordColumn extends InputColumn {
     }
     
     
-    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        throw new Exception ('This column class uses getMultiInputs');
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+        $label_p_params = array('class' => 'label');
+        $input_p_params = array('class' => 'input');
+        
+        // Current password
+        $post_safe_name = $this->getPostSafeName();
+        $params = array(
+            'type' => 'password',
+            'name' => $post_safe_name . '_existing',
+            'id' => $form->getFieldId(),
+            'maxlength' => 200
+        );
+        if ($this->require_existing) {
+            $password = HtmlDom::appendNewChild($p, 'input', $params);
+            
+            $form->incrementFieldNum();
+            $p = HtmlDom::appendNewChild($p->parentNode, 'p', $label_p_params);
+            $label_params = array('for' => $form->getFieldId());
+            $label = HtmlDom::appendNewChild($p, 'label', $label_params);
+            HtmlDom::appendNewText($label, 'New ' . $this->engname);
+            $p = HtmlDom::appendNewChild($p->parentNode, 'p', $input_p_params);
+        }
+        
+        // Password (new if an edit form)
+        $params['name'] = $post_safe_name;
+        $params['id'] = $form->getFieldId();
+        HtmlDom::appendNewChild($p, 'input', $params);
+        
+        // TODO: the logic needs to be more complex
+        // e.g. if the form is to change a user's password, of course this
+        // field is mandatory
+        $mandatory_suffix = $this->getMandatorySuffix();
+        if ($form->getType() == 'edit') $mandatory_suffix = '';
+        
+        // Repeat new password
+        $form->incrementFieldNum();
+        $p = HtmlDom::appendNewChild($p->parentNode, 'p', $label_p_params);
+        $label_params = array('for' => $form->getFieldId());
+        $label = HtmlDom::appendNewChild($p, 'label', $label_params);
+        $label_text = $this->engname . ' (confirm)';
+        if ($this->require_existing) $label_text = 'New ' . $label_text;
+        HtmlDom::appendNewText($label, $label_text);
+        
+        $p = HtmlDom::appendNewChild($p->parentNode, 'p', $input_p_params);
+        $params['name'] = $post_safe_name . '_confirm';
+        $params['id'] = $form->getFieldId();
+        HtmlDom::appendNewChild($p, 'input', $params);
     }
     
     

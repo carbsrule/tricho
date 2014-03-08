@@ -316,41 +316,59 @@ class ImageColumn extends FileColumn {
     }
     
     
-    /**
-     * @author benno, 2012-12-05
-     */
-    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
-        $input = '<input type="hidden" name="MAX_FILE_SIZE" value="'.
-            $this->getMaxFileSize(). '">';
-
-        $input .= '<input type="file" name="'. $this->name;
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+        
+        $form_el = $form->getDoc()->getElementsByTagName('form')->item(0);
+        $form_el->setAttribute('enctype', 'multipart/form-data');
+        
+        $params = array(
+            'type' => 'hidden',
+            'name' => 'MAX_FILE_SIZE',
+            'value' => $this->getMaxFileSize()
+        );
+        HtmlDom::appendNewChild($p, 'input', $params);
+        
+        $params = array(
+            'type' => 'file',
+            'name' => $this->name,
+            'id' => $form->getFieldId()
+        );
         if (isset($field_params['change_event'])) {
-            $out_txt .= ' onchange="'. $field_params['change_event']. '"';
+            $params['onchange'] = $field_params['change_event'];
         }
-        $input .= '"> ';
+        HtmlDom::appendNewChild($p, 'input', $params);
         
         // display the current file if there is one
         if ($input_value instanceof UploadedFile) {
-            $input .= 'Unsaved file: '. $input_value->getName ();
+            $text = 'Unsaved file: ' . $input_value->getName();
+            HtmlDom::appendNewText($p, $text);
         } else if ($primary_key !== null and $input_value != '') {
-            $file_path = '../'. $this->storage_location;
-            if (substr ($file_path, -1) != '/') $file_path .= '/';
-            
-            $file_name = $this->getFullMask (). '.'. implode (',', $primary_key);
-            $suffix = $this->getSmallestVariant();
-            $file_name .= ($suffix? '.' . $suffix: '');
+            $file_path = \tricho\Runtime::get('root_path') .
+                $this->storage_location;
+            if (substr($file_path, -1) != '/') $file_path .= '/';
+            $file_name = $this->getFullMask() . '.' .
+                implode(',', $primary_key);
+            $vkeys = array_keys($this->variants);
+            $file_name .= '.' . reset($vkeys);
             $file_path .= $file_name;
             
-            if (file_exists ($file_path)) {
-                $input .= "Current file: <a href=\"../file.php?f={$file_name}\">{$input_value}</a>";
+            if (file_exists($file_path)) {
+                HtmlDom::appendNewText($p, 'Current file: ');
+                $params = array(
+                    'href' => ROOT_PATH_WEB . 'file.php?f=' . $file_name
+                );
+                $a = HtmlDom::appendNewChild($p, 'a', $params);
+                HtmlDom::appendNewText($a, $input_value);
             } else {
-                $input .= "<span class=\"error\">File {$input_value} ($file_path) doesn't exist</span>";
+                $params = array('class' => 'error');
+                $span = HtmlDom::appendNewChild($p, 'span', $params);
+                $text = "File {$input_value} ({$file_name}) doesn't exist";
+                HtmlDom::appendNewText($span, $text);
             }
         } else if ($form->getType() == 'edit') {
-            $input .= "No file";
+            HtmlDom::appendNewText($p, 'No file');
         }
-        
-        return $input;
     }
     
     

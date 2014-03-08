@@ -157,29 +157,36 @@ class LinkColumn extends Column {
     }
     
     
-    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+        
         $q = $this->getSelectQuery();
         $res = execq($q);
         
-        $out = '<select name="' . $this->getPostSafeName() . "\">\n";
-        $out .= "<option value=\"\">- Select below -</option>\n";
+        $params = array(
+            'name' => $this->getPostSafeName(),
+            'id' => $form->getFieldId()
+        );
+        $select = HtmlDom::appendNewChild($p, 'select', $params);
+        $params = array('value' => '');
+        $option = HtmlDom::appendNewChild($select, 'option', $params);
+        HtmlDom::appendNewText($option, '- Select below -');
         while ($row = fetch_assoc($res)) {
             if (count($row) > 1) {
                 $value = $row['Value'];
             } else {
                 $value = $row['ID'];
             }
-            $out .= '<option value="' . hsc($row['ID']) . '"';
-            if ($row['ID'] == $input_value) $out .= ' selected="selected"';
-            $out .= '>' . hsc($value) . "</option>\n";
+            $params = array('value' => $row['ID']);
+            if ($row['ID'] == $input_value) $params['selected'] = 'selected';
+            $option = HtmlDom::appendNewChild($select, 'option', $params);
+            HtmlDom::appendNewText($option, $value);
         }
-        $out .= "</select>\n";
         
         if (@$_SESSION['setup']['view_q']) {
-            $out .= "<pre>Q:\n" . hsc($q) . "</pre>\n";
+            $pre = HtmlDom::appendNewChild($p, 'pre');
+            HtmlDom::appendNewText($pre, "Q:\n{$q}");
         }
-        
-        return $out;
     }
     
     

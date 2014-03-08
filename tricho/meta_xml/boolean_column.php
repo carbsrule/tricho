@@ -38,14 +38,18 @@ class BooleanColumn extends Column {
     }
     
     
-    /**
-    * @author benno, 2011-12-28
-    */
-    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        // TODO: support other representations, e.g. radio buttons 'Yes' and 'No'
-        $field = '<input type="checkbox" name="'. $this->name. '" value="1"';
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
         
-        $default = $this->getDefault ();
+        // TODO: support other representations, e.g. radio buttons 'Yes' and 'No'
+        $params = array(
+            'type' => 'checkbox',
+            'name' => $this->name,
+            'id' => $form->getFieldId(),
+            'value' => 1
+        );
+        
+        $default = $this->getDefault();
         
         // BIT fields are returned as 1-byte strings, need to convert to ints
         if ($this->sqltype == SQL_TYPE_BIT) {
@@ -55,12 +59,11 @@ class BooleanColumn extends Column {
         if ($input_value === '' and $default != '') $input_value = $default;
         if ($input_value != '' and $input_value != '0') $input_value = '1';
         if ($input_value == '1') {
-            $field .= ' checked="checked"';
+            $params['checked'] = 'checked';
         }
         
         // TODO: add onchange event
-        $field .= "/>";
-        return $field;
+        HtmlDom::appendNewChild($p, 'input', $params);
     }
     
     

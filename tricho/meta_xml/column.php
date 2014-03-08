@@ -760,9 +760,10 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
-     * Get an input field appropriate for this column.
+     * Attaches one or more input fields appropriate for this column to the
+     * Form to which it belongs.
      *
-     * The HTML returned may be a plain text input field, a text area,
+     * The DOMNodes generated may be for a plain text input field, a text area,
      * a JavaScript Rich Text Editor field, a file input field, etc. The type
      * of field is determined by the class of the column, and its SQL type.
      * 
@@ -784,25 +785,26 @@ abstract class Column implements QueryField, ColumnInterface {
      *        'change_event': JavaScript for the onchange event (or onclick for
      *        binary fields)
      *        'max_size': Maximum size allowed for a file upload
-     * @return string HTML for the input field.
+     * @return void
      */
-    function getInputField (Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
-        if (method_exists($this, 'attachInputField')) {
-            $this->attachInputField($form, $input_value, $primary_key, $field_params);
-            $form_doc = $form->getDoc();
-            $form_el = $form_doc->getElementsByTagName('form')->item(0);
-            $p_els = $form_el->getElementsByTagName('p');
-            for ($i = $p_els->length - 1; $i >= 0; --$i) {
-                $p = $p_els->item($i);
-                if (@$p->getAttribute('class') == 'input') {
-                    $input = $form_doc->saveHTML($p);
-                    $input = preg_replace('#^<p[^>]*>#', '', $input);
-                    $input = preg_replace('#</p>$#', '', $input);
-                    return $input;
-                }
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        throw new Exception('Must be overridden');
+    }
+    
+    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
+        $this->attachInputField($form, $input_value, $primary_key, $field_params);
+        $form_doc = $form->getDoc();
+        $form_el = $form_doc->getElementsByTagName('form')->item(0);
+        $p_els = $form_el->getElementsByTagName('p');
+        for ($i = $p_els->length - 1; $i >= 0; --$i) {
+            $p = $p_els->item($i);
+            if (@$p->getAttribute('class') == 'input') {
+                $input = $form_doc->saveHTML($p);
+                $input = preg_replace('#^<p[^>]*>#', '', $input);
+                $input = preg_replace('#</p>$#', '', $input);
+                return $input;
             }
         }
-        throw new Exception('Must be overridden');
     }
     
     

@@ -17,24 +17,24 @@ abstract class InputColumn extends Column {
     protected $text_size;
     
     
-    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        $field = '<input type="text" name="' . $this->name . '" value="';
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
         if ($this->sqltype == SQL_TYPE_BIT and strlen($input_value) == 1) {
             $ord = ord($input_value);
-            if ($ord == 0 or $ord == 1) {
-                $input_value = $ord;
-            }
+            if ($ord == 0 or $ord == 1) $input_value = $ord;
         }
-        $field .= hsc($input_value) . '"';
-        if ($this->text_size > 0) {
-            $field .= ' size="' . $this->text_size . '"';
-        }
+        $params = array(
+            'type' => 'text',
+            'name' => $this->name,
+            'id' => $form->getFieldId(),
+            'value' => $input_value
+        );
+        if ($this->text_size > 0) $params['size'] = $this->text_size;
         $maxlength = (int) $this->getMaxLength();
-        if ($maxlength > 0) $field .= " maxlength=\"{$maxlength}\"";
+        if ($maxlength > 0) $params['maxlength'] = $maxlength;
         
         // TODO: add onchange event
-        $field .= "/>";
-        return $field;
+        HtmlDom::appendNewChild($p, 'input', $params);
     }
     
     

@@ -92,12 +92,13 @@ class HtmlColumn extends InputColumn {
     }
     
     
-    function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        $field = '<textarea name="' . $this->name . '"';
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+        $params = array('name' => $this->getPostSafeName());
         $maxlength = (int) $this->getMaxLength();
-        if ($maxlength > 0) $field .= " maxlength=\"{$maxlength}\"";
-        $field .= '>' . hsc($input_value) . "</textarea>";
-        return $field;
+        if ($maxlength > 0) $params['maxlength'] = $maxlength;
+        $text = HtmlDom::appendNewChild($p, 'textarea', $params);
+        HtmlDom::appendNewText($text, $input_value);
     }
     
     
