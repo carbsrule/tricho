@@ -447,8 +447,12 @@ class ImageColumn extends FileColumn {
      * @param mixed $pk The primary key of the value. Can be a string (only if
      *              the table has 1 PK column), or an array of strings
      */
-    function saveData ($file, $pk) {
-        if (!($file instanceof UploadedFile)) return;
+    function saveData($file, $pk) {
+        // N.B. check is performed here because type hints can't be extended
+        if (!($file instanceof UploadedImage)) {
+            $err = '$file must be an UploadedImage';
+            throw new InvalidArgumentException($err);
+        }
         
         $path = ROOT_PATH_FILE . $this->storage_location;
         if (substr($path, - 1) != '/') $path .= '/';

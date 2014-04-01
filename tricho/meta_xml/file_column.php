@@ -440,7 +440,13 @@ class FileColumn extends Column {
      * @param mixed $pk The primary key of the value. Can be a string (only if
      *        the table has 1 PK column), or an array of strings
      */
-    function saveData(UploadedFile $file, $pk) {
+    function saveData($file, $pk) {
+        // N.B. check is performed here because type hints can't be extended
+        if (!($file instanceof UploadedFile)) {
+            $err = '$file must be an UploadedFile';
+            throw new InvalidArgumentException($err);
+        }
+        
         $file_name = \tricho\Runtime::get('root_path') .
             $this->storage_location;
         if (substr ($file_name, - 1) != '/') $file_name .= '/';
