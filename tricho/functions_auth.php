@@ -48,21 +48,17 @@ function test_login ($redirect_on_error = true) {
  * @return bool true if logged in, false otherwise
  */
 function test_admin_login ($redirect_on_error = true) {
-    
-    if ($_SESSION[ADMIN_KEY]['id'] == '') {
-        if ($redirect_on_error) {
-            $_SESSION[ADMIN_KEY]['err'] = 'You have not logged in, or your session has expired';
-            
-            $url = ROOT_PATH_WEB. ADMIN_DIR. 'login.php';
-            if (count ($_POST) == 0) {
-                $url .= '?redirect='. urlencode ($_SERVER['REQUEST_URI']);
-            }
-            redirect ($url);
-        } else {
-            return false;
+    if (@$_SESSION[ADMIN_KEY]['id'] != '') return true;
+    if ($redirect_on_error) {
+        $err = 'You have not logged in, or your session has expired';
+        $_SESSION[ADMIN_KEY]['err'] = $err;
+        $url = ROOT_PATH_WEB . ADMIN_DIR . 'login.php';
+        if (count($_POST) == 0) {
+            $url .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
         }
+        redirect ($url);
     } else {
-        return true;
+        return false;
     }
 }
 

@@ -75,8 +75,8 @@ if ($login_num_tables != 0) {
 // determine where to redirect to
 $url = 'login.php';
 $url_params = array ();
-if ($_POST['redirect'] != '') $url_params['redirect'] = $_POST['redirect'];
-if ($_POST['kaudhm'] != '') $url_params['u'] = $_POST['kaudhm'];
+if (@$_POST['redirect'] != '') $url_params['redirect'] = $_POST['redirect'];
+if (@$_POST['kaudhm'] != '') $url_params['u'] = $_POST['kaudhm'];
 
 if (count ($url_params) > 0) {
     $url .= '?'. http_build_query ($url_params);
