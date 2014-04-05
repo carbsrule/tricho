@@ -787,9 +787,7 @@ abstract class Column implements QueryField, ColumnInterface {
      *        'max_size': Maximum size allowed for a file upload
      * @return void
      */
-    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        throw new Exception('Must be overridden');
-    }
+    abstract function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array());
     
     function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
         $this->attachInputField($form, $input_value, $primary_key, $field_params);
