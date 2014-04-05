@@ -103,7 +103,7 @@ class PhoneColumn extends InputColumn {
         $value = trim($value);
         $value = preg_replace('/  +/', ' ', $value);
         $original_value = $value;
-        if ($value == '') return array($this->name => null);
+        if ($value == '') return array($this->name => '');
         
         $intl = false;
         if ($this->allow_intl and $value[0] == '+') {
