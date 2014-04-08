@@ -9,8 +9,16 @@ require_once '../../tricho.php';
 require_once 'setup_functions.php';
 
 // Force autoloading of all Column classes
-//TODO: load user-defined classes as well
 $class_files = glob(ROOT_PATH_FILE . 'tricho/meta_xml/*_column.php');
+$ext_base = ROOT_PATH_FILE . 'tricho/ext/';
+$exts = scandir($ext_base);
+foreach ($exts as $ext) {
+    if ($ext[0] == '.') continue;
+    $ext_dir = $ext_base . $ext;
+    if (!is_dir($ext_dir)) continue;
+    $class_files = array_merge($class_files, glob("{$ext_dir}/*_column.php"));
+}
+
 foreach ($class_files as $file) {
     $class = file_name_to_class_name (basename ($file));
     $reflection = new ReflectionClass ($class);
@@ -403,13 +411,22 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         SQL_TYPE_BINARY, SQL_TYPE_VARBINARY);
     
     // get sql definition from params
+    $is_link = false;
     $sql_type = 0;
-    if ($config['sqltype'] == '') {
-        $errors[] = "You must specify an SQL type";
-    } else if ($config['class'] != 'LinkColumn') {
-        $sql_type = sql_type_string_to_defined_constant($config['sqltype']);
-        if ($sql_type == 0) {
-            $errors[] = "Unknown SQL type: {$config['sqltype']}";
+    if ($config['class'] == 'LinkColumn') {
+        $is_link = true;
+    } else {
+        $reflection = new ReflectionClass($config['class']);
+        if ($reflection->isSubclassOf('LinkColumn')) $is_link = true;
+    }
+    if (!$is_link) {
+        if ($config['sqltype'] == '') {
+            $errors[] = "You must specify an SQL type";
+        } else {
+            $sql_type = sql_type_string_to_defined_constant($config['sqltype']);
+            if ($sql_type == 0) {
+                $errors[] = "Unknown SQL type: {$config['sqltype']}";
+            }
         }
         if (in_array($sql_type, $sized_types) and $config['sql_size'] == '') {
             $errors[] = $config['sqltype'] . ' columns need a defined SQL size';
