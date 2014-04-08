@@ -83,6 +83,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     global $image_cache_scales;
     global $date_formatting_options;
     $col_classes = tricho\Runtime::get_column_classes();
+    sort($col_classes);
     
     $image_icon_options = array (
         MAIN_PIC_NONE => 'None',
