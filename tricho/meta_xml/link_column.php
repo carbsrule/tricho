@@ -190,6 +190,22 @@ class LinkColumn extends Column {
     }
     
     
+    function displayValue ($input_value = '') {
+        $q = $this->getSelectQuery();
+        $val = new QueryFieldLiteral($input_value);
+        $cond = new LogicConditionNode($this->target, LOGIC_CONDITION_EQ, $val);
+        $q->getWhere()->addCondition($cond);
+        if (@$_SESSION['setup']['view_q']) {
+            $pre = "<pre>Q: {$q}</pre>";
+        } else {
+            $pre = '';
+        }
+        $res = execq($q);
+        $row = fetch_row($res);
+        return $pre . hsc($row[1]);
+    }
+    
+    
     /**
      * @author benno, 2013-12-18
      */
