@@ -111,4 +111,4 @@ define('TINYMCE_DEFAULT_BUTTONS',
 define('HTML_TAGS_ALLOW', 'a:href;hreflang;type,blockquote,br,code,del,em,hr,img:src;alt,li,ol,'.
     'p,strong,sub,sup,table,tbody,td:align,th:align,thead,tr:valign,ul');
 define('HTML_TAGS_REPLACE', 'b=strong,i=em');
-define('HTML_TAGS_DENY', 'script');
+define('HTML_TAGS_DENY', 'script,iframe');
