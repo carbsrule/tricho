@@ -142,18 +142,32 @@ function tricho_autoload ($class_name) {
 }
 
 
-function class_name_to_file_name ($name) {
-    settype ($name, 'string');
-    return strtolower ($name[0]). preg_replace ('/([A-Z])/e', "'_'.strtolower('$1')", substr ($name, 1)). '.php';
+function class_name_to_file_name($name) {
+    settype($name, 'string');
+    $decapitalised = preg_replace_callback(
+        '/[A-Z]/',
+        function($matches) {
+            return '_' . strtolower($matches[0]);
+        },
+        substr($name, 1)
+    );
+    return strtolower($name[0]) . $decapitalised . '.php';
 }
 
-function file_name_to_class_name ($name) {
-    settype ($name, 'string');
-    $dot_pos = strpos ($name, '.');
+function file_name_to_class_name($name) {
+    settype($name, 'string');
+    $dot_pos = strpos($name, '.');
     if ($dot_pos !== false) {
-        $name = substr ($name, 0, $dot_pos);
+        $name = substr($name, 0, $dot_pos);
     }
-    return strtoupper ($name[0]). preg_replace ('/(_[a-z])/e', "strtoupper(substr('$1',1))", substr ($name, 1));
+    $capitalised = preg_replace_callback(
+        '/_[a-z]/',
+        function($matches) {
+            return strtoupper($matches[0][1]);
+        },
+        substr($name, 1)
+    );
+    return strtoupper($name[0]) . $capitalised;
 }
 
 spl_autoload_register('tricho_autoload');
