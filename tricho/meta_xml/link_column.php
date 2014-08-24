@@ -32,7 +32,7 @@ class LinkColumn extends Column {
     }
     
     static function getDefaultSqlType () {
-        return array('LINK');
+        return 'LINK';
     }
     
     
