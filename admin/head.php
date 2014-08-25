@@ -85,7 +85,7 @@ foreach ($scripts as $script) {
 // _add_edit.js for current table, if it exists
 if (strpos ($_SERVER['PHP_SELF'], '_add.php') !== false
         or strpos ($_SERVER['PHP_SELF'], '_edit.php') !== false) {
-    $table_js_name = 'add_edit'. preg_replace ('/[A-Z]/e', "'_'.strtolower('\\0')", $_GET['t']). '.js';
+    $table_js_name = 'add_edit_' . preg_replace('/\.php$/', '.js', class_name_to_file_name($_GET['t']));
     if (file_exists ($table_js_name)) {
         $onload[] = 'init();';
         $js_files[] = $table_js_name;
