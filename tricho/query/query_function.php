@@ -126,6 +126,8 @@ class QueryFunction extends AliasedField {
                 break;
             
             case 'param':
+            case 'insert':
+            case 'update':
                 return cast_to_string ($this);
                 break;
                 

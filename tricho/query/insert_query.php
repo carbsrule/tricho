@@ -41,7 +41,7 @@ class InsertQuery extends Query {
                 if (++$field_num != 1) $q .= ',';
                 $field = $conn->quote_ident($field);
                 $q .= "\n    {$field} = ";
-                if ($value instanceof QueryFieldLiteral) {
+                if ($value instanceof QueryField) {
                     $q .= $value->identify('insert');
                 } else {
                     $q .= $conn->quote($value);
