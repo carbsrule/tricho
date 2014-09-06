@@ -845,9 +845,13 @@ class MailerAttachment {
 function bind_message_params($input, $params) {
     if (count ($params) == 0) return $input;
     
-    $output = preg_replace (
-        '/{{([A-Za-z0-9\_\-]+)(\|(.*?))?}}/e',
-        "\\tricho\\util\\bind_message_param(\$params, '\$1', '\$3')",
+    $bind = function($matches) use ($params) {
+        return bind_message_param($params, $matches[1], @$matches[3]);
+    };
+    
+    $output = preg_replace_callback(
+        '/{{([A-Za-z0-9\_\-]+)(\|(.*?))?}}/',
+        $bind,
         $input
     );
     if ($output == null) return $input;
