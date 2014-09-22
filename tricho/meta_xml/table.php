@@ -3410,18 +3410,20 @@ class Table implements QueryTable {
      * 
      * @return bool true if the user is authorised, false otherwise
      */
-    function checkAuth () {
+    function checkAuth() {
         switch ($this->access_level) {
-            case TABLE_ACCESS_SETUP_FULL:
-                if ($_SESSION['setup']['level'] == SETUP_ACCESS_FULL) return true;
-                break;
-            
-            case TABLE_ACCESS_SETUP_LIMITED:
-                if ($_SESSION['setup']['level'] >= SETUP_ACCESS_LIMITED) return true;
-                break;
-            
-            default:
-                return test_admin_login (false);
+        case TABLE_ACCESS_SETUP_FULL:
+            if (@$_SESSION['setup']['level'] == SETUP_ACCESS_FULL) return true;
+            break;
+        
+        case TABLE_ACCESS_SETUP_LIMITED:
+            if (@$_SESSION['setup']['level'] >= SETUP_ACCESS_LIMITED) {
+                return true;
+            }
+            break;
+        
+        default:
+            return test_admin_login(false);
         }
         return false;
     }
