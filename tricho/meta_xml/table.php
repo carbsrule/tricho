@@ -2158,6 +2158,12 @@ class Table implements QueryTable {
         foreach ($links as $col) {
             $col->setTarget($new);
         }
+        
+        // Prevent loss of file mask, as a new one is automatically generated
+        // for a replacement file column
+        if ($old instanceof FileColumn) {
+            $new->setMask($old->getMask());
+        }
     }
     
     
