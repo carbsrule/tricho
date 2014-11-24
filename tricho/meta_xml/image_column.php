@@ -125,6 +125,44 @@ class ImageColumn extends FileColumn {
     }
     
     
+    function displayValue($input_value = '') {
+        // N.B. using $_GET here is a bad idea, need to get row ID
+        $file = $this->getTable()->getMask() . '.' . $this->getMask () . '.' .
+            $_GET['id'];
+        $file_loc = ROOT_PATH_FILE . $this->storage_location . '/' . $file;
+        
+        // Use second-smallest variant if there are at least 3 variants,
+        // or the smallest variant otherwise
+        // N.B. It is assumed that variants are ordered largest to smallest
+        if (count($this->variants) < 3) {
+            $variants = $this->variants;
+        } else {
+            $variants = $this->variants;
+            array_pop($variants);
+        }
+        $keys = array_keys($variants);
+        $small_variant = end($keys);
+        $small_file = $file . '.' . $small_variant;
+        $small_loc = $file_loc . '.' . $small_variant;
+        $large_variant = reset($keys);
+        $large_file = $file . '.' . $large_variant;
+        $large_loc = $file_loc . '.' . $large_variant;
+        
+        if (@is_file($small_loc)) {
+            $out_text = '<img src="' . ROOT_PATH_WEB . 'file.php?f=' .
+                $small_file . '">';
+            if ($small_file != $large_file and @is_file($large_loc)) {
+                $out_text .= '<br><a href="' . ROOT_PATH_WEB . 'file.php?f=' .
+                    $large_file . '">' . $input_value . '</a> ' . ' ('.
+                    bytes_to_human(filesize($large_loc)) . ')';
+            }
+        } else {
+            $out_text = 'N/A';
+        }
+        return $out_text;
+    }
+    
+    
     function getConfigArray () {
         $config = parent::getConfigArray ();
         $config['storeloc'] = $this->storage_location;

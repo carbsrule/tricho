@@ -14,9 +14,8 @@
  * @package meta_xml_file_del
  */
 class FileColumn extends Column {
-    protected $store_location;
-    protected $max_file_size = 0;
     protected $storage_location;
+    protected $max_file_size = 0;
     protected $allow_delete = false;
     protected $types_allowed = array();
     protected $mask;
@@ -225,7 +224,7 @@ class FileColumn extends Column {
      */
     function displayValue ($input_value = '') {
         $file = $this->getTable ()->getMask (). '.'. $this->getMask (). '.'. $_GET['id'];
-        $file_loc = ROOT_PATH_FILE. $this->getParam ('storage_location'). '/'. $file;
+        $file_loc = ROOT_PATH_FILE. $this->storage_location. '/'. $file;
         if (@is_file ($file_loc)) {
             $out_text = '<a href="'. ROOT_PATH_WEB. 'file.php?f='. $file. '">'. $input_value. '</a> '.
                 ' ('. bytes_to_human (filesize ($file_loc)). ')';
