@@ -29,14 +29,14 @@ if (@count ($_POST['desc']) > 0) {
         
         
         // Add flag
-        if ($_POST['desc_add'][$index] == 1) {
+        if (@$_POST['desc_add'][$index] == 1) {
             $add_flag = 'y';
         } else {
             $add_flag = 'n';
         }
         
         // Edit flag
-        if ($_POST['desc_edit_view'][$index] == 1) {
+        if (@$_POST['desc_edit_view'][$index] == 1) {
             $edit_flag = 'y';
         } else {
             $edit_flag = 'n';
@@ -55,7 +55,7 @@ if (@count ($_POST['desc']) > 0) {
                 $column = $table->get($params);
                 if ($column == null) throw new exception ("Invalid column '{$params}'.");
                 
-                if ($_POST['desc_edit_change'][$index] != 1 and $edit_flag == 'y') $edit_flag = 'v';
+                if (@$_POST['desc_edit_change'][$index] != 1 and $edit_flag == 'y') $edit_flag = 'v';
                 
                 $view_item = new ColumnViewItem();
                 $view_item->setDetails($column, true);
