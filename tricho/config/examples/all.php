@@ -94,7 +94,7 @@ define('DEFAULT_JPEG_QUALITY', 85);
 // Which plugins to load for TinyMCE
 // These are only specified once - if you don't need a particular plugin for a single field, just don't load the buttons it provides
 define('TINYMCE_PLUGINS', "spellchecker,table,searchreplace,print,paste,' +\n".
-    "        'fullscreen,noneditable,visualchars,nonbreaking");
+    "        'fullscreen,noneditable,visualchars,nonbreaking,code,link");
 
 // Which buttons to use by default on TinyMCE rich text fields
 // Prefix a button name with # if you only want it to be shown to the setup user
