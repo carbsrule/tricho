@@ -114,7 +114,11 @@ function init_tinymce ($tinymce_fields) {
             
             echo "    theme: 'modern',\n";
             echo "    menubar: false,\n";
-            echo "    statusbar: false";
+            if (test_admin_login(false)) {
+                echo "    statusbar: true";
+            } else {
+                echo "    statusbar: false";
+            }
 
             if ($valid_elements != '') {
                 echo ",\n    valid_elements: '{$valid_elements}'";
