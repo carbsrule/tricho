@@ -123,7 +123,7 @@ abstract class StringColumn extends InputColumn {
         }
         
         if ($this->isTextFilterSet ('multispace')) {
-            $filtered = preg_replace ('/    +/', ' ', $filtered);
+            $filtered = preg_replace('/  +/', ' ', $filtered);
         }
         
         if ($this->isTextFilterSet ('nl') and !$this->isTextFilterSet ('br')) {
