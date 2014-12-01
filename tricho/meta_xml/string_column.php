@@ -14,8 +14,8 @@
  * @package meta_xml
  */
 abstract class StringColumn extends InputColumn {
-    protected $text_filters = array ();
-    protected $known_filters = array ('trim', 'tabs', 'multispace', 'nl', 'tags', 'br');
+    protected $text_filters = array();
+    protected $known_filters = array('trim', 'multispace', 'tags');
     
     
     function getMaxLength() {
@@ -113,36 +113,19 @@ abstract class StringColumn extends InputColumn {
      */
     protected function applyTextFilters ($text) {
         $filtered = (string) $text;
+        $filtered = str_replace("\t", ' ', $filtered);
+        $filtered = str_replace(array("\r\n", "\r"), "\n", $filtered);
         
-        if ($this->isTextFilterSet ('trim')) {
-            $filtered = trim ($filtered);
+        if ($this->isTextFilterSet('tags')) {
+            $filtered = strip_tags($filtered);
         }
         
-        if ($this->isTextFilterSet ('tabs')) {
-            $filtered = str_replace ("\t", ' ', $filtered);
-        }
-        
-        if ($this->isTextFilterSet ('multispace')) {
+        if ($this->isTextFilterSet('multispace')) {
             $filtered = preg_replace('/  +/', ' ', $filtered);
         }
         
-        if ($this->isTextFilterSet ('nl') and !$this->isTextFilterSet ('br')) {
-            $filtered = str_replace (array ("\r\n", "\r"), "\n", $filtered);
-        }
-        
-        if ($this->isTextFilterSet ('tags')) {
-            $filtered = strip_tags ($filtered);
-            $filtered = htmlspecialchars ($filtered);
-        }
-        
-        if ($this->isTextFilterSet ('br')) {
-            $filtered = add_br ($filtered);
-        }
-        
-        // Trim needs to applied again because, for example,
-        // 'a <blah>' becomes 'a ' after strip_tags has been applied
-        if ($this->isTextFilterSet ('trim')) {
-            $filtered = trim ($filtered);
+        if ($this->isTextFilterSet('trim')) {
+            $filtered = trim($filtered);
         }
         
         return $filtered;
@@ -193,25 +176,13 @@ abstract class StringColumn extends InputColumn {
         if (@$config['trim']) $fields .= ' checked="checked"';
         $fields .= ">Trim leading &amp; trailing whitespace</label><br>\n";
         
-        $fields .= "<label for=\"tabs\"><input type=\"checkbox\" name=\"{$class}_tabs\" id=\"tabs\" value=\"1\"";
-        if (@$config['tabs']) $fields .= ' checked="checked"';
-        $fields .= ">Replace tabs with spaces</label><br>\n";
-        
         $fields .= "<label for=\"multispace\"><input type=\"checkbox\" name=\"{$class}_multispace\" id=\"multispace\" value=\"1\"";
         if (@$config['multispace']) $fields .= ' checked="checked"';
         $fields .= ">Replace repeated spaces with a single space</label><br>\n";
         
-        $fields .= "<label for=\"nl\"><input type=\"checkbox\" name=\"{$class}_nl\" id=\"nl\" value=\"1\"";
-        if (@$config['nl']) $fields .= ' checked="checked"';
-        $fields .= ">Convert to UNIX style new lines</label><br>\n";
-        
         $fields .= "<label for=\"tags\"><input id=\"tags\" type=\"checkbox\" name=\"{$class}_tags\" value=\"1\"";
         if (@$config['tags']) $fields .= ' checked="checked"';
         $fields .= ">Strip tags</label><br>\n";
-        
-        $fields .= "<label for=\"br\"><input type=\"checkbox\" name=\"{$class}_br\" id=\"br\" value=\"1\"";
-        if (@$config['br']) $fields .= ' checked="checked"';
-        $fields .= ">Add &lt;br&gt;s before new lines</label><br>\n";
         
         return $fields;
     }
