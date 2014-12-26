@@ -290,7 +290,7 @@ class Form {
     }
     
     
-    function generateDoc($values = '', $errors = '') {
+    function generateDoc($values = '', $errors = '', $pk = null) {
         if (!is_array($values)) $values = array();
         if (!is_array($errors)) $errors = array();
         $form = $this->initDocForm();
@@ -335,7 +335,11 @@ class Form {
             
             // Have columns make their own DOMNodes where possible
             if (method_exists($col, 'attachInputField')) {
-                $col->attachInputField($this, $value);
+                if ($col instanceof FileColumn and $pk !== null) {
+                    $col->attachInputField($this, $value, $pk);
+                } else {
+                    $col->attachInputField($this, $value);
+                }
                 HtmlDom::appendNewText($form, "\n");
                 continue;
             }
