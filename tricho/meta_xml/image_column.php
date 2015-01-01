@@ -444,7 +444,7 @@ class ImageColumn extends FileColumn {
             // check exact size
             if ($variant['process'] == 'exact') {
                 $size_match = true;
-                list($width, $height) = @explode('x', $variant['max_size'], 2);
+                @list($width, $height) = explode('x', $variant['max_size'], 2);
                 $width = (int) $width;
                 $height = (int) $height;
                 if ($size['w'] != $width) $size_match = false;
@@ -456,7 +456,7 @@ class ImageColumn extends FileColumn {
             // check min size
             } else {
                 $size_match = true;
-                list($width, $height) = @explode('x', $variant['min_size'], 2);
+                @list($width, $height) = explode('x', $variant['min_size'], 2);
                 $width = (int) $width;
                 $height = (int) $height;
                 if ($size['w'] < $width) $size_match = false;
