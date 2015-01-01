@@ -59,17 +59,34 @@ if (!execq($q)) {
 
 // delete reference to table in meta-data store
 // first, clear all links that point to this table
-$tables = $db->getTables ();
-foreach ($tables as $table_id => $curr_table) {
-    $columns = $curr_table->getColumns ();
-    foreach ($columns as $col_id => $col) {
-        $link = $col->getLink ();
+$tables = $db->getTables();
+foreach ($tables as $curr_table) {
+    if ($table === $curr_table) continue;
+    $columns = $curr_table->getColumns();
+    foreach ($columns as $col) {
+        if (!($col instanceof LinkColumn)) continue;
+        $target = $col->getTarget();
+        if ($target->getTable() !== $table) continue;
         
-        if ($link !== null and $link->getToColumn () != null) {
-            if ($link->getToColumn ()->getTable () === $table) {
-                $col->setLink (null, array ());
-            }
+        // TODO: possibly make this behave the same as LinkColumn copy
+        // behaviour in column_definition.php
+        $class = get_class($target);
+        $replacement = new $class($col->getName());
+        $replacement->setEngName($col->getEngName());
+        $replacement->setSqlType($col->getSqlType());
+        $replacement->setSqlSize($col->getSqlSize());
+        $attribs = $col->getSqlAttributes();
+        $key = array_search('AUTO_INCREMENT', $attribs);
+        if ($key !== false) {
+            unset($attribs[$key]);
         }
+        $attribs = implode(' ', $attribs);
+        $replacement->setSqlAttributes($attribs);
+        $replacement->setMandatory($col->isMandatory());
+        $config = $col->getConfigArray();
+        $errors = array();
+        $replacement->applyConfig($config, $errors);
+        $curr_table->replaceColumn($col, $replacement);
     }
 }
 
