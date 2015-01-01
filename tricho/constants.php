@@ -396,6 +396,9 @@ function sql_type_string_from_defined_constant ($type) {
         SQL_TYPE_DATETIME => 'DATETIME',
         SQL_TYPE_TIME => 'TIME'
     );
+    if (!isset($type_names[$type])) {
+        throw new InvalidArgumentException('Unknown SQL type: ' . $type);
+    }
     return (string) $type_names[$type];
 }
 ?>
