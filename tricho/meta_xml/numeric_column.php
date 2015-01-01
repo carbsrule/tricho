@@ -79,7 +79,7 @@ abstract class NumericColumn extends InputColumn {
     function applyConfig(array $config, array &$errors) {
         $this->min = null;
         $this->max = null;
-        if ($config['min'] != '') {
+        if (@$config['min'] != '') {
             if (strpos ($config['min'], '.') !== false) {
                 settype ($config['min'], 'float');
             } else {
@@ -87,7 +87,7 @@ abstract class NumericColumn extends InputColumn {
             }
             $this->min = $config['min'];
         }
-        if ($config['max'] != '') {
+        if (@$config['max'] != '') {
             if (strpos ($config['max'], '.') !== false) {
                 settype ($config['max'], 'float');
             } else {
