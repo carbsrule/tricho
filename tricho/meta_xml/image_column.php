@@ -97,6 +97,11 @@ class ImageColumn extends FileColumn {
     }
     
     
+    function getVariants() {
+        return $this->variants;
+    }
+    
+    
     /**
      * Gets the (key of the) smallest variant
      * @author benno 2012-12-05

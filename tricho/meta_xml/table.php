@@ -2403,7 +2403,10 @@ class Table implements QueryTable {
         
         $primary_key_cols = $this->getPKNames ();
         
-        if ($debug) echo "deleting record with pk = [" . implode (' , ', $pks) . "]\n";
+        if ($debug) {
+            @header('Content-type: text/plain');
+            echo "deleting record with pk = [" . implode (' , ', $pks) . "]\n";
+        }
         
         // Check we got enough keys.
         if (count ($primary_key_cols) != count ($pks)) {
@@ -2502,29 +2505,31 @@ class Table implements QueryTable {
         }
         
         
-        // Do some per-column thinking.
+        // Delete files, images and child records
         foreach ($this->columns as $column) {
             
             // Delete files and images.
-            if (($column->getOption () == 'file') || ($column->getOption () == 'image')) {
-                if ($debug) echo "    doing file deletions from {$column->getName ()}\n";
-                // Get our storage location and file mask.
-                $file_mask = $this->mask. '.'. $column->getMask (). '.';
-                $store_loc = $column->getParam ('storage_location');
-                if (substr ($store_loc, -1) != '/') {
-                    $store_loc .= '/';
-                }
+            if ($column instanceof ImageColumn) {
+                if ($debug) echo "    doing image deletions from {$column->getName()}\n";
                 
-                // Delete the thumbnails, if it has any.
-                $thumbs = $column->getParam ('thumbnails');
-                if ($thumbs != null) {
-                    foreach ($thumbs as $name => $junk) {
-                        @unlink (ROOT_PATH_FILE. $store_loc. $file_mask. implode (',', $pks). '.'. $name);
-                    }
-                }
+                $loc = ROOT_PATH_FILE . $column->getStorageLocation();
+                if (substr($loc, -1) != '/') $loc .= '/';
+                $loc .= $column->getFullMask() . '.';
+                $loc .= implode(',', $pks);
                 
-                // Delete the file.
-                @unlink (ROOT_PATH_FILE. $store_loc. $file_mask. implode (',', $pks));
+                // Delete all sizes
+                $variants = $column->getVariants();
+                foreach ($variants as $name => $junk) {
+                    @unlink($loc . '.' . $name);
+                }
+            } else if ($column instanceof FileColumn) {
+                if ($debug) echo "    doing image deletions from {$column->getName()}\n";
+                
+                $loc = ROOT_PATH_FILE . $column->getStorageLocation();
+                if (substr($loc, -1) != '/') $loc .= '/';
+                $loc .= $column->getFullMask() . '.';
+                $loc .= implode(',', $pks);
+                @unlink($loc);
             }
             
             
