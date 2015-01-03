@@ -21,11 +21,31 @@ if ($table->getAccessLevel () == TABLE_ACCESS_SETUP_FULL and
     report_error ("Unknown table");
     die ();
 }
-
-// echo "tables <pre>"; print_r ($tables); echo "</pre>\n";
 ?>
 <h2>Delete a table</h2>
 Are you sure you want to delete <?= $_GET['table']; ?>?<br>
+<?php
+$links = array();
+$tables = $db->getTables();
+foreach ($tables as $curr_table) {
+    if ($table === $curr_table) continue;
+    foreach ($curr_table->getColumns() as $column) {
+        if (!($column instanceof LinkColumn)) continue;
+        if ($column->getTarget()->getTable() !== $table) continue;
+        $links[] = $column;
+    }
+}
+$num = count($links);
+if ($num > 0) {
+    echo "<br>\n<strong>{$num} column", ($num == 1? '': 's'),
+        " link to this table:</strong><br>\n";
+    foreach ($links as $link) {
+        echo $link->getFullName(), ' &#8658; ',
+            $link->getTarget()->getFullName(), "<br>\n";
+    }
+    echo "<br>\n";
+}
+?>
 <b>Make sure you have backed up the database and the XML file before continuing</b><br>&nbsp;
 <table>
 <tr>
