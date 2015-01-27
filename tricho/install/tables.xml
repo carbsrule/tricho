@@ -166,7 +166,7 @@
   </table>
   <table name="_tricho_tlds" name_single="TLD" access="admin" engname="TLDs" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="add,edit,del">
     <column name="Domain" engname="Domain" class="CharColumn" sql_defn="VARCHAR (6) NOT NULL COLLATE latin1_general_ci" mandatory="n">
-      <param name="filters" value="trim,tabs,multispace,nl,tags,br"/>
+      <param name="filters" value="trim,multispace,tags"/>
     </column>
     <list>
       <item type="col" name="Domain"/>
