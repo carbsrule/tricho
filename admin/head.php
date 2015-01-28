@@ -78,7 +78,7 @@ $scripts = array (
 );
 foreach ($scripts as $script) {
 ?>
-        <script language="JavaScript" type="text/javascript" src="<?= ROOT_PATH_WEB. $script; ?>"></script>
+        <script type="text/javascript" src="<?= ROOT_PATH_WEB. $script; ?>"></script>
 <?php
 }
 
@@ -95,7 +95,7 @@ if (strpos ($_SERVER['PHP_SELF'], '_add.php') !== false
 foreach ($js_files as $js_file) {
     if ($js_file[0] != '/') $js_file = ROOT_PATH_WEB. ADMIN_DIR. $js_file;
 ?>
-        <script language="JavaScript" type="text/javascript" src="<?= $js_file; ?>"></script>
+        <script type="text/javascript" src="<?= $js_file; ?>"></script>
 <?php
 }
 
