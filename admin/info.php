@@ -37,6 +37,9 @@ if (@$_GET['view'] == 'phpinfo') {
     $css = preg_replace ('/^.*?<style.*?>(.*?)<\/style>.*?$/s', '$1', $info);
     $info = preg_replace ('/^.*?<body>(.*?)<\/body>.*?$/s', '$1', $info);
     
+    // remove center alignment
+    $info = str_replace('<div class="center">', '<div>', $info);
+    
     // output css
     echo "\n\n<style>\n";
     $lines = explode ("\n", $css);
@@ -45,6 +48,20 @@ if (@$_GET['view'] == 'phpinfo') {
         echo "#php-info {$line}\n";
     }
     echo "#php-info h1 {color: #0000BB;}\n</style>\n\n";
+    
+    echo <<< ENDSCRIPT
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#php-info td.e').each(function() {
+        var h = $(this).html();
+        if(h != 'disable_functions' && h != 'url_rewriter.tags') return;
+        $(this).parent().find('td.v').each(function() {
+            $(this).html($(this).html().replace(/,/g, ', '));
+        });
+    });
+});
+</script>
+ENDSCRIPT;
     
     // output
     echo '<p><a href="info.php">&laquo; back</a></p>';
