@@ -105,6 +105,7 @@ if (@$inline_js != '') {
 <?php
 }
 ?>
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     </head>
 <body<?php if (@count ($onload) > 0) echo ' onload="', implode (' ', $onload), '"'; ?>>
 <div id="header">
