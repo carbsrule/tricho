@@ -71,6 +71,15 @@ class Runtime {
     
     
     /**
+     * Gets all runtime values
+     * @return array
+     */
+    static function get_all() {
+        return self::$data;
+    }
+    
+    
+    /**
      * Adds a class name that can be used when creating new columns
      * @param string $class_name The name of the class to be selectable.
      *        Note that abstract classes and classes that have already been
