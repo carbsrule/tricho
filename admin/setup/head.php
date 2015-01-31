@@ -16,6 +16,16 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
         <title>Setup: <?= tricho\Runtime::get('site_name'); ?></title>
         <link rel="stylesheet" type="text/css" href="../../css/messages.css">
         <link rel="stylesheet" type="text/css" href="style.css">
+<?php
+if (!empty($css_files)) {
+    $css_files = (array) $css_files;
+    foreach ($css_files as $css_file) {
+?>
+        <link rel="stylesheet" type="text/css" href="<?= hsc($css_file); ?>">
+<?php
+    }
+}
+?>
         <script type="text/javascript" src="../../tricho/functions.js"></script>
         <script type="text/javascript" src="../../tricho/dom.js"></script>
         <script type="text/javascript" src="functions.js"></script>
@@ -23,6 +33,16 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
         <script type="text/javascript" src="../../tricho/ajax/config.js"></script>
         <script type="text/javascript" src="../../tricho/ajax/queue.js"></script>
         <script type="text/javascript" src="../../tricho/ajax/base_handlers.js"></script>
+<?php
+if (!empty($js_files)) {
+    $js_files = (array) $js_files;
+    foreach ($js_files as $js_file) {
+?>
+        <script type="text/javascript" src="<?= hsc($js_file); ?>"></script>
+<?php
+    }
+}
+?>
 <?php
 if (strpos ($_SERVER['PHP_SELF'], 'table_create0.php') !== false) {
 ?>
