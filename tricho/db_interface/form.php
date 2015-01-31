@@ -159,6 +159,9 @@ class Form {
         if (!$added) $items[] = $item;
         $this->items = $items;
     }
+    function getItems() {
+        return $this->items;
+    }
     
     
     function setModifier(FormModifier $modifier) {
