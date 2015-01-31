@@ -95,3 +95,5 @@ h4 {
 .display-none {
     display: none;
 }
+
+.breaker { clear: both; height: 0; width: 0; line-height: 0; }
