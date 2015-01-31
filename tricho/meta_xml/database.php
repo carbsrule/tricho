@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use tricho\Runtime;
+
 /**
  * @package meta_xml
  */
@@ -74,7 +76,11 @@ class Database {
      *         XML Parser
      * @return Database the meta-data store
      */
-    static function parseXML ($file_name) {
+    static function parseXML($file_name = '') {
+        if ($file_name == '') {
+            $file_name = Runtime::get('root_path') . 'admin/tables.xml';
+        }
+        
         $readable = true;
         if (file_exists ($file_name) and is_file ($file_name)) {
             if (!is_readable ($file_name)) $readable = false;
