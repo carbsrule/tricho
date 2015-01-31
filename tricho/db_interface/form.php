@@ -178,7 +178,7 @@ class Form {
         $doc = new DOMDocument();
         $doc->load($file_path);
         
-        $db = Database::parseXML('admin/tables.xml');
+        $db = Database::parseXML();
         
         $form = $doc->documentElement;
         $this->setType($form->getAttribute('type'));
