@@ -287,10 +287,14 @@ class HtmlDom {
      * @return DOMElement
      * @author benno 2011-08-15
      */
-    static function appendNewChild (DOMElement $parent, $element_name, array $attribs = array ()) {
-        $doc = $parent->ownerDocument;
-        $node = self::createElement ($doc, $element_name, $attribs);
-        $parent->appendChild ($node);
+    static function appendNewChild(DOMNode $parent, $element_name, array $attribs = []) {
+        if ($parent instanceof DOMDocument) {
+            $doc = $parent;
+        } else {
+            $doc = $parent->ownerDocument;
+        }
+        $node = self::createElement($doc, $element_name, $attribs);
+        $parent->appendChild($node);
         return $node;
     }
     
