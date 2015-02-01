@@ -75,6 +75,7 @@ function tricho_autoload ($class_name) {
             break;
         
         case 'Form':
+        case 'FormManager':
         case 'FormModifier':
         case 'MainFilter':
         case 'MainOrderColumn':
@@ -130,6 +131,10 @@ function tricho_autoload ($class_name) {
     }
     if (ends_with($class_name, 'Query')) {
         require_once $root_path . 'tricho/query/' . $file_name;
+    }
+    if (ends_with($class_name, 'FormItem')) {
+        require_once $root_path . 'tricho/db_interface/' . $file_name;
+        return;
     }
     
     foreach ($extensions as $ext) {

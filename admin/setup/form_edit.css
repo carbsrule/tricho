@@ -1,0 +1,43 @@
+/**
+ * This file is part of Tricho and is copyright (C) Transmogrifier E-Solutions.
+ * It is released under the GNU General Public License, version 3 or later.
+ * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
+ */
+
+.sortable div {
+    border: 1px solid #CCC;
+    background-color: #FFF;
+    margin: 0 3px 3px 3px;
+    padding: 2px 4px;
+    font-size: 12px;
+    height: 18px;
+    min-width: 200px;
+}
+.sortable .handle { cursor: grab; display: block; float: right; }
+.sortable .delete {
+    cursor: pointer;
+    display: block;
+    float: right;
+    margin-right: 6px;
+}
+#sortable-items { min-width: 230px; max-height: 150px; overflow: auto; }
+.item-selection { float: left; }
+fieldset p { margin-top: 0; margin-bottom: 5px; }
+.item-edit {
+    float: right;
+    border: 1px solid #CCC;
+    margin-left: 12px;
+    padding: 0 8px;
+    border-radius: 3px;
+    overflow: none;
+}
+.item-edit p { margin: 8px 0; }
+.item-edit p.label { margin-bottom: 2px; }
+.item-edit p.input { margin-top: 2px; }
+.item-edit label { display: block; float: left; margin-right: 8px; }
+.item-edit label span {
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    color: #AAA;
+}

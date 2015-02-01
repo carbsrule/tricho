@@ -95,11 +95,12 @@ if ($permissions_ok) {
 <table style="width: 100%; border: 1px #777 solid; background-color: #EEE; padding: 3px;"><tr>
 <td>
 <?php
-    $tables = $db->getOrderedTables ();
+    $tables = $db->getOrderedTables();
+    $forms = FormManager::loadAll();
     if (count($tables) > 0) {
 ?>
     <form action="table_edit_pre.php" method="get">
-    &nbsp; Modify Table:
+    &nbsp; Tables:
     <select name="table">
 <?php
         foreach ($tables as $table) {
@@ -127,12 +128,32 @@ if ($permissions_ok) {
     } else {
         echo "<p class=\"warning\">No tables are defined for this database</p>\n";
     }
+    
+    if (count($forms) > 0) {
+?>
+    <form action="form_edit_pre.php" method="post">
+    Forms:
+    <select name="form">
+<?php
+    $selected_form = @$_GET['f'];
+    foreach ($forms as $each_form) {
+        echo '<option value="', hsc($each_form), '"';
+        if ($each_form == $selected_form) echo ' selected="selected"';
+        echo '>', hsc($each_form), "</option>\n";
+    }
+?>
+    </select>
+    <input name="task" type="submit" value="Edit">
+    </form>
+<?php
+    }
 ?>
 </td>
 <td>
     <ul style="margin-bottom: 3px;">
         <li><a href="database_details.php">Change database settings</a></li>
         <li><a href="table_create0.php">Create a table</a></li>
+        <li><a href="form_edit.php">Create a form</a></li>
         <li><a href="tables_download.php">Download tables.xml</a></li>
 <?php
     if ($_SESSION['setup']['level'] == SETUP_ACCESS_FULL) {

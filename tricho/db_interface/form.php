@@ -212,19 +212,16 @@ class Form {
             if ($node instanceof DOMComment) continue;
             $type = $node->tagName;
             if ($type == 'field') {
-                if ($node->hasAttribute('label')) {
-                    $label = (string) $node->getAttribute('label');
-                } else {
-                    $label = null;
-                }
                 $col_name = $node->getAttribute('name');
                 $col = $table->get($col_name);
                 if (!$col) throw new Exception('Unknown column: ' . $col_name);
-                $item = array(
-                    $col,
-                    $label,
-                    $node->getAttribute('value')
-                );
+                
+                $item = new ColumnFormItem($col);
+                $item->setLabel($node->getAttribute('label'));
+                $item->setValue($node->getAttribute('value'));
+                $item->setApply($node->getAttribute('apply'));
+            } else {
+                throw new Exception('Unknown element: ' . $node->tagName);
             }
             $this->items[] = $item;
         }
