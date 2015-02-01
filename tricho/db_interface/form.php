@@ -20,7 +20,7 @@ class Form {
     protected $form_url;
     protected $action_url;
     protected $success_url;
-    protected $type;
+    protected $type = 'unknown';
     protected $table;
     protected $items;
     protected $step;
@@ -110,22 +110,21 @@ class Form {
     
     
     /**
-     * @return string 'add' or 'edit'
+     * @return string Usually 'add', 'edit' or 'step'
      */
     function getType() {
         return $this->type;
     }
     
     /**
-     * @param string $type 'add' or 'edit'
+     * @param string $type 'add', 'edit', 'step', or perhaps something like
+     *        'custom'. Add and edit will save data into the database, while
+     *        step will add it to the session and then continue to the next
+     *        step of a multi-form process. Any other type (e.g. 'custom') will
+     *        mean the process() method can't be used.
      */
     function setType($type) {
-        $type = strtolower($type);
-        if ($type != 'add' and $type != 'edit') {
-            $err = "Invalid type, must be add or edit";
-            throw new InvalidArgumentException($err);
-        }
-        $this->type = $type;
+        $this->type = strtolower($type);
     }
     
     
@@ -295,18 +294,15 @@ class Form {
     /**
      * Generates a document which contains the form and all its fields
      * 
-     * @param string $type 'add', 'edit', 'step', or perhaps something like
-     *        'custom', in which case the process() method can't be used.
      * @param array $values Values to embed in the fields, typically from the
      *        user's session
      * @param array $errors Validation errors to display
      * @param mixed $pk Primary key value (applicable for edit forms)
      * @return DOMDocument
      */
-    function generateDoc($type, $values = '', $errors = '', $pk = null) {
+    function generateDoc($values = '', $errors = '', $pk = null) {
         if (!is_array($values)) $values = array();
         if (!is_array($errors)) $errors = array();
-        $this->type = $type;
         $form = $this->initDocForm();
         $doc = $form->ownerDocument;
         $inner_doc = new DOMDocument();
@@ -433,17 +429,14 @@ class Form {
      * Process a form submission, including validation, session handling, and
      * redirects on error/success.
      * 
-     * @param string $type 'add', 'edit', or 'step'. Add and edit will save
-     *        data into the database, while step will add it to the session and
-     *        then continue to the next step of a multi-form process.
      * @param mixed $pk Primary Key value(s). Only applies for edit forms.
      * @return void An HTTP redirect is performed, so nothing is returned.
      */
-    function process($type, $pk = 0) {
+    function process($pk = 0) {
         if ($this->form_url == '' or $this->success_url == '') {
             throw new Exception('Invalid configuration');
         }
-        if (!in_array($type, ['add', 'edit', 'step'])) {
+        if (!in_array($this->type, ['add', 'edit', 'step'])) {
             $err = 'Type must be add, edit, or step';
             throw new InvalidArgumentException($err);
         }
@@ -482,7 +475,7 @@ class Form {
             }
             
             // No need to ask for the current password when adding new record
-            if ($col instanceof PasswordColumn and $type == 'add') {
+            if ($col instanceof PasswordColumn and $this->type == 'add') {
                 $col->setExistingRequired(false);
             }
             
@@ -557,7 +550,7 @@ class Form {
             $db_data[$field] = $preset;
         }
         
-        if ($type == 'add') {
+        if ($this->type == 'add') {
             $q = new InsertQuery($this->table, $db_data);
         } else {
             $q = new UpdateQuery($this->table, $db_data, $pk);
@@ -567,12 +560,12 @@ class Form {
         unset($_SESSION['forms'][$this->id]);
         
         $insert_id = 0;
-        if ($type == 'add') {
+        if ($this->type == 'add') {
             $conn = ConnManager::get_active();
             $insert_id = $conn->get_pdo()->lastInsertId();
         }
         
-        $key = ($type == 'edit')? $pk: $insert_id;
+        $key = ($this->type == 'edit')? $pk: $insert_id;
         foreach ($file_fields as $col) {
             $name = $col->getPostSafeName();
             if (!(@$db_data[$name] instanceof UploadedFile)) continue;
