@@ -166,6 +166,9 @@ class Form {
     function setModifier(FormModifier $modifier) {
         $this->modifier = $modifier;
     }
+    function getModifier() {
+        return $this->modifier;
+    }
     
     
     function load($file_path) {
@@ -315,11 +318,17 @@ class Form {
         foreach ($this->items as $item) {
             ++$this->field_num;
             $id = $id_base . $this->field_num;
-            list($col, $label, $value) = $item;
+            list($col, $label, $value, $apply) = $item->toArray();
+            if (in_array($this->type, ['add', 'edit'])) {
+                if (!in_array($this->type, preg_split('/,\s*/', $apply))) {
+                    continue;
+                }
+            }
+            
             $col_name = $col->getName();
             if (isset($values[$col_name])) $value = $values[$col_name];
             
-            if ($label === null) {
+            if ($label == '') {
                 $label = $col->getEngName();
             }
             if ($label != '') {

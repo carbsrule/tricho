@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use tricho\Runtime;
+
 require '../../tricho.php';
 test_setup_login();
 
@@ -80,6 +82,32 @@ if ($form) {
 } else {
 ?>
 <p>Form name: <input type="text" name="form"></p>
+<?php
+}
+
+$modifiers = glob(Runtime::get('root_path') . 'tricho/ext/*/*_modifier.php');
+if (count($modifiers) > 0) {
+?>
+
+<p>Modifier: <select name="modifier">
+<option value="">- Select modifier -</option>
+<?php
+    $form_mod = $form->getModifier();
+    if ($form_mod) $form_mod = basename(get_class($form_mod));
+    foreach ($modifiers as $mod) {
+        $ext = basename(dirname($mod));
+        $mod = basename($mod, '.php');
+        $mod = file_name_to_class_name($mod);
+        $selected = '';
+        if ($mod == $form_mod) $selected = ' selected="selected"';
+        $ext = hsc($ext);
+        $mod = hsc($mod);
+        
+        echo "<option value=\"{$mod}\"{$selected}>{$mod} ({$ext})</option>\n";
+    }
+?>
+</select>
+</p>
 <?php
 }
 ?>

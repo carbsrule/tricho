@@ -24,15 +24,48 @@ if (!$table) {
     redirect('./');
 }
 
+$file = Runtime::get('root_path') . 'tricho/data/' . $form_name . '.form.xml';
+$items = null;
 $doc = new DOMDocument();
-$attrs = ['table' => $_POST['table']];
-$form = HtmlDom::appendNewChild($doc, 'form', $attrs);
+$doc->preserveWhiteSpace = false;
+$comments = [];
+if (file_exists($file)) {
+    $doc->load($file);
+    $forms = $doc->getElementsByTagName('form');
+    $form = $forms->item(0);
+    if (!$form) throw new Exception('Invalid extant file');
+    $items = $form->getElementsByTagName('items');
+    if ($items->length > 0) {
+        $items = $items->item(0);
+        while ($items->hasChildNodes()) {
+            // Preserve comments
+            $last = $items->lastChild;
+            $last_name = $last->getAttribute('name');
+            if ($last->hasChildNodes()) {
+                $last_child = $last->firstChild;
+                if ($last_child->nodeType == XML_COMMENT_NODE) {
+                    $comments[$last_name] = $last_child->data;
+                }
+            }
+            $items->removeChild($items->lastChild);
+        }
+    }
+} else {
+    $form = HtmlDom::appendNewChild($doc, 'form');
+}
 
-if (empty($_POST['cols'])) goto no_cols;
+$form->setAttribute('table', $_POST['table']);
+if ($_POST['modifier'] != '') {
+    $form->setAttribute('modifier', $_POST['modifier']);
+} else {
+    $form->removeAttribute('modifier');
+}
+
 $table = $db->get($_POST['table']);
 if (!$table) goto no_cols;
 
-$items = HtmlDom::appendNewChild($form, 'items');
+if ($items == null) $items = HtmlDom::appendNewChild($form, 'items');
+if (empty($_POST['cols'])) goto no_cols;
 foreach ($_POST['cols'] as $key => $col) {
     $attrs = ['name' => $col];
     if (!empty($_POST['labels'][$key])) {
@@ -41,7 +74,10 @@ foreach ($_POST['cols'] as $key => $col) {
     if (!empty($_POST['apply'][$key])) {
         $attrs['apply'] = $_POST['apply'][$key];
     }
-    HtmlDom::appendNewChild($items, 'field', $attrs);
+    $item = HtmlDom::appendNewChild($items, 'field', $attrs);
+    if (isset($comments[$col])) {
+        $item->appendChild($doc->createComment($comments[$col]));
+    }
 }
 no_cols:
 
@@ -51,8 +87,14 @@ $form->appendChild($cdata);
 */
 
 $doc->formatOutput = true;
-$file = Runtime::get('root_path') . 'tricho/data/' . $form_name . '.form.xml';
-$bytes = @$doc->save($file);
+$contents = @$doc->saveXML();
+
+// use 4 spaces instead of 2 for indenting
+if (strpos($contents, "\n  <items") !== false) {
+    $contents = preg_replace('/^( +)</m', '$1$1<', $contents);
+}
+$bytes = file_put_contents($file, $contents);
+
 if ($bytes > 0) {
     $_SESSION['setup']['msg'] = 'Form saved';
 } else {
