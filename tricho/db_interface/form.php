@@ -472,7 +472,13 @@ class Form {
         
         $file_fields = array();
         foreach ($this->items as $item) {
-            list($col, $label, $value) = $item;
+            list($col, $label, $value, $apply) = $item->toArray();
+            if (in_array($this->type, ['add', 'edit'])) {
+                if (!in_array($this->type, preg_split('/,\s*/', $apply))) {
+                    continue;
+                }
+            }
+            
             if ($label != '') $col->setEngName($label);
             if ($col instanceof FileColumn) {
                 $source = $_FILES;
