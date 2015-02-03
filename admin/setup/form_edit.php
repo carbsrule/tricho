@@ -92,7 +92,8 @@ if (count($modifiers) > 0) {
 <p>Modifier: <select name="modifier">
 <option value="">- Select modifier -</option>
 <?php
-    $form_mod = $form->getModifier();
+    $form_mod = null;
+    if ($form) $form_mod = $form->getModifier();
     if ($form_mod) $form_mod = basename(get_class($form_mod));
     foreach ($modifiers as $mod) {
         $ext = basename(dirname($mod));
