@@ -10,6 +10,14 @@ h1 { color: #E76917; font-size: 14pt; }
 h2 { color: #E76917; font-size: 12pt; }
 h4 { margin-bottom: 2px; }
 
+#setup-head {
+    width: 100%; border: 1px #777 solid; background-color: #EEE; padding: 3px;
+    padding-left: 16px;
+}
+#setup-head form {
+    margin-bottom: 8px;
+}
+
 /* Top menu */
 #area_choices ul {
     list-style: none;

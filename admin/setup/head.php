@@ -92,7 +92,7 @@ if ((is_file ($filename) and is_writeable ($filename)) or (!file_exists ($filena
 if ($permissions_ok) {
 ?>
 
-<table style="width: 100%; border: 1px #777 solid; background-color: #EEE; padding: 3px;"><tr>
+<table id="setup-head"><tr>
 <td>
 <?php
     $tables = $db->getOrderedTables();
@@ -100,7 +100,7 @@ if ($permissions_ok) {
     if (count($tables) > 0) {
 ?>
     <form action="table_edit_pre.php" method="get">
-    &nbsp; Tables:
+    Tables:
     <select name="table">
 <?php
         foreach ($tables as $table) {
