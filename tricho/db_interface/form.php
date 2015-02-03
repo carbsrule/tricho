@@ -177,6 +177,7 @@ class Form {
             $root = tricho\Runtime::get('root_path') . 'tricho/data/';
             $file_path = $root . $file_path;
         }
+        if (!ends_with($file_path, '.form.xml')) $file_path .= '.form.xml';
         if (!@is_file($file_path) or !is_readable($file_path)) {
             throw new InvalidArgumentException('Missing or unreadable file');
         }
