@@ -591,6 +591,66 @@ class Form {
         
         redirect($this->success_url);
     }
+    
+    
+    /**
+     * Generate a form with no fuss.
+     * N.B. This relies on particular values in $_GET, $_SERVER, and $_SESSION
+     * @param string $file The name of the form, without extension
+     * @param string $type {@see self::setType()}
+     * @param string $action_url Where to submit the form. Defaults to
+     *        {form}_action.php
+     * @return string
+     */
+    static function loadAndRender($file, $type, $action_url = '') {
+        $id = empty($_GET['f'])? '': $_GET['f'];
+        $form = new Form($id);
+        if ($id == '') $id = $form->getID();
+        if ($action_url == '') {
+            $form_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
+            $action_url = preg_replace('/\.php$/', '_action.php', $form_url);
+        }
+        $form->setActionURL($action_url);
+        $form->load($file);
+        $form->setType($type);
+        if (!isset($_SESSION['forms'][$id])) {
+            $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
+        }
+        $session = &$_SESSION['forms'][$id];
+        return $form->render($session['values'], $session['errors']);
+    }
+    
+    
+    /**
+     * Process a form with no fuss.
+     * N.B. This relies on particular values in $_POST, $_SERVER, and $_SESSION
+     * @param string $file The name of the form, without extension
+     * @param string $type {@see self::setType()}
+     * @param string $success_url Where to redirect upon success
+     * @param string $form_url Where to redirect upon error
+     * @param mixed $pk The primary key of the record (for edit actions only)
+     * @return void Will redirect on both error and success
+     */
+    static function loadAndProcess($file, $type, $success_url, $form_url = '', $pk = null) {
+        if (empty($_POST['_f'])) redirect($form_url);
+        $id = $_POST['_f'];
+        $form = new Form($id);
+        if ($form_url == '') {
+            if (!empty($_SERVER['HTTP_REFERER'])) {
+                $parts = parse_url($_SERVER['HTTP_REFERER']);
+                if ($parts['host'] == $_SERVER['HTTP_HOST']) {
+                    $form_url = $_SERVER['HTTP_REFERER'];
+                    $form_url = preg_replace('/\?.*/', '', $form_url);
+                }
+            }
+        }
+        if (!$form_url) redirect('/');
+        $form->setFormURL($form_url);
+        $form->setSuccessURL($success_url);
+        $form->load($file);
+        $form->setType($type);
+        $form->process($pk);
+    }
 }
 
 
