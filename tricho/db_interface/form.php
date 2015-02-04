@@ -574,7 +574,7 @@ class Form {
         
         $key = ($this->type == 'edit')? $pk: $insert_id;
         foreach ($file_fields as $col) {
-            $name = $col->getPostSafeName();
+            $name = $col->getName();
             if (!(@$db_data[$name] instanceof UploadedFile)) continue;
             $col->saveData($db_data[$name], $key);
         }
