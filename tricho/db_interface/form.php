@@ -494,12 +494,6 @@ class Form {
             
             $input = null;
             try {
-                if ($col instanceof FileColumn) {
-                    $source = $_FILES;
-                } else {
-                    $source = $_POST;
-                }
-                
                 // TODO: replace $col->getMandatory () with a value for each form
                 // e.g. new fields added long after a table's creation may be mandatory
                 // for new records (add), but not for existing records (edit)
