@@ -7,9 +7,7 @@
 
 require_once '../../tricho.php';
 
-if (test_setup_login(false, SETUP_ACCESS_LIMITED) === false) {
-    redirect(ROOT_PATH_WEB . ADMIN_DIR . 'login.php');
-}
+test_setup_login(true, SETUP_ACCESS_LIMITED);
 
 require 'head.php';
 
