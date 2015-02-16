@@ -40,5 +40,5 @@ if ($res->rowCount() == 0) {
     execq($q);
 }
 
-redirect ('main_edit.php?t='. $help_table->getName (). "&id={$_GET['t']},{$_GET['c']}");
+redirect('edit.php?t=' . $help_table->getName() . "&id={$_GET['t']},{$_GET['c']}");
 ?>

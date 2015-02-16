@@ -191,7 +191,7 @@ function build_row_data ($table, $row) {
         }
     }
     
-    $edit_link = "main_edit.php?t={$table->getName()}&id=". implode (',', $primary_key);
+    $edit_link = "edit.php?t={$table->getName()}&id=" . implode(',', $primary_key);
 
     return array ('id' => $id, 'edit_link' => $edit_link);
 }
