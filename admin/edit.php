@@ -9,7 +9,7 @@ require '../tricho.php';
 test_admin_login ();
 $db = Database::parseXML ('tables.xml');
 $table = $db->getTable ($_GET['t']); // use table name
-force_redirect_to_alt_page_if_exists ($table, 'main_edit');
+force_redirect_to_alt_page_if_exists($table, 'edit');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';
@@ -215,7 +215,7 @@ if (@$res->rowCount() == 1) {
     }
     
     if ($table->getAllowed ('edit')) {
-        echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['main_edit_action']}\"";
+        echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['edit_action']}\"";
         if ($has_a_richtext_editor) echo ' onsubmit="return submitForm();"';
         if ($file_uploads_required) echo ' enctype="multipart/form-data"';
         echo ">\n";

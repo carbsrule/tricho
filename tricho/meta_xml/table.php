@@ -1772,29 +1772,38 @@ class Table implements QueryTable {
      * Gets the complete list of page URLs to use when editing data in this
      * table.
      * 
-     * Usage: <code>list($urls, $seps) = $table->getPageUrls();</code>
+     * Usage:
+     * (multiple) <code>list($urls, $seps) = $table->getPageUrls();</code>
+     * (single) <code>list($url, $sep) = $table->getPageUrls('browse');</code>
      * 
-     * @return array Two keys: 0 contains an array of the URLs (standard or
-     *         alternate) to use for each page; and 1 contains an array with
-     *         the separators to use for each page. For both arrays, the keys
-     *         are the original page names (without the .php suffix).
+     * @param mixed $keys A single key (string) or multiple keys (array), with
+     *        each key being the original name (without the .php extension) of
+     *        the page in question, e.g. 'browse' or 'add'
+     * @return array Two keys: 0 contains a string (single) or array (multiple) 
+     *         of the URLs (standard or alternate) to use for each page; and 1
+     *         contains a string (single) or array (multiple) with the
+     *         separators to use for each page. In multiple mode, the keys of
+     *         both arrays are the original page names (without the .php
+     *         extension).
      */
-    function getPageUrls () {
-        $urls = array ();
-        $seps = array ();
-        $defaults = array (
-            'main',
-            'main_action',
-            'main_add',
-            'main_add_action',
-            'main_edit',
-            'main_edit_action',
-            'main_search_action',
-            'main_order'
-        );
+    function getPageUrls($keys = []) {
+        $keys = (array) $keys;
         
-        reset ($defaults);
-        foreach ($defaults as $id => $page) {
+        $urls = [];
+        $seps = [];
+        $defaults = [
+            'browse',
+            'del_action',
+            'add',
+            'add_action',
+            'edit',
+            'edit_action',
+            'search_action',
+            'order_action'
+        ];
+        
+        foreach ($defaults as $page) {
+            if (count($keys) > 0 and !in_array($page, $keys)) continue;
             if (!isset ($this->alt_pages[$page])) {
                 $urls[$page] = "{$page}.php";
                 $seps[$page] = '?';
@@ -1807,6 +1816,8 @@ class Table implements QueryTable {
                 }
             }
         }
+        
+        if (count($urls) == 1) return array(reset($urls), reset($seps));
         
         return array ($urls, $seps);
     }
@@ -3621,20 +3632,19 @@ class Table implements QueryTable {
      *        viewed) table
      * @author benno, 2009-09-04
      */
-    function menuDraw ($active) {
-        list ($urls, $seps) = $this->getPageUrls ();
-        $eng_name = $this->getEngName ();
-        $eng_name = htmlspecialchars ($eng_name);
+    function menuDraw($active) {
+        list($url, $sep) = $this->getPageUrls('browse');
+        $eng_name = $this->getEngName();
+        $eng_name = hsc($eng_name);
         
-        $url = $urls['main'];
-        if ($url[0] != '/' and strpos ($url, '://') === false) {
-            $url = ROOT_PATH_WEB. ADMIN_DIR. $url;
+        if ($url[0] != '/' and strpos($url, '://') === false) {
+            $url = ROOT_PATH_WEB . ADMIN_DIR . $url;
         }
         
         echo '        <li class="table';
         if ($active) echo ' on';
-        echo "\"> <a href=\"{$url}{$seps['main']}t=",
-            urlencode ($this->getName ()), "\">{$eng_name}</a></li>\n";
+        echo "\"> <a href=\"{$url}{$sep}t=",
+            urlencode($this->getName()), "\">{$eng_name}</a></li>\n";
     }
     
     function __toString () {

@@ -10,7 +10,7 @@ test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 $db = Database::parseXML ('tables.xml');
 $table = $db->getTable ($_POST['_t']);
-force_redirect_to_alt_page_if_exists ($table, 'main_add_action');
+force_redirect_to_alt_page_if_exists($table, 'add_action');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';
@@ -24,9 +24,9 @@ if (@$_POST['cancel'] != '') {
     unset($_SESSION[ADMIN_KEY]['add'][$table->getName()]);
     
     if (@$_POST['_p'] != '') {
-        redirect ("{$urls['main']}{$seps['main']}p={$_POST['_p']}&t=". urlencode ($table->getName ()));
+        redirect("{$urls['browse']}{$seps['browse']}p={$_POST['_p']}&t=" . urlencode($table->getName()));
     } else {
-        redirect ("{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ()));
+        redirect("{$urls['browse']}{$seps['browse']}t=" . urlencode($table->getName()));
     }
 }
 
@@ -98,7 +98,7 @@ if (count($temp_errs) > 0) {
         $_SESSION[ADMIN_KEY]['err'][] = $err;
     }
     
-    $url = "{$urls['main_add']}{$seps['main_add']}";
+    $url = "{$urls['add']}{$seps['add']}";
     $url .= 't='. $table->getName ();
     if (isset($_POST['_p'])) {
         $url .= '&p='. $_POST['_p'];
@@ -207,7 +207,7 @@ if (execq($q, false)) {
         $_SESSION[ADMIN_KEY]['err'] .= implode ("<br>\n", $temp_errs);
     }
     
-    $url = "{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ());
+    $url = "{$urls['browse']}{$seps['browse']}t=" . urlencode($table->getName());
     
     
     if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
@@ -224,6 +224,6 @@ if (execq($q, false)) {
     $temp_errs[] = $err;
     
     $_SESSION[ADMIN_KEY]['err'] = $temp_errs;
-    redirect ("{$urls['main_add']}{$seps['main_add']}t=". $table->getName ());
+    redirect("{$urls['add']}{$seps['add']}t=" . $table->getName());
 }
 ?>

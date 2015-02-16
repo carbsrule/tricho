@@ -15,7 +15,7 @@ if (@$_POST['_joiner'] != '') {
 } else {
     $table = $db->getTable ($_POST['_t']);
 }
-force_redirect_to_alt_page_if_exists ($table, 'main_edit_action');
+force_redirect_to_alt_page_if_exists($table, 'edit_action');
 
 if ($table === null) {
     $_SESSION[ADMIN_KEY]['err'] = 'A fatal error has occurred. Perhaps you uploaded too much data?';
@@ -40,9 +40,9 @@ if (@$_POST['cancel'] != '') {
     }
     
     if (@$_POST['_p'] != '') {
-        redirect ("{$urls['main']}{$seps['main']}p={$_POST['_p']}&t=". urlencode ($table->getName ()));
+        redirect("{$urls['browse']}{$seps['browse']}p={$_POST['_p']}&t=" . urlencode($table->getName()));
     } else {
-        redirect ("{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ()));
+        redirect("{$urls['browse']}{$seps['browse']}t=" . urlencode($table->getName()));
     }
 }
 
@@ -228,7 +228,7 @@ if (count($temp_errs) > 0) {
         $_SESSION[ADMIN_KEY]['err'][] = $err;
     }
     
-    $url = "{$urls['main_edit']}{$seps['main_edit']}";
+    $url = "{$urls['edit']}{$seps['edit']}";
     $url .= 't=' . $table->getName();
     if (isset ($_POST['_p'])) {
         $url .= '&p=' . urlencode ($_POST['_p']);
@@ -356,7 +356,7 @@ if (count($temp_errs) > 0) {
 }
 
 // go somewhere
-$url = "{$urls['main']}{$seps['main']}t=". urlencode ($table->getName ());
+$url = "{$urls['browse']}{$seps['browse']}t=" . urlencode($table->getName());
 if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
 redirect ($url);
 

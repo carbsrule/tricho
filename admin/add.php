@@ -11,7 +11,7 @@ require 'main_functions.php';
 
 $db = Database::parseXML ('tables.xml');
 $table = $db->getTable ($_GET['t']); // use table name
-force_redirect_to_alt_page_if_exists ($table, 'main_add');
+force_redirect_to_alt_page_if_exists($table, 'add');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';
@@ -130,7 +130,7 @@ if ($help_table != null) {
 $hidden_fields = array ();
 
 // TODO: move all of this into Form::render or several methods
-echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['main_add_action']}\"";
+echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['add_action']}\"";
 if ($has_a_richtext_editor) echo ' onsubmit="return submitForm();"';
 if ($file_uploads_required) echo ' enctype="multipart/form-data"';
 echo ">\n";

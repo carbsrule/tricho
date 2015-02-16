@@ -152,8 +152,12 @@ class MainTable {
         foreach ($page_names as $original_page_name => $url) {
             $page_name = strtoupper ($original_page_name);
         
-            if ($page_name == 'MAIN') {
+            if ($page_name == 'BROWSE') {
                 $page_id = MAIN_PAGE_MAIN;
+            } else if ($page_name == 'DEL_ACTION') {
+                $page_id = MAIN_PAGE_ACTION;
+            } else if ($page_name == 'ORDER_ACTION') {
+                $page_id = MAIN_PAGE_ORDER;
             } else {
                 if (substr ($page_name, 0, 5) == 'MAIN_') $page_name = substr ($page_name, 5);
                 $page_name = 'MAIN_PAGE_'. $page_name;

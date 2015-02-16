@@ -11,7 +11,7 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
 $db = Database::parseXML ('tables.xml');
 $table = $db->getTable ($_POST['_t']); // use table name
-force_redirect_to_alt_page_if_exists ($table, 'main_action');
+force_redirect_to_alt_page_if_exists($table, 'del_action');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';
@@ -55,63 +55,34 @@ if (@$_POST['_p']) {
 }
 
 
-/* REMOVE RECORD */
-if ($_POST['rem'] != '') {
     
-    // delete selected rows
-    if (@count ($_POST['del']) > 0) {
-        
-        $record_pks = array ();
-        foreach ($_POST['del'] as $item_to_del => $val) {
-            if ($val == 1) {
-                $record_pks[] = explode (',', $item_to_del);
-            }
+// delete selected rows
+if (@count ($_POST['del']) > 0) {
+    
+    $record_pks = array ();
+    foreach ($_POST['del'] as $item_to_del => $val) {
+        if ($val == 1) {
+            $record_pks[] = explode (',', $item_to_del);
         }
-        
-        // do the delete
-        $num_removed = $table->deleteRecords ($record_pks);
-        
-        // confirmation message
-        switch ($num_removed) {
-            case 0: $_SESSION[ADMIN_KEY]['err'] = "Deletion failed"; break;
-            case 1: $_SESSION[ADMIN_KEY]['msg'] = "1 {$table_single_name} deleted successfully"; break;
-            default: $_SESSION[ADMIN_KEY]['msg'] = "{$num_removed} {$table_eng_name} deleted successfully"; break;
-        }
-        
-    } else {
-        // user didnt select anything
-        $_SESSION[ADMIN_KEY]['err'] = "No {$table_eng_name} were selected for deletion!";
     }
     
+    // do the delete
+    $num_removed = $table->deleteRecords ($record_pks);
     
-    // return
-    $url = "{$urls['main']}{$seps['main']}t=". urlencode ($_POST['_t']);
-    if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
-    redirect ($url);
-    
-    
-/* ADD RECORD */         // only used by trees
-} else if ($_POST['add'] != '') {
-    if ($_POST['_p'] != '') {
-        redirect ("{$urls['main_add']}{$seps['main_add']}p={$_POST['_p']}&t={$_POST['_t']}");
-    } else {
-        redirect ("{$urls['main_add']}{$seps['main_add']}t={$_POST['_t']}");
+    // confirmation message
+    switch ($num_removed) {
+        case 0: $_SESSION[ADMIN_KEY]['err'] = "Deletion failed"; break;
+        case 1: $_SESSION[ADMIN_KEY]['msg'] = "1 {$table_single_name} deleted successfully"; break;
+        default: $_SESSION[ADMIN_KEY]['msg'] = "{$num_removed} {$table_eng_name} deleted successfully"; break;
     }
     
-
-/* PREVIOUS */        // not used (as far as I know)
-} else if ($_POST['prev'] != '') {
-    redirect ("{$urls['main']}{$seps['main']}t={$_POST['_t']}&start={$_POST['start_prev']}");
-
-    
-/* NEXT */        // not used (as far as I know)
-} else if ($_POST['next'] != '') {
-    redirect ("{$urls['main']}{$seps['main']}t={$_POST['_t']}&start={$_POST['start_next']}");
-
-    
-/* HUH? */
 } else {
-    report_error ('Unknown action');
+    // user didnt select anything
+    $_SESSION[ADMIN_KEY]['err'] = "No {$table_eng_name} were selected for deletion!";
 }
 
-?>
+
+// return
+$url = "{$urls['browse']}{$seps['browse']}t=" . urlencode($_POST['_t']);
+if (@$_POST['_p'] != '') $url .= "&p={$_POST['_p']}";
+redirect ($url);
