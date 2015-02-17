@@ -82,6 +82,36 @@ class LogicTree {
         }
     }
     
+    
+    /**
+     * Create a new condition and add it to the root node of this tree. If
+     * there is no root node, it will be created.
+     *
+     * @param QueryField $col the field on which the condition applies
+     * @param int $operator the constant definition of the type of condition,
+     *        e.g. LOGIC_CONDITION_GT
+     * @param mixed $values a {@link QueryField} for most condition types, or
+     *        an array of {@link QueryField}s for LOGIC_CONDITION_[NOT_]BETWEEN
+     *        (2 elements) or LOGIC_CONDITION_IN (1+ elements)
+     * @param int $condition_type either LOGIC_TREE_OR or LOGIC_TREE_AND
+     * @return LogicConditionNode The created node
+     */
+    function addNewCondition(QueryField $col, $operator, $values, $condition_type = LOGIC_TREE_OR) {
+        $node = new LogicConditionNode($col, $operator, $values);
+        
+        if ($this->root == null) {
+            $this->root = new LogicOperatorNode($condition_type);
+            $this->root->addChild($node);
+        } else {
+            $this->root->addCondition($node, $condition_type);
+            while ($this->root->getParent() !== null) {
+                $this->root = $this->root->getParent();
+            }
+        }
+        return $node;
+    }
+    
+    
     /**
      * Get the conditions in this logic tree
      *
