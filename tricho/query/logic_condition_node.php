@@ -33,6 +33,9 @@ class LogicConditionNode extends LogicTreeNode {
         $this->type = LOGIC_TREE_COND;
         $this->column = $col;
         
+        // TODO: remove constants and just use the symbols (e.g. '=', '<', 'IN')
+        if ($operator === '=') $operator = LOGIC_CONDITION_EQ;
+        
         // check operator is valid
         $operator_int = (int) $operator;
         switch ($operator_int) {
@@ -48,10 +51,14 @@ class LogicConditionNode extends LogicTreeNode {
             case LOGIC_CONDITION_IS:
                 if ($values instanceof QueryField) {
                     $this->value = $values;
-                    $this->operator = $operator_int;
+                } else if (is_bool($values)) {
+                    $this->value = new QueryFieldLiteral((int) $values);
+                } else if (is_int($values) or is_string($values) or is_float($values)) {
+                    $this->value = new QueryFieldLiteral($values);
                 } else {
                     throw new Exception ("Cannot use operator {$operator} for parameter that isn't a QueryField");
                 }
+                $this->operator = $operator_int;
                 break;
             
             case LOGIC_CONDITION_BETWEEN:
