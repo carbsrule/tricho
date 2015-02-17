@@ -127,138 +127,29 @@ if ($help_table != null) {
     }
 }
 
-$hidden_fields = array ();
+check_session_response('admin');
 
-// TODO: move all of this into Form::render or several methods
-echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['add_action']}\"";
-if ($has_a_richtext_editor) echo ' onsubmit="return submitForm();"';
-if ($file_uploads_required) echo ' enctype="multipart/form-data"';
-echo ">\n";
-
-echo "<input type=\"hidden\" name=\"_t\" value=\"{$_GET['t']}\">\n";
-
-if (@$_GET['p'] != '') {
-    echo "<input type=\"hidden\" name=\"_p\" value=\"", htmlspecialchars ($_GET['p']), "\">\n";
-    
-    $parents = explode (',', $_GET['p']);
-    $parent_vals = array ();
-    foreach ($parents as $parent) {
-        $bits = explode ('.', $parent);
-        $parent_vals[$bits[0]] = $bits[1];
-    }
+// Display form
+$id = empty($_GET['f'])? '': $_GET['f'];
+$form = new Form($id);
+if ($id == '') $id = $form->getID();
+$form->setFormURL('add.php?t=' . $table->getName());
+$form->setActionURL('add_action.php');
+$form->load("admin.{$table->getName()}");
+$form->setType('add');
+if (!isset($_SESSION['forms'][$id])) {
+    $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
 }
+$session = &$_SESSION['forms'][$id];
+$doc = $form->generateDoc($session['values'], $session['errors']);
 
+$form_el = $doc->getElementsByTagName('form')->item(0);
+$params = ['type' => 'hidden', 'name' => '_t', 'value' => $table->getName()];
+HtmlDom::appendNewChild($form_el, 'input', $params);
 
-// determine what functions are going to be called, and build a MySQL string of all of them
-$functions = array ();
-$function_id = 0;
-foreach ($view_items as $item) {
-    if ($item instanceof FunctionViewItem) {
-        $functions[] = $item->getCode (). ' AS func'. ($function_id++);
-    }
-}
-if ($function_id > 0) {
-    $q = 'SELECT ' . implode (', ', $functions);
-    $res = execq($q);
-    if ($_SESSION['setup']['view_q'] === true) {
-        echo "Q: {$q}<br>\n";
-    }
-    $row = fetch_assoc($res);
-}
+echo $doc->saveXML($doc->documentElement);
 
-check_session_response (ADMIN_KEY);
-
-
-echo "<table class=\"main_add_edit\">\n";
-echo "<col class=\"col_eng_name\" id=\"col_eng_name_{$table->getName ()}\">\n";
-echo "<col class=\"col_value\" id=\"col_value_{$table->getName ()}\">\n";
-echo "<tbody>\n";
-
-$function_id = 0;
-$include_id = 0;
-$heading_id = 0;
-foreach ($view_items as $item) {
-    if ($item instanceof HeadingViewItem) {
-        // Heading
-        $heading_id++;
-        echo "<tr id=\"heading{$heading_id}\" class=\"heading\">";
-        echo "<td colspan=\"2\"><h4>{$item->getName ()}</h4></td></tr>";
-        
-    } else if ($item instanceof FunctionViewItem) {
-        // Function
-        $function_name = 'func'. ($function_id++);
-        echo "<tr id=\"func{$function_id}\" class=\"function\">";
-        echo "<td><span>{$item->getName ()}</span></td>";
-        echo "<td>{$row[$function_name]}</td>";
-        echo "</tr>\n";
-    
-    } else if ($item instanceof IncludeViewItem) {
-        // Include
-        echo "<tr id=\"include{$include_id}\" class=\"include\">";
-        echo "<td><span>{$item->getName ()}</span></td>";
-        if (file_exists ($item->getfilename ())) {
-            echo '<td>';
-            $current_view = 'add';
-            $passthrough = $item->getPassthroughValue ();
-            include $item->getfilename();
-            
-        } else {
-            echo '<td class="error">Error: Invalid include file name: file "',
-                $item->getfilename (), '" does not exist';
-        }
-        echo "</td></tr>";
-        $include_id++;
-
-    } else if ($item instanceof ColumnViewItem) {
-        // Column
-        $col = $item->getColumn ();
-        
-        // TODO: make getInputField be aware of the fact that it's on an add form
-        // and therefore doesn't need to ask for the current password
-        if ($col instanceof PasswordColumn) {
-            $col->setExistingRequired (false);
-        }
-        
-        $value = @$_SESSION[ADMIN_KEY]['add'][$table->getName ()][$col->getName ()];
-        
-        if (method_exists ($col, 'getMultiInputs')) {
-            $input_rows = $col->getMultiInputs ($form, $value);
-        } else {
-            $input_rows = array (array (
-                'label' => $col->getInputLabel (),
-                'field' => $col->getInputField ($form, $value),
-                'suffix' => ''
-            ));
-        }
-        
-        foreach ($input_rows as $input_row) {
-            $row_id = "row_{$col->getPostSafeName ()}";
-            if ($input_row['suffix'] != '') $row_id .= "_{$input_row['suffix']}";
-            echo "<tr id=\"{$row_id}\" class=\"column\">\n";
-            echo "    <td>{$input_row['label']}</td>\n";
-            echo "    <td>{$input_row['field']}</td>\n";
-            echo "</tr>\n";
-        }
-        
-    } else {
-        echo '<tr><td class="error" colspan="2">Error: Invalid view item type '. get_class ($item). '</td></tr>';
-    }
-}
-
-echo "<tr class=\"buttons\"><td>&nbsp;</td><td>";
-echo "<input type=\"submit\" value=\"{$button_text['add']}\"> ";
-echo "<input type=\"submit\" value=\"{$button_text['cancel']}\" name=\"cancel\"> ";
-echo "</td></tr>\n";
-
-echo "</tbody>\n";
-echo "</table>\n";
-
-// output all the hidden fields
-foreach ($hidden_fields as $name => $value) {
-    echo "<input type=\"hidden\" name=\"{$name}\" value=\"", htmlspecialchars ($value), "\">\n";
-}
-
-echo "</form>\n</div>\n";
+echo "</div>\n";
 
 require "foot.php";
 ?>
