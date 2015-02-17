@@ -98,16 +98,7 @@ class LogicTree {
      */
     function addNewCondition(QueryField $col, $operator, $values, $condition_type = LOGIC_TREE_OR) {
         $node = new LogicConditionNode($col, $operator, $values);
-        
-        if ($this->root == null) {
-            $this->root = new LogicOperatorNode($condition_type);
-            $this->root->addChild($node);
-        } else {
-            $this->root->addCondition($node, $condition_type);
-            while ($this->root->getParent() !== null) {
-                $this->root = $this->root->getParent();
-            }
-        }
+        $this->addCondition($node, $condition_type);
         return $node;
     }
     
