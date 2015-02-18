@@ -214,152 +214,30 @@ if (@$res->rowCount() == 1) {
         }
     }
     
-    if ($table->getAllowed ('edit')) {
-        echo "<form name=\"main_form\" method=\"post\" action=\"{$urls['edit_action']}\"";
-        if ($has_a_richtext_editor) echo ' onsubmit="return submitForm();"';
-        if ($file_uploads_required) echo ' enctype="multipart/form-data"';
-        echo ">\n";
-        
-        echo "<input type=\"hidden\" name=\"_t\" value=\"{$_GET['t']}\">\n";
-        if (@$_GET['p'] != '') {
-            echo "<input type=\"hidden\" name=\"_p\" value=\"", htmlspecialchars ($_GET['p']), "\">\n";
-        }
+    // Display form
+    $id = empty($_GET['f'])? '': $_GET['f'];
+    $form = new Form($id);
+    if ($id == '') $id = $form->getID();
+    $form->setFormURL('edit.php?t=' . $table->getName());
+    $form->setActionURL('edit_action.php');
+    $form->load("admin.{$table->getName()}");
+    $form->setType('edit');
+    if (!isset($_SESSION['forms'][$id])) {
+        $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
     }
+    $session = &$_SESSION['forms'][$id];
+    $doc = $form->generateDoc($row, $session['errors'], $_GET['id']);
     
-    // determine PK values for ancestors that were used for drill-down
-    $parents = explode(',', @$_GET['p']);
-    $parent_vals = array ();
-    foreach ($parents as $parent) {
-        @list($parent_col, $parent_val) = explode('.', $parent);
-        $parent_vals[$parent_col] = $parent_val;
-    }
+    $form_el = $doc->getElementsByTagName('form')->item(0);
+    $params = ['type' => 'hidden', 'name' => '_t', 'value' => $table->getName()];
+    HtmlDom::appendNewChild($form_el, 'input', $params);
     
-    echo "<table class=\"main_add_edit\">\n";
-    echo "<col class=\"col_eng_name\" id=\"col_eng_name_{$table->getName ()}\">\n";
-    echo "<col class=\"col_value\" id=\"col_value_{$table->getName ()}\">\n";
-    echo "<tbody>\n";
+    $params['name'] = '_id';
+    $params['value'] = $_GET['id'];
+    HtmlDom::appendNewChild($form_el, 'input', $params);
     
-    $found_first_field = false;
-    $tree_parent_id = -1;
-    $function_id = 0;
-    $include_id = 0;
-    $heading_id = 0;
-    foreach ($view_items as $item) {
-        if ($item instanceof HeadingViewItem) {
-            // Heading
-            $heading_id++;
-            echo "<tr id=\"heading{$heading_id}\" class=\"heading\"><td colspan=\"2\"><h4>{$item->getName ()}</h4></td></tr>";
-            
-            
-        } else if ($item instanceof FunctionViewItem) {
-            // Function
-            $function_name = 'func'. ($function_id++);
-            echo "<tr id=\"func{$function_id}\" class=\"function\">";
-            echo "<td><span>{$item->getName ()}</span></td>";
-            echo "<td>{$row[$function_name]}</td>";
-            echo "</tr>\n";
-            
-            
-        } else if ($item instanceof IncludeViewItem) {
-            // Include
-            echo "<tr id=\"include{$include_id}\" class=\"include\">";
-            echo "<td><span>{$item->getName ()}</span></td>";
-            
-            if (file_exists ($item->getfilename ())) {
-                echo '<td>';
-                $current_view = 'add';
-                $passthrough = $item->getPassthroughValue ();
-                include $item->getfilename();
-                
-            } else {
-                echo '<td class="error">Error: Invalid include file name: file "'. $item->getfilename (). '" does not exist';
-            }
-            echo "</td></tr>";
-            $include_id++;
-            
-            
-        } else if ($item instanceof ColumnViewItem) {
-            // Column
-            $col = $item->getColumn ();
-            
-            if ($col->getOption () == 'ordernum') continue;
-            
-            // START New functionality
-            $value = $row[$col->getName ()];
-            if (method_exists ($col, 'getMultiInputs')) {
-                $input_rows = $col->getMultiInputs ($form, $value, $primary_key_values);
-            } else {
-                if ($item->getEditable()) {
-                    $field = $col->getInputField($form, $value, $primary_key_values);
-                } else {
-                    $field = $col->displayValue($value);
-                }
-                $input_rows = array (array (
-                    'label' => $col->getInputLabel (),
-                    'field' => $field,
-                    'suffix' => ''
-                ));
-            }
-            
-            foreach ($input_rows as $input_row) {
-                $row_id = "row_{$col->getPostSafeName ()}";
-                if ($input_row['suffix'] != '') $row_id .= "_{$input_row['suffix']}";
-                echo "<tr id=\"{$row_id}\" class=\"column\">\n";
-                echo "    <td>{$input_row['label']}</td>\n";
-                echo "    <td>{$input_row['field']}</td>\n";
-                echo "</tr>\n";
-            }
-            // END New functionality
-            continue;
-            
-            
-            // auto-fill in columns based on the parents
-            if ($table->getDisableParentEdit ()) {
-                if (isset($parent_vals)) {
-                    $link_data = $col->getLink ();
-                    if ($link_data != null and $link_data->isParent()) {
-                        $val = $parent_vals[$link_data->getToColumn ()->getTable ()->getName ()];
-                        if ($val != null) {
-                            continue;
-                        }
-                    }
-                }
-            }
-            
-            // don't show anything if top-level node in a tree which has top-level nodes disabled
-            if ($table->getDisplayStyle () == TABLE_DISPLAY_STYLE_TREE and !$table->getTopNodesEnabled ()) {
-                $link_data = $col->getLink ();
-                if ($link_data != null and $link_data->getToColumn ()->getTable () === $table) {
-                    $tree_parent_id = $row[$col->getName ()];
-                    if ($row[$col->getName ()] == 0) {
-                        $hidden_fields[$col->getName ()] = '0';
-                        continue;
-                    }
-                }
-            }
-            
-        } else {
-            echo '<tr><td class="error" colspan="2">Error: Invalid view item type '. get_class ($item). '</td></tr>';
-        }
-    }
+    echo $doc->saveXML($doc->documentElement);
     
-    if ($table->getAllowed ('edit')) {
-        echo "<tr class=\"buttons\"><td>&nbsp;</td><td>";
-        echo "<input type=\"submit\" value=\"{$button_text['edit']}\"> ";
-        echo "<input type=\"submit\" value=\"{$button_text['cancel']}\" name=\"cancel\">";
-        echo "</td></tr>\n";
-    }
-    
-    echo "</tbody>\n";
-    echo "</table>\n";
-    
-    if ($table->getAllowed ('edit')) {
-        foreach ($hidden_fields as $field_name => $data) {
-            echo "<input type=\"hidden\" name=\"{$field_name}\" value=\"",
-                htmlspecialchars ($data), "\">\n";
-        }
-        echo "<input type=\"hidden\" name=\"_id\" value=\"{$_GET['id']}\"></form>\n";
-    }
     
 } else {
     check_session_response (ADMIN_KEY);

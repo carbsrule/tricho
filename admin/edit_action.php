@@ -10,11 +10,9 @@ test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 $db = Database::parseXML ('tables.xml');
 
-if (@$_POST['_joiner'] != '') {
-    $table = $db->getTable ($_POST['_joiner']);
-} else {
-    $table = $db->getTable ($_POST['_t']);
-}
+//die("<pre>POST:\n" . print_r($_POST, true) . '</pre>');
+
+$table = $db->getTable($_POST['_t']);
 force_redirect_to_alt_page_if_exists($table, 'edit_action');
 
 if ($table === null) {
@@ -27,72 +25,50 @@ if (!$table->checkAuth ()) {
     redirect ('./');
 }
 
-list ($urls, $seps) = $table->getPageUrls ();
-
-
-// cancel edit
-if (@$_POST['cancel'] != '') {
-    unset ($_SESSION[ADMIN_KEY]['edit'][$table->getName().'.'.$_POST['_id']]);
-    
-    // joiner tables return to themself on edit or cancel. let the user know the edit was cancelled
-    if (@$_POST['_joiner'] != '') {
-        $_SESSION[ADMIN_KEY]['msg'] = 'Edit cancelled.';
-    }
-    
-    if (@$_POST['_p'] != '') {
-        redirect("{$urls['browse']}{$seps['browse']}p={$_POST['_p']}&t=" . urlencode($table->getName()));
-    } else {
-        redirect("{$urls['browse']}{$seps['browse']}t=" . urlencode($table->getName()));
-    }
-}
-
-$row_key = $table->getName().'.'.$_POST['_id'];
-if (!isset ($_SESSION[ADMIN_KEY]['edit'][$row_key])) {
-    $_SESSION[ADMIN_KEY]['edit'][$row_key] = array ();
-}
-$session_data = &$_SESSION[ADMIN_KEY]['edit'][$row_key];
-
-$view_columns = $table->getViewColumns('edit');
-
+list($urls, $seps) = $table->getPageUrls(['browse', 'edit']);
 
 // get primary key values
-$primary_key_cols = $table->getPKnames ();
-$primary_key_values = explode (',', $_POST['_id']);
-
-/** Used to fetch the newly inserted row from the database */
-$new_primary_key_values = array ();
-
-if (count($primary_key_cols) == count($primary_key_values)) {
-    
-    $prim_key_clauses = array ();
-    
-    reset($primary_key_cols);
-    reset($primary_key_values);
-    while (list($col_id, $col_name) = each($primary_key_cols)) {
-        list($val_id, $val) = each($primary_key_values);
-        
-        try {
-            $junk = '';
-            $pk_col = $table->get($col_name);
-            $pk_col->collateInput($val, $junk);
-        } catch (DataValidationException $ex) {
-            report_error("Invalid key provided!");
-            die();
-        }
-        $new_primary_key_values[$col_name] = $val;
-        
-        $prim_key_clauses[] = "`{$col_name}` = ". sql_enclose ($val);
-    }
-} else {
-    report_error ("Number of primary key values does not match number of primary key columns");
-    die ();
+$pk_cols = $table->getPKnames ();
+$pk_vals = explode(',', $_POST['_id']);
+if (count($pk_cols) != count($pk_vals)) {
+    $_SESSION[ADMIN_KEY]['err'] = 'Invalid record';
+    redirect($urls['browse']);
 }
+$pk = array_combine($pk_cols, $pk_vals);
 
-$pk_clause = implode (' AND ', $prim_key_clauses);
-
-$q = "SELECT * FROM `". $table->getName (). "` WHERE {$pk_clause}";
+$q = new SelectQuery($table);
+$q->addSelectField(new QueryFieldLiteral('*', false));
+foreach ($pk as $col_name => $val) {
+    $col = $table->get($col_name);
+    $q->getWhere()->addNewCondition($col, '=', $val, LOGIC_TREE_AND);
+}
 $res = execq($q);
 $row = fetch_assoc($res);
+if (!$row) {
+    $_SESSION[ADMIN_KEY]['err'] = 'Invalid record';
+    redirect($urls['browse']);
+}
+
+$success_url = "{$urls['browse']}{$seps['browse']}";
+$success_url .= 't=' . urlencode($table->getName());
+$form_url = $urls['edit'] . $seps['edit'] . 't=' . $table->getName();
+$form_url .= '&id=' . urlencode($_POST['_id']);
+if (@$_POST['_p'] != '') {
+    $success_url .= '&p=' . urlencode($_POST['_p']);
+    $form_url .= '&p=' . urlencode($_POST['_p']);
+}
+
+// Process form
+if (empty($_POST['_f'])) redirect($form_url);
+$id = $_POST['_f'];
+$form = new Form($id);
+$form->setFormURL($form_url);
+$form->setSuccessURL($success_url);
+$form->load("admin.{$table->getName()}");
+$form->setType('edit');
+$form->process($pk);
+
+/* ***************************** OLD, DEAD CODE **************************** */
 
 $input_data = array ();
 $field_values = array ();
@@ -139,19 +115,7 @@ foreach ($view_columns as $item) {
 $debug = false;
 $session_data = $input_data;
 
-// see what's happening with the POSTed data
-/*
-echo "<pre><b>POST:</b>\n", print_r ($_POST, true),
-    "\n<b>Original input:</b>\n", print_r ($input_data, true),
-    "\n<b>Values:</b>\n", print_r ($field_values, true),
-    "\n<b>Errors:</b>\n", print_r ($temp_errs, true);
-echo "\n<b>View columns:</b>\n";
-foreach ($view_columns as $column) {
-    echo $column, "\n";
-}
-echo "</pre>\n";
-die ();
-//*/
+
 
 // check the primary key is not already in use
 if (count ($editable_pk_names) > 0) {
