@@ -100,4 +100,5 @@ if ($bytes > 0) {
 } else {
     $_SESSION['setup']['err'] = 'Form save failed';
 }
+if (!empty($_POST['r'])) redirect($_POST['r']);
 redirect('./');
