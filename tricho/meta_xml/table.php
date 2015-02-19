@@ -37,10 +37,7 @@ class Table implements QueryTable {
     private $row_identifier = array();
     private $show_sub_record_count = null;
     private $list_view = array ();
-    private $add_view = array ();
-    private $edit_view = array ();
     private $export_view = array ();
-    private $add_edit_view = null;
     private $tree_node_chars = null;
     private $access_level = TABLE_ACCESS_ADMIN;
     private $static_table = false;
@@ -67,8 +64,6 @@ class Table implements QueryTable {
         $this->confirm_delete = true;
         $this->cascade_delete = true;
         $this->disable_parent_edit = true;
-        
-        $this->add_edit_view = array ();
     }
     
     
@@ -165,14 +160,6 @@ class Table implements QueryTable {
         $parent->appendChild ($view_node);
         foreach ($this->list_view as $item) {
             $item_node = $item->toXMLNode ($doc);
-            $view_node->appendChild ($item_node);
-        }
-        
-        // add/edit
-        $view_node = $doc->createElement ('add_edit');
-        $parent->appendChild ($view_node);
-        foreach ($this->add_edit_view as $item) {
-            $item_node = $item['item']->toXMLNode ($doc, $item);
             $view_node->appendChild ($item_node);
         }
         
@@ -442,20 +429,6 @@ class Table implements QueryTable {
             $table->setView('list', $items);
         }
         
-        // add_edit
-        $add_edit = $node->getElementsByTagName ('add_edit')->item (0);
-        if ($add_edit != null) {
-            $add_items = array ();
-            $edit_items = array ();
-            $item_nodes = $add_edit->getElementsByTagName ('item');
-            foreach ($item_nodes as $item_node) {
-                $attribs = HtmlDom::getAttribArray ($item_node);
-                $item = ViewItem::fromXMLNode ($item_node, $table);
-                $table->appendAddEditView ($item, $attribs['add'], $attribs['edit']);
-            }
-            $table->morphAddEditView ();
-        }
-        
         // export
         $export = $node->getElementsByTagName ('export')->item (0);
         if ($export != null) {
@@ -623,19 +596,9 @@ class Table implements QueryTable {
         
         $inner_indent = $indent. str_repeat (' ', $indent_width);
         echo $indent, "}, views {\n";
-        echo $inner_indent, "main {\n";
+        echo $inner_indent, "list {\n";
         foreach ($this->list_view as $item) {
-            print_human ($item, $indent_tab + 2);
-        }
-        echo $inner_indent, "}\n";
-        echo $inner_indent, "add {\n";
-        foreach ($this->add_view as $item) {
-            print_human ($item, $indent_tab + 2);
-        }
-        echo $inner_indent, "}\n";
-        echo $inner_indent, "edit {\n";
-        foreach ($this->edit_view as $item) {
-            print_human ($item, $indent_tab + 2);
+            print_human($item, $indent_tab + 2);
         }
         echo $inner_indent, "}\n";
         echo $indent, "}\n";
@@ -1107,16 +1070,13 @@ class Table implements QueryTable {
     
     /**
      * Gets all the view items for a specific view
-     * @param int $view The view to get the view items of:
-     *        'list', 'add', 'edit', or 'export'
+     * @param int $view The view to get the view items of: 'list' or 'export'
      * @return array The view items
      * @author Josh 2007-08-24
      */
     function getView ($view) {
         switch ($view) {
             case 'list': return $this->list_view;
-            case 'add': return $this->add_view;
-            case 'edit': return $this->edit_view;
             case 'export': return $this->export_view;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1128,16 +1088,13 @@ class Table implements QueryTable {
      * Gets all the view items for a specific view as a reference, for direct
      * manipulation. Use this function at your own risk!
      * 
-     * @param string $view The view to get the view items of:
-     *        'list', 'add', 'edit', or 'export'
+     * @param string $view The view to get the view items of: 'list' or 'export'
      * @return &array The view items
      * @author benno 2010-10-25
      */
     function &getViewRef ($view) {
         switch ($view) {
             case 'list': return $this->list_view;
-            case 'add': return $this->add_view;
-            case 'edit': return $this->edit_view;
             case 'export': return $this->export_view;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1157,14 +1114,6 @@ class Table implements QueryTable {
                 $this->list_view = $new_list;
                 break;
                 
-            case 'add':
-                $this->add_view = $new_list;
-                break;
-                
-            case 'edit':
-                $this->edit_view = $new_list;
-                break;
-                
             case 'export':
                 $this->export_view = $new_list;
                 break;
@@ -1174,13 +1123,6 @@ class Table implements QueryTable {
         }
     }
     
-    /**
-     * Sets the AddEdit view to a new list
-     * Get the format right or you will kill the system (see getAddEditView)
-     */
-    function setAddEditView ($new_list) {
-        $this->add_edit_view = $new_list;
-    }
     
     /**
      * Gets all the view items that are columns for a specific view.
@@ -1191,8 +1133,6 @@ class Table implements QueryTable {
     function getViewColumns ($view) {
         switch ($view) {
             case 'list': $items = $this->list_view; break;
-            case 'add': $items = $this->add_view; break;
-            case 'edit': $items = $this->edit_view; break;
             case 'export': $items = $this->export_view; break;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1226,28 +1166,6 @@ class Table implements QueryTable {
                     }
                 }
                 return false;
-                
-            case 'add':
-                foreach ($this->add_view as $view_item) {
-                    if ($view_item instanceof ColumnViewItem) {
-                        if ($view_item->getColumn () === $column) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-
-            case 'edit':
-                foreach ($this->edit_view as $view_item) {
-                    if ($view_item instanceof ColumnViewItem) {
-                        if ($view_item->getColumn () === $column) {
-                            if (($require_editable == false) or ($view_item->getEditable())) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
 
             case 'export':
                 foreach ($this->export_view as $view_item) {
@@ -1273,8 +1191,6 @@ class Table implements QueryTable {
     function appendView ($view, ViewItem $view_item) {
         switch ($view) {
             case 'list': $this->list_view[] = $view_item; break;
-            case 'add': $this->add_view[] = $view_item; break;
-            case 'edit': $this->edit_view[] = $view_item; break;
             case 'export': $this->export_view[] = $view_item; break;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1297,12 +1213,6 @@ class Table implements QueryTable {
                 case 'list':
                     $this->list_view = array_merge (array ($view_item), $this->list_view);
                     break;
-                case 'add':
-                    $this->add_view = array_merge (array ($view_item), $this->add_view);
-                    break;
-                case 'edit':
-                    $this->edit_view = array_merge (array ($view_item), $this->edit_view);
-                    break;
                 case 'export':
                     $this->export_view = array_merge (array ($view_item), $this->export_view);
                     break;
@@ -1319,18 +1229,6 @@ class Table implements QueryTable {
                 $this->list_view = array_merge ($before_items, array ($view_item), $after_items);
                 break;
                 
-            case 'add':
-                $before_items = array_slice ($this->add_view, 0, $after);
-                $after_items = array_slice ($this->add_view, $after);
-                $this->add_view = array_merge ($before_items, array ($view_item), $after_items);
-                break;
-                
-            case 'edit':
-                $before_items = array_slice ($this->edit_view, 0, $after);
-                $after_items = array_slice ($this->edit_view, $after);
-                $this->edit_view = array_merge ($before_items, array ($view_item), $after_items);
-                break;
-                
             case 'export':
                 $before_items = array_slice ($this->export_view, 0, $after);
                 $after_items = array_slice ($this->export_view, $after);
@@ -1345,7 +1243,7 @@ class Table implements QueryTable {
     /**
      * Removes an item from a view
      * 
-     * @param int $view_type the view: 'list', 'add', 'edit', or 'export'
+     * @param int $view_type the view: 'list' or 'export'
      * @param mixed $item the item to remove (a Column object, an include file
      *                name, a heading name, or an include descriptive name)
      * @return bool True if something was removed
@@ -1365,7 +1263,7 @@ class Table implements QueryTable {
     
     /**
      * removes a Column from a view
-     * @param int $view_type the view: 'list', 'add', 'edit', or 'export'
+     * @param int $view_type the view: 'list' or 'export'
      * @param Column $col The column
      * @return bool True if the column was removed
      * @author benno 2010-10-25 initial version
@@ -1385,7 +1283,7 @@ class Table implements QueryTable {
     
     /**
      * removes a file include from a view
-     * @param int $view_type the view: 'list', 'add', 'edit', or 'export'
+     * @param int $view_type the view: 'list' or 'export'
      * @param string $name The name of the file, e.g. inc_example.php, or its
      *        descriptive name
      * @return bool True if the file include was removed
@@ -1412,7 +1310,7 @@ class Table implements QueryTable {
     
     /**
      * removes a heading from a view
-     * @param int $view_type the view: 'list', 'add', 'edit', or 'export'
+     * @param int $view_type the view: 'list' or 'export'
      * @param string $heading The heading, e.g. Postal address
      *        (case-insensitive)
      * @return bool True if the heading was removed
@@ -1434,7 +1332,7 @@ class Table implements QueryTable {
     /**
      * Removes an item from a view by key, and resets the keys to be contiguous.
      * Use this function at your own risk!
-     * @param int $view_type the view: 'list', 'add', 'edit', or 'export'
+     * @param int $view_type the view: 'list' or 'export'
      * @param int $key the numeric key of the item in question
      * @author benno 2011-11-09
      */
@@ -1448,125 +1346,12 @@ class Table implements QueryTable {
     
     
     /**
-     * Appends an item to the AddEdit view.
-     * This view is ONLY to be used in setup
-     *
-     * @param ViewItem $item The item to add
-     * @param string $add_flag The add flag ('y', 'n', 'v')
-     * @param string $edit_flag The edit flag ('y', 'n', 'v')
-     */
-    function appendAddEditView (ViewItem $item, $add_flag, $edit_flag) {
-        $new_item = array();
-        $new_item['item'] = $item;
-        
-        // determine the addibility
-        switch ($add_flag) {
-            case 'y':
-                $new_item['add'] = true;
-                break;
-            case 'n':
-                $new_item['add'] = false;
-                break;
-        }
-        
-        // determine the editablility
-        switch ($edit_flag) {
-            case 'y':
-                $new_item['edit_view'] = true;
-                $new_item['edit_change'] = true;
-                break;
-            case 'n':
-                $new_item['edit_view'] = false;
-                $new_item['edit_change'] = false;
-                break;
-            case 'v':
-                $new_item['edit_view'] = true;
-                $new_item['edit_change'] = false;
-                break;
-        }
-        
-        $this->add_edit_view[] = $new_item;
-    }
-    
-    /**
-     * Inserts an item into the AddEdit view.
-     * This view is ONLY to be used in setup
-     *
-     * @param ViewItem $item The item to add
-     * @param int $after The index of the item to put this item after
-     * @param string $add_flag The add flag ('y', 'n', 'v')
-     * @param string $edit_flag The edit flag ('y', 'n', 'v')
-     */
-    function insertAddEditView (ViewItem $item, $after, $add_flag, $edit_flag) {
-        $new_item = array ();
-        $new_item['item'] = $item;
-        
-        // determine the addibility
-        switch ($add_flag) {
-            case 'y':
-                $new_item['add'] = true;
-                break;
-            case 'n':
-                $new_item['add'] = false;
-                break;
-        }
-        
-        // determine the editablility
-        switch ($edit_flag) {
-            case 'y':
-                $new_item['edit_view'] = true;
-                $new_item['edit_change'] = true;
-                break;
-            case 'n':
-                $new_item['edit_view'] = false;
-                $new_item['edit_change'] = false;
-                break;
-            case 'v':
-                $new_item['edit_view'] = true;
-                $new_item['edit_change'] = false;
-                break;
-        }
-        
-        // put the new item where it belongs
-        $before_items = array_slice ($this->add_edit_view, 0, $after);
-        $after_items = array_slice ($this->add_edit_view, $after);
-        $new_items = array_merge ($before_items, array ($new_item), $after_items);
-        
-        $this->add_edit_view = $new_items;
-    }
-    
-    /**
-     * Gets the AddEdit view.
-     * Returns an array of arrays. Each array has the following keys:
-     * 'item' => the view item
-     * 'add' => if add viewing/changing is enabled
-     * 'edit_view' => if edit viewing is enabled
-     * 'edit_change' => if edit changing is enabled
-     *
-     * This view is ONLY to be used in setup
-     */
-    function getAddEditView () {
-        return $this->add_edit_view;
-    }
-    
-    /**
-     * Clears the add/edit view
-     *
-     * This view is ONLY to be used in setup
-     */
-    function clearAddEditView () {
-        $this->add_edit_view = array();
-    }
-    
-    /**
      * Clears the specified view
      * @param int $view The view (constant) to clear.
      */
     function clearView ($view) {
         switch ($view) {
             case 'list': $this->list_view = array (); break;
-            case 'add': $this->add_view = array (); break;
-            case 'edit': $this->edit_view = array (); break;
             case 'export': $this->export_view = array (); break;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1591,8 +1376,6 @@ class Table implements QueryTable {
         // work out what view we will be searching
         switch ($view) {
             case 'list': $search_view = &$this->list_view; break;
-            case 'add': $search_view = &$this->add_view; break;
-            case 'edit': $search_view = &$this->edit_view; break;
             case 'export': $search_view = &$this->export_view; break;
             default:
                 throw new exception ("Invalid view requested; view {$view} is not valid");
@@ -1616,48 +1399,6 @@ class Table implements QueryTable {
         return null;
     }
     
-    /**
-     * Returns the ColumnViewItem for a specific column, as specified with the
-     * column name, in the specified view.
-     * This view is ONLY to be used in setup
-     *
-     * Return value, if $return_index is false, is an array of the following
-     * format:
-     *    'item' => the view item
-     *    'add' => if add viewing/changing is enabled
-     *    'edit_view' => if edit viewing is enabled
-     *    'edit_change' => if edit changing is enabled
-     *
-     * @author Josh 2008-03-06
-     * @param string $column_name The name of the column to find in the view
-     * @param bool $return_index If this is set to true, the function will
-     *        return the index in the view, not the item itself. Defaults to
-     *        false
-     * @return mixed If the column is found, an array of the add_edit view
-     *         item, as desribed above, or the index (depending on the
-     *         $return_index parameter) If not found, null.
-     */
-    function getColumnInAddEditView ($column_name, $return_index = false) {
-        // do the search itself
-        foreach ($this->add_edit_view as $index => $item) {
-            $view_item = $item['item'];
-            
-            if ($view_item instanceof ColumnViewItem) {
-                if ($view_item->getColumn ()->getName () == $column_name) {
-                    
-                    // we found the column
-                    if ($return_index) {
-                        return $index;
-                    } else {
-                        return $item;
-                    }
-                }
-            }
-        }
-        
-        // nothing found
-        return null;
-    }
     
     /**
      * gets the column that links from the current table to a specified table
@@ -1931,11 +1672,7 @@ class Table implements QueryTable {
         $this->indices = array ('PRIMARY KEY' => array ());
         
         $this->list_view = array ();
-        $this->add_view = array ();
-        $this->edit_view = array ();
         $this->export_view = array ();
-        
-        $this->add_edit_view = array ();
     }
     
     /**
@@ -2116,28 +1853,10 @@ class Table implements QueryTable {
                 $item->setColumn($new);
             }
         }
-        foreach ($this->add_view as $key => $item) {
-            if (!($item instanceof ColumnViewItem)) continue;
-            if ($item->getColumn() === $old) {
-                $item->setColumn($new);
-            }
-        }
-        foreach ($this->edit_view as $key => $item) {
-            if (!($item instanceof ColumnViewItem)) continue;
-            if ($item->getColumn() === $old) {
-                $item->setColumn($new);
-            }
-        }
         foreach ($this->export_view as $key => $item) {
             if (!($item instanceof ColumnViewItem)) continue;
             if ($item->getColumn() === $old) {
                 $item->setColumn($new);
-            }
-        }
-        foreach ($this->add_edit_view as $key => $item) {
-            if (!($item['item'] instanceof ColumnViewItem)) continue;
-            if ($item['item']->getColumn() === $old) {
-                $item['item']->setColumn($new);
             }
         }
         
@@ -2279,15 +1998,6 @@ class Table implements QueryTable {
             if ($view_item instanceof ColumnViewItem) {
                 if ($view_item->getColumn () === $rem_col) {
                     unset ($this->export_view[$index]);
-                }
-            }
-        }
-        
-        // remove from add/edit view
-        foreach ($this->add_edit_view as $index => $view_item) {
-            if ($view_item['item'] instanceof ColumnViewItem) {
-                if ($view_item['item']->getColumn () === $rem_col) {
-                    unset ($this->add_edit_view[$index]);
                 }
             }
         }
@@ -3479,36 +3189,6 @@ class Table implements QueryTable {
      */
     function isStatic () {
         return $this->static_table;
-    }
-    
-    
-    /**
-     * Generates the contents of the add and edit views individually from the
-     * combined add_edit view used in setup
-     * @author benno, 2011-08-17
-     */
-    function morphAddEditView () {
-        $add_edit = $this->getAddEditView ();
-        $add_view = array ();
-        $edit_view = array ();
-        foreach ($add_edit as $aev_item) {
-            if ($aev_item['add']) {
-                $view_item = clone $aev_item['item'];
-                if ($view_item instanceof ColumnViewItem) {     
-                    $view_item->setEditable (true);
-                }
-                $add_view[] = $view_item;
-            }
-            if ($aev_item['edit_view']) {
-                $view_item = clone $aev_item['item'];
-                if ($view_item instanceof ColumnViewItem) {
-                    $view_item->setEditable ($aev_item['edit_change']);
-                }
-                $edit_view[] = $view_item;
-            }
-        }
-        $this->setView('add', $add_view);
-        $this->setView('edit', $edit_view);
     }
     
     
