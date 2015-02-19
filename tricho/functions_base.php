@@ -24,6 +24,38 @@ if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
 }
 
 function tricho_exception_handler(Exception $ex) {
+    if (!\tricho\Runtime::get('live')) {
+        header('Content-type: text/html');
+        echo '<pre>';
+        $trace = $ex->getTrace();
+        echo '<strong>', get_class($ex), '</strong> in ', $ex->getFile(),
+            ':', $ex->getLine (), "<br><i>", $ex->getMessage(), "</i><br>\n";
+        foreach ($trace as &$step) {
+            foreach ($step['args'] as $key => &$arg) {
+                if (is_object($arg)) {
+                    $step['args'][$key] = 'Object:' . get_class($arg);
+                    continue;
+                }
+                
+                if (!is_array($arg)) continue;
+                foreach ($arg as $arg_key => $arg_part) {
+                    if (is_object($arg_part)) {
+                        $arg[$arg_key] = 'Object:' . get_class($arg_part);
+                    } else if (is_array($arg_part)) {
+                        $count = count($arg_part);
+                        $placeholders = [];
+                        for (; $count > 0; --$count) {
+                            $placeholders[] = '...';
+                        }
+                        $keys = array_keys($arg_part);
+                        $arg[$arg_key] = array_combine($keys, $placeholders);
+                    }
+                }
+            }
+        }
+        echo print_r($trace, true);
+        die();
+    }
     if ($ex instanceof QueryException) {
         $err = 'q';
     } else {
