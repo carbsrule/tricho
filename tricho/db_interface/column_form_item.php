@@ -20,6 +20,14 @@ class ColumnFormItem {
     }
     
     
+    /**
+     * @return Column
+     */
+    function getColumn() {
+        return $this->column;
+    }
+    
+    
     function getLabel() {
         return $this->label;
     }
