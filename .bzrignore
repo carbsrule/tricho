@@ -1,0 +1,6 @@
+./tricho/config/*.php
+./tricho/ext/*
+./tricho/data/*.xml
+./admin/tables.xml*
+./TODO
+./COMMIT*
