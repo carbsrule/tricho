@@ -58,7 +58,7 @@ foreach ($options as $option) {
 $table->setConfirmDel (true);
 
 // make sure there are no duplicate masks
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 
 if ($db !== null) {
     $tables = $db->getTables ();

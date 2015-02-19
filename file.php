@@ -13,7 +13,7 @@ $return_404 = false;
 list ($table_name, $column_name, $file_id) = explode ('.', $_GET['f']);
 $file_prim_key_vals = explode (',', $file_id);
 
-$db = Database::parseXML ('admin/tables.xml');
+$db = Database::parseXML();
 $table = $db->getTableByMask ($table_name);
 
 if (count($file_prim_key_vals) == 0) {

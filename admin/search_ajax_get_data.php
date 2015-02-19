@@ -10,7 +10,7 @@ require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-if (!@$db instanceof Database) $db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 // get the 'from' table
 $fromTable = $db->getTable ($_GET['t']);

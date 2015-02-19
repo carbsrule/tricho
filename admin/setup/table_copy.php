@@ -7,7 +7,7 @@
 
 require 'head.php';
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_GET['table']);
 
 if ($table == null) {

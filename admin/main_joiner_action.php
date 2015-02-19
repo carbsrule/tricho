@@ -8,7 +8,7 @@
 require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 // get joiner table and its parent based on form data
 $parents = explode (',', $_POST['_p']);

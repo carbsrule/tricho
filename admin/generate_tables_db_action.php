@@ -11,7 +11,7 @@ $root = tricho\Runtime::get('root_path');
 require_once $root . 'tricho/data_objects.php';
 require_once $root . 'tricho/data_setup.php';
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 $output = '';
 $unknown_tables = array ();

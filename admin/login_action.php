@@ -20,7 +20,7 @@ if (!$res) {
     $_SESSION[ADMIN_KEY]['err'] = 'Database error';
     
 } else {
-    $db = Database::parseXML('tables.xml');
+    $db = Database::parseXML();
     $login_num_tables = $res->rowCount();
     
     if ($login_num_tables > 0 and ip_locked_out($db, true)) {

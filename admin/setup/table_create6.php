@@ -19,7 +19,7 @@ $engine = $_SESSION['setup']['create_table']['engine'];
 $collation = $_SESSION['setup']['create_table']['collation'];
 unset ($_SESSION['setup']['create_table']);
 
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable ($table_name);
 
 // generate database table from XML definition

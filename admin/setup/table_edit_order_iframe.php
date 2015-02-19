@@ -83,7 +83,7 @@ function order_iframe ($table, $name) {
 <body>
 
 <?php
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_GET['t']);
 
 // TODO: show message: "xml saved"

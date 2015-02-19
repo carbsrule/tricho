@@ -9,7 +9,7 @@ require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable ($_GET['t']);
 force_redirect_to_alt_page_if_exists ($table, 'main_order');
 

@@ -36,7 +36,7 @@ function set_all_to() {
 $res = execq("SHOW TABLE STATUS");
 $db_tables = array ();
 $tables_not_defined = array ();
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 while ($db_row = fetch_assoc($res)) {
     $engine = $db_row['Engine'];
     

@@ -9,7 +9,7 @@ require '../tricho.php';
 test_admin_login ();
 require 'main_functions.php';
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable ($_GET['t']); // use table name
 force_redirect_to_alt_page_if_exists($table, 'add');
 

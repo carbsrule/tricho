@@ -8,7 +8,7 @@
 require '../../tricho.php';
 echo "<h1>Test print_human ()</h1>\n";
 
-$db = Database::parseXML (ROOT_PATH_FILE. 'admin/tables.xml');
+$db = Database::parseXML();
 
 echo "<pre>";
 print_human ($db);

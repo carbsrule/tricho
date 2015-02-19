@@ -9,7 +9,7 @@ require_once '../../tricho.php';
 require_once 'setup_functions.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $source = $db->get($_POST['source']);
 $error_url = 'table_copy.php?table=' . urlencode($_POST['source']);
 if ($source and $source->getAccessLevel() == TABLE_ACCESS_SETUP_FULL and

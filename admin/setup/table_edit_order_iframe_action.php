@@ -12,7 +12,7 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once 'order_functions.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_GET['t']);
 
 list ($in_list, $out_list) = get_in_out_lists ($table, $_GET['list']);

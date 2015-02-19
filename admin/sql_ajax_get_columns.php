@@ -8,7 +8,7 @@
 require_once '../tricho.php';
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 // header
 header ('Content-Type: text/xml');

@@ -69,7 +69,7 @@ function check_1 () {
     }
     
     // check table does not already exist in tables.xml
-    $db = Database::parseXML ('../tables.xml');
+    $db = Database::parseXML();
     foreach ($db->getTables () as $table) {
         if ($table->getName () == $_POST['table_name']) {
             $errors[] = "Table '{$_POST['table_name']}' already exists in tables.xml";

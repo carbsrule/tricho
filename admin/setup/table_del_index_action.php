@@ -8,7 +8,7 @@
 require_once '../../tricho.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_POST['t']);
 if ($table == null) redirect ('./');
 
@@ -56,7 +56,7 @@ $q = "ALTER TABLE `". $table->getName (). '` DROP INDEX `'. $index. '`';
 if (execq($q, false, false, false, false)) {
     $_SESSION['setup']['msg'] = "Index <em>{$_POST['index']}</em> deleted";
     
-    $db = Database::parseXML ('../tables.xml');
+    $db = Database::parseXML();
     $log_message = "Removed index {$index} from {$table->getName()}";
     log_action ($db, $log_message, $q);
     

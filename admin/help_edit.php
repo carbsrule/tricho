@@ -7,7 +7,7 @@
 
 require '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 $help_table = $db->getHelpTable ();
 

@@ -13,7 +13,7 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 if ($_SESSION['setup']['create_table']['table_name'] != '') {
     // save database meta-data in XML
     
-    $db = Database::parseXML ('../tables.xml');
+    $db = Database::parseXML();
     $table = $_SESSION['setup']['create_table']['table'];
     
     // Check each element of the row identifier, and if it refers to a column,

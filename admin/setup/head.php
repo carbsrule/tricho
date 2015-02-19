@@ -86,7 +86,7 @@ $permissions_ok = false;
 if ((is_file ($filename) and is_writeable ($filename)) or (!file_exists ($filename) and is_writeable ('../'))) {
     $permissions_ok = true;
     
-    $db = Database::parseXML ($filename);
+    $db = Database::parseXML();
 }
 
 if ($permissions_ok) {

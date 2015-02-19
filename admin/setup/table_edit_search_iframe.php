@@ -54,7 +54,7 @@ function order_iframe ($table) {
     echo "</table>\n";
 }
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_GET['t']);
 
 echo "<table>\n<tr>\n";

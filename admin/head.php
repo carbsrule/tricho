@@ -11,9 +11,7 @@ if (!defined ('ROOT_PATH_FILE')) require_once '../tricho.php';
 test_admin_login ();
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
-if (!isset($db) or !($db instanceof Database)) {
-    $db = Database::parseXML(ROOT_PATH_FILE . ADMIN_DIR . 'tables.xml');
-}
+$db = Database::parseXML();
 
 require_once ROOT_PATH_FILE. ADMIN_DIR. 'setup_user_options.php';
 

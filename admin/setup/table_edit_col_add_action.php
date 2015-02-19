@@ -15,7 +15,7 @@ require_once 'column_definition.php';
 
 $session = &$_SESSION['setup']['table_edit'];
 
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_POST['t']);
 if ($table == null) redirect ('./');
 

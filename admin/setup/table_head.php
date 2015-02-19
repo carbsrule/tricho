@@ -11,7 +11,7 @@ if (@$_GET['t'] == '') {
     exit;
 }
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_GET['t']);
 
 if ($table == null) redirect ('./');

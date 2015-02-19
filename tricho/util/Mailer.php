@@ -751,8 +751,7 @@ class MailerAttachment {
             if (preg_match('/f=([a-zA-Z0-9\~\_\-\.]+)/', $src, $matches)) {
                 
                 if (!$db instanceof Database) {
-                    $xml_loc = ROOT_PATH_FILE . 'admin/tables.xml';
-                    $db = \Database::parseXML($xml_loc);
+                    $db = \Database::parseXML();
                 }
                 
                 $mask = $matches[1];

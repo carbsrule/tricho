@@ -117,8 +117,7 @@ function authorise_admin($user, $pass, $num_tables) {
         return -1;
     }
     
-    $xml_loc = ROOT_PATH_FILE. ADMIN_DIR. 'tables.xml';
-    $db = Database::parseXML ($xml_loc);
+    $db = Database::parseXML();
     $table = $db->get('_tricho_users');
     
     // If the setup users table isn't defined in the XML, the salt used is

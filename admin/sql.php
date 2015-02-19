@@ -422,7 +422,7 @@ $max_upload_size = bytes_to_human ($ini_max_upload);
         <select id="table" onChange="update_side_list();">
             <option value="">- Please Select -</option>
 <?php
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 $q = "SHOW TABLES";
 $res = execq($q);
 while ($table_name = $res->fetchColumn()) {

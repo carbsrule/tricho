@@ -13,7 +13,7 @@ require_once 'setup_functions.php';
 require_once 'column_definition.php';
 
 @list($table, $column) = explode('.', $_POST['col']);
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->get($table);
 if (!$table) redirect('./');
 

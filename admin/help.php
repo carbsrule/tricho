@@ -9,7 +9,7 @@ header ('Content-Type: text/html; charset=UTF-8');
 require_once '../tricho.php';
 test_admin_login ();
 
-if (!$db instanceof Database) $db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 // get help table
 $help_table = $db->getHelpTable ();

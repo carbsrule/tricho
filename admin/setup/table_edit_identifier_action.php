@@ -10,7 +10,7 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable($_POST['t']);
 if ($table == null) redirect('./');
 

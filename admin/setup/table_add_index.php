@@ -8,7 +8,7 @@
 require_once '../../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
 
-$db = Database::parseXML('../tables.xml');
+$db = Database::parseXML();
 $table = $db->get($_POST['t']);
 if (!$table) redirect('./');
 $url = 'table_edit_indexes.php?t=' . urlencode($_POST['t']);

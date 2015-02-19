@@ -10,7 +10,7 @@ test_setup_login (true, SETUP_ACCESS_FULL);
 require_once tricho\Runtime::get('root_path') . 'tricho/data_objects.php';
 
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 if ($db == null) $db = new Database ();
 

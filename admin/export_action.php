@@ -123,7 +123,7 @@ if (@$_POST['dl']) {
     }
 }
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 foreach ($_POST['tables'] as $table => $val) {
     
     // export is the generic table-specific data store, with

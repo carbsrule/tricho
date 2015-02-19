@@ -9,7 +9,7 @@ header ('Content-Type: text/html; charset=UTF-8');
 require '../tricho.php';
 test_admin_login ();
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 $table = $db->getTable ($_GET['t']); // use table name
 
 if ($table == null) die ('Invalid table');

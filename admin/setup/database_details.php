@@ -7,7 +7,7 @@
 
 require 'head.php';
 
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 $convert_types = array (
     CONVERT_OUTPUT_FAIL => 'Show an error',
     CONVERT_OUTPUT_WARN => 'Show a warning',

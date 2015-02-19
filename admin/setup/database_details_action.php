@@ -9,7 +9,7 @@ require_once '../../tricho.php';
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-$db = Database::parseXML ('../tables.xml');
+$db = Database::parseXML();
 $db->setDataChecking ((bool) @$_POST['data_check']);
 $db->setShowPrimaryHeadings ((bool) @$_POST['primary_heading']);
 $db->setShowSectionHeadings ((bool) @$_POST['section_heading']);

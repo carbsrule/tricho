@@ -29,7 +29,7 @@ if (in_array(@$_GET['del'], array('false', 'n', 'N', '0'))) {
     $delete_archive = false;
 }
 
-$db = Database::parseXML ('tables.xml');
+$db = Database::parseXML();
 
 $tables = $db->getTables ();
 $dirs = array ();
