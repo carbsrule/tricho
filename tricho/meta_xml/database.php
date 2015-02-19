@@ -25,7 +25,7 @@ class Database {
     private $show_search = false;
     private $help_table;
     private $convert_output;
-    static private $last_loaded = null;
+    static private $loaded_files = [];
     
     /**
      * Used by {@link print_human} to create a human-readable string that
@@ -61,24 +61,20 @@ class Database {
     
     
     /**
-     * Returns the last Database object that was loaded (by parseXML)
-     */
-    static function getLastLoaded() {
-        return self::$last_loaded;
-    }
-    
-    
-    /**
      * Read a Tricho-formatted XML file into meta-data store.
      * 
-     * @param string $file_name Name and location of XML file to read
+     * @param string $file_name Path of XML file to read; '' for default path
+     * @param bool $force_reload If false, use cache if possible
      * @author benno 2011-08-12 complete rewrite to use DOMDocument instead of
      *         XML Parser
      * @return Database the meta-data store
      */
-    static function parseXML($file_name = '') {
+    static function parseXML($file_name = '', $force_reload = false) {
         if ($file_name == '') {
             $file_name = Runtime::get('root_path') . 'admin/tables.xml';
+        }
+        if (!$force_reload and isset(self::$loaded_files[$file_name])) {
+            return self::$loaded_files[$file_name];
         }
         
         $readable = true;
@@ -101,8 +97,9 @@ class Database {
             throw new Exception ('Invalid XML');
         }
         $db_node = $dbs->item (0);
-        self::$last_loaded = self::fromXMLNode($db_node);
-        return self::$last_loaded;
+        $db = self::fromXMLNode($db_node);
+        self::$loaded_files[$file_name] = $db;
+        return $db;
     }
     
     

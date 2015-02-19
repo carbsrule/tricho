@@ -77,9 +77,7 @@ class LinkColumn extends Column {
     }
     
     static function getConfigFormFields(array $config, $class) {
-        $db = Database::getLastLoaded();
-        
-        if (!($db instanceof Database)) return '';
+        $db = Database::parseXML();
         
         $fields = "<p>Target <select name=\"{$class}_target\">\n";
         $fields .= "<option value=\"\">- Select below -</option>\n";
@@ -107,11 +105,7 @@ class LinkColumn extends Column {
      * @author benno, 2013-02-28
      */
     function applyConfig(array $config, array &$errors) {
-        $db = Database::getLastLoaded();
-        if ($db == null) {
-            $path = tricho\Runtime::get('root_path') . 'admin/tables.xml';
-            $db = Database::parseXML($path);
-        }
+        $db = Database::parseXML();
         
         @list($table, $col) = explode('.', $config['target']);
         $table = $db->get($table);
