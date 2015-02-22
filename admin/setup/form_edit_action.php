@@ -24,81 +24,42 @@ if (!$table) {
     redirect('./');
 }
 
-$file = Runtime::get('root_path') . 'tricho/data/' . $form_name . '.form.xml';
-$items = null;
-$doc = new DOMDocument();
-$doc->preserveWhiteSpace = false;
-$comments = [];
-if (file_exists($file)) {
-    $doc->load($file);
-    $forms = $doc->getElementsByTagName('form');
-    $form = $forms->item(0);
-    if (!$form) throw new Exception('Invalid extant file');
-    $items = $form->getElementsByTagName('items');
-    if ($items->length > 0) {
-        $items = $items->item(0);
-        while ($items->hasChildNodes()) {
-            // Preserve comments
-            $last = $items->lastChild;
-            $last_name = $last->getAttribute('name');
-            if ($last->hasChildNodes()) {
-                $last_child = $last->firstChild;
-                if ($last_child->nodeType == XML_COMMENT_NODE) {
-                    $comments[$last_name] = $last_child->data;
-                }
-            }
-            $items->removeChild($items->lastChild);
-        }
-    }
-} else {
-    $form = HtmlDom::appendNewChild($doc, 'form');
-}
-
-$form->setAttribute('table', $_POST['table']);
-if ($_POST['modifier'] != '') {
-    $form->setAttribute('modifier', $_POST['modifier']);
-} else {
-    $form->removeAttribute('modifier');
+$form = FormManager::load($form_name);
+if ($form == null) {
+    $form = new Form();
+    $form->setFile($form_name);
 }
 
 $table = $db->get($_POST['table']);
-if (!$table) goto no_cols;
+if (!$table) {
+    throw new Exception('Invalid table specified');
+}
+$form->setTable($table);
 
-if ($items == null) $items = HtmlDom::appendNewChild($form, 'items');
+if ($_POST['modifier'] != '') {
+    $form->setModifier(new $_POST['modifier']());
+} else {
+    $form->setModifier(null);
+}
+
+$form->removeAllItems();
 if (empty($_POST['cols'])) goto no_cols;
 foreach ($_POST['cols'] as $key => $col) {
-    $attrs = ['name' => $col];
-    if (!empty($_POST['labels'][$key])) {
-        $attrs['label'] = $_POST['labels'][$key];
-    }
-    if (!empty($_POST['apply'][$key])) {
-        $attrs['apply'] = $_POST['apply'][$key];
-    }
-    $item = HtmlDom::appendNewChild($items, 'field', $attrs);
-    if (isset($comments[$col])) {
-        $item->appendChild($doc->createComment($comments[$col]));
-    }
+    $item = new ColumnFormItem($table->get($col));
+    $label = @$_POST['labels'][$key];
+    if ($label) $item->setLabel($label);
+    $item->setApply(@$_POST['apply'][$key]);
+    $form->addItem($item);
 }
 no_cols:
 
-/*
-$cdata = $doc->createCDATASection(print_r($_POST, true));
-$form->appendChild($cdata);
-*/
+$bytes_written = FormManager::save($form);
 
-$doc->formatOutput = true;
-$contents = @$doc->saveXML();
-
-// use 4 spaces instead of 2 for indenting
-if (strpos($contents, "\n  <items") !== false) {
-    $contents = preg_replace('/^( +)</m', '$1$1<', $contents);
-}
-$bytes = file_put_contents($file, $contents);
-
-if ($bytes > 0) {
+if ($bytes_written > 0) {
     $_SESSION['setup']['msg'] = 'Form saved';
 } else {
     $_SESSION['setup']['err'] = 'Form save failed';
 }
+
 if (!empty($_POST['r'])) redirect($_POST['r']);
 redirect('./');

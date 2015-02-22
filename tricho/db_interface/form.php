@@ -27,6 +27,7 @@ class Form {
     protected $final;
     protected $presets = array();
     protected $modifier;
+    protected $file = null;
     
     /**
      * The DOMDocument created by Form::generateDoc, which can be manipulated
@@ -136,7 +137,7 @@ class Form {
     }
     
     
-    function addItem(array $item, $pos = null) {
+    function addItem(FormItem $item, $pos = null) {
         if ($pos === null) {
             $this->items[] = $item;
             return;
@@ -163,7 +164,57 @@ class Form {
     }
     
     
-    function setModifier(FormModifier $modifier) {
+    /**
+     * Attempts to find a column, and returns the first match
+     * @param Column $col The column
+     * @param string $type 'add', 'edit', 'edit-view', or '' for any
+     * @return mixed The relevant ColumnFormItem, or null if not found
+     */
+    function getColumnItem(Column $col, $type = '') {
+        if (!in_array($type, ['add', 'edit', 'edit-view', ''])) {
+            throw new InvalidArgumentException('Unknown type: ' . $type);
+        }
+        foreach ($this->items as $item) {
+            if (!($item instanceof ColumnFormItem)) continue;
+            if ($item->getColumn() !== $col) continue;
+            if ($type != '' and strpos($item->getApply(), $type) === false) {
+                continue;
+            }
+            return $item;
+        }
+        return null;
+    }
+    
+    
+    /**
+     * Removes an item
+     * @param FormItem $item
+     * @return bool True if the item was found and removed
+     */
+    function removeItem(FormItem $item) {
+        foreach ($this->items as $key => $val) {
+            if ($item === $val) {
+                unset($this->items[$key]);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Removes all item
+     * @return void
+     */
+    function removeAllItems() {
+        $this->items = array();
+    }
+    
+    
+    function setModifier($modifier) {
+        if ($modifier !== null and !($modifier instanceof FormModifier)) {
+            throw new InvalidArgumentException('Must be FormModifier or null');
+        }
         $this->modifier = $modifier;
     }
     function getModifier() {
@@ -181,6 +232,9 @@ class Form {
         if (!@is_file($file_path) or !is_readable($file_path)) {
             throw new InvalidArgumentException('Missing or unreadable file');
         }
+        
+        $this->setFile($file_path);
+        
         $doc = new DOMDocument();
         $doc->load($file_path);
         
@@ -262,6 +316,26 @@ class Form {
         if ($this->modifier) {
             $this->modifier->postLoad($this);
         }
+    }
+    
+    
+    /**
+     * Gets the name of the file where this form's definition should be saved,
+     * without the extension.
+     */
+    function getFile() {
+        return $this->file;
+    }
+    
+    /**
+     * Sets the name of the file where this form's definition should be saved,
+     * leaving out the extension.
+     */
+    function setFile($file) {
+        if (ends_with($file, '.form.xml')) {
+            $file = substr($file, 0, -strlen('.form.xml'));
+        }
+        $this->file = $file;
     }
     
     
