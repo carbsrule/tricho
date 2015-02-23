@@ -24,8 +24,7 @@ require 'head.php';
 
 tricho\Runtime::load_help_text($table);
 
-// get the view items
-$view_items = $table->getView('add');
+// get the form items
 $form = new Form();
 $form->setType('add');
 $form->setTable($table);
@@ -34,35 +33,6 @@ $form->setTable($table);
 $button_text = $table->getAltButtons ();
 if (@$button_text['add'] == '') $button_text['add'] = 'Add';
 if (@$button_text['cancel'] == '') $button_text['cancel'] = 'Cancel';
-
-// include JS editor stuff if there are any columns that require it, and check for file fields
-$file_uploads_required = false;
-$tinymce_fields = array ();
-foreach ($view_items as $item) {
-    if (!($item instanceof ColumnViewItem)) continue;
-    $col = $item->getColumn();
-    if ($col instanceof TinymceColumn) {
-        $tinymce_fields[] = $col;
-    } else if ($col instanceof FileColumn) {
-        $file_uploads_required = true;
-    }
-}
-
-// Richtext editor stuff
-$has_a_richtext_editor = false;
-if (count($tinymce_fields) > 0) {
-    $has_a_richtext_editor = true;
-?>
-<script type="text/javascript">
-<!--
-<?php
-init_tinymce($tinymce_fields);
-?>
-//-->
-</script>
-<noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
-<?php
-}
 
 // main form
 echo "<div id=\"main_data\">\n";
