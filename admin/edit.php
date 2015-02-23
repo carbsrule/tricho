@@ -21,8 +21,7 @@ require_once 'main_functions.php';
 
 tricho\Runtime::load_help_text ($table);
 
-// Get the view items for this col
-$view_items = $table->getView('edit');
+// Get the form items for this table
 $form = new Form();
 $form->setType('edit');
 $form->setTable($table);
@@ -72,38 +71,6 @@ $identifier = $table->buildIdentifier ($primary_keys);
 unset ($primary_keys);
 
 $pk_clause = implode (' AND ', $prim_key_clauses);
-
-
-// include JS editor stuff if there are any columns that require it, and check for file fields
-$file_uploads_required = false;
-$tinymce_fields = array ();
-foreach ($view_items as $item) {
-    if (!($item instanceof ColumnViewItem)) continue;
-    $col = $item->getColumn();
-    if ($col instanceof TinymceColumn) {
-        $tinymce_fields[] = $col;
-    } else if ($col instanceof FileColumn) {
-        $file_uploads_required = true;
-    }
-}
-
-// Richtext editor stuff
-$has_a_richtext_editor = false;
-if (count($tinymce_fields) > 0) {
-    $has_a_richtext_editor = true;
-?>
-<script type="text/javascript">
-<!--
-<?php
-init_tinymce($tinymce_fields);
-?>
-//-->
-</script>
-<noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
-<?php
-}
-
-
 
 // start the useful output
 echo "<div id=\"main_data\">\n";
@@ -176,23 +143,8 @@ if ($help_table != null) {
     }
 }
 
-// determine what functions are going to be called, and build a MySQL string of all of them
-$functions = array ();
-$function_id = 0;
-$function_sql = '';
-foreach ($view_items as $item) {
-    if ($item instanceof FunctionViewItem) {
-        $functions[] = $item->getCode (). ' AS func'. ($function_id++);
-    }
-}
-if ($function_id > 0) {
-    $function_sql = ', ' . implode (', ', $functions);
-}
-
-$hidden_fields = array ();
-
 // the query for loading the data
-$q = "SELECT `{$_GET['t']}`.*{$function_sql} FROM `{$_GET['t']}` WHERE {$pk_clause}";
+$q = "SELECT `{$_GET['t']}`.* FROM `{$_GET['t']}` WHERE {$pk_clause}";
 
 // show the query
 if (@$_SESSION['setup']['view_q'] === true) {
@@ -226,7 +178,7 @@ if (@$res->rowCount() == 1) {
         $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
     }
     $session = &$_SESSION['forms'][$id];
-    $doc = $form->generateDoc($row, $session['errors'], $_GET['id']);
+    $doc = $form->generateDoc($row, $session['errors'], [$_GET['id']]);
     
     $form_el = $doc->getElementsByTagName('form')->item(0);
     $params = ['type' => 'hidden', 'name' => '_t', 'value' => $table->getName()];
