@@ -45,5 +45,10 @@ class UploadedFile {
     function getData () {
         return $this->data;
     }
+    
+    function __printHuman() {
+        return $this->file_name . ' (' . $this->mime_type . '), ' .
+            strlen($this->data) . ' byte(s)';
+    }
 }
 ?>
