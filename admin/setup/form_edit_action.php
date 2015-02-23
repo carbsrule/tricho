@@ -36,7 +36,7 @@ if (!$table) {
 }
 $form->setTable($table);
 
-if ($_POST['modifier'] != '') {
+if (!empty($_POST['modifier'])) {
     $form->setModifier(new $_POST['modifier']());
 } else {
     $form->setModifier(null);
