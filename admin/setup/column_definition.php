@@ -733,22 +733,33 @@ function column_def_edit (Column $col, $old_col, $form_url, $config) {
  * @author benno 2010-11-11
  */
 function column_def_update_views (Column $col, $config) {
+    $debug = false;
     
     $table = $col->getTable ();
     
     // Determine position
     if (@$config['insert_after'] == 'retain') {
-        $index = $table->getColumnPosition ($col);
+        $index = $table->getColumnPosition($col->getName());
         $prev_index = $index - 1;
         $next_index = $index + 1;
+    } else if (@$config['insert_after'] === '') {
+        $prev_index = count($table->getColumns()) - 1;
+        $next_index = $prev_index + 1;
     } else {
         $prev_index = @$config['insert_after'];
         $next_index = @$config['insert_after'] + 1;
     }
-    $previous_col = $table->getColumnByPosition ($prev_index);
-    if ($previous_col === $col) $previous_col = $table->getColumnByPosition ($prev_index - 1);
-    $next_col = $table->getColumnByPosition ($next_index + 1);
-    if ($next_col === $col) $next_col = $table->getColumnByPosition ($next_index + 2);
+    
+    if ($debug) echo "prev_index: {$prev_index}, next_index: {$next_index}<br>\n";
+    
+    $previous_col = $table->getColumnByPosition($prev_index);
+    if ($previous_col === $col) {
+        $previous_col = $table->getColumnByPosition($prev_index - 1);
+    }
+    $next_col = $table->getColumnByPosition($next_index);
+    if ($next_col === $col) {
+        $next_col = $table->getColumnByPosition($next_index + 1);
+    }
     
     $col_view_item = new ColumnViewItem ();
     $col_view_item->setDetails ($col, true);
@@ -777,114 +788,138 @@ function column_def_update_views (Column $col, $config) {
             $table->removeColumnFromView ($view, $col);
         }
     }
-    column_def_update_add_edit_view ($col_view_item, $config, $previous_col, $next_col);
+    column_def_update_admin_form($col, $config, $previous_col, $next_col);
 }
 
 /**
- * Updates the add/edit view for a Table by inserting or repositioning a view item
- * @param ColumnViewItem $col_view_item the view item to insert/reposition
+ * Updates the add/edit admin form for a Table by inserting, repositioning 
+ * and/or removing form items associated with a column.
+ * @param Column $col the column of the items to insert/reposition/remove
  * @param array $config Config options, i.e. POST data from col add/edit form
- * @param mixed $previous_col the Column after which to position $col_view_item, or null
- * @param mixed $next_col the Column before which to position $col_view_item, or null
+ * @param mixed $previous_col the Column after which to position the new item,
+ *        or null
+ * @param mixed $next_col the Column before which to position the new item, or
+ *        null
  * @return void
- * @author benno 2010-11-11
  */
-function column_def_update_add_edit_view (ColumnViewItem $col_view_item, $config, $previous_col, $next_col) {
-    $col = $col_view_item->getColumn ();
+function column_def_update_admin_form(Column $col, $config, $previous_col, $next_col) {
+    $debug = false;
+    
     $table = $col->getTable ();
     
-    // Search for:
-    // existing view item to be updated (if retaining position)
-    // existing view item to be removed (if changing position)
-    // previous and next view items (if adding new item or changing position)
-    $view = $table->getAddEditView ();
-    $action = 'add';
-    $add_edit_item = false;
-    $extant_index = -1;
+    $form_file = "admin.{$table->getName()}";
+    $form = FormManager::load($form_file);
+    if ($form == null) $form = new Form();
     
-    // remove all references to this column if it is never to be displayed
-    // on the add or edit forms
-    if (@$config['add_view'] != 1 and @$config['edit_view_show'] != 1) {
-        $action = 'remove';
-        $config['insert_after'] = 'remove';
+    $new_props = [];
+    if (@$config['add_view']) $new_props[] = 'add';
+    if (@$config['edit_view_edit']) {
+        $new_props[] = 'edit';
+    } else if (@$config['edit_view_show']) {
+        $new_props[] = 'edit-view';
     }
-    foreach ($view as $item_index => $search_item) {
-        $item = $search_item['item'];
-        if ($item instanceof ColumnViewItem and $item->getColumn () === $col) {
-            if ($config['insert_after'] == 'retain') {
-                $add_edit_item = $search_item;
-                $extant_index = $item_index;
-                $action = 'update';
+    
+    $matches = [];
+    $items = $form->getItems();
+    foreach ($items as $key => $item) {
+        if (!($item instanceof ColumnFormItem)) continue;
+        if ($item->getColumn() !== $col) continue;
+        $matches[$key] = $item;
+    }
+    
+    $add_new = false;
+    switch (count($new_props)) {
+    case 0:
+        foreach ($matches as $item) {
+            $form->removeItem($item);
+        }
+        break;
+    
+    case 1:
+        if (count($matches) == 1) {
+            $item = reset($matches);
+            $item->setApply(reset($new_props));
+        } else if (count($matches) == 2) {
+            $item = reset($matches);
+            $item->setApply(reset($new_props));
+            $item = end($matches);
+            $form->removeItem($item);
+        } else if (count($matches) == 0) {
+            $add_new = reset($new_props);
+        }
+        break;
+    
+    case 2:
+        if (count($matches) == 1) {
+            $item = reset($matches);
+            $item->setApply(implode(',', $new_props));
+        } else if (count($matches) == 2) {
+            $first = reset($matches);
+            $second = end($matches);
+            if (strpos('edit', $first->getApply()) !== false) {
+                $first->setApply(end($new_props));
+                $second->setApply(reset($new_props));
             } else {
-                unset ($view[$item_index]);
+                $first->setApply(reset($new_props));
+                $second->setApply(end($new_props));
             }
+        } else if (count($matches) == 0) {
+            $add_new = implode(',', $new_props);
         }
+        break;
     }
     
-    // item was not found - create a new one
-    if ($add_edit_item === false) {
-        $add_edit_item = array ();
-        $add_edit_item['item'] = $col_view_item;
-        $add_edit_item['add'] = false;
-        $add_edit_item['edit_view'] = false;
-        $add_edit_item['edit_change'] = false;
+    if (!$add_new) goto done;
+    
+    $new_item = new ColumnFormItem($col);
+    $new_item->setApply($add_new);
+    
+    $previous_item = null;
+    if ($previous_col) $previous_item = $form->getColumnItem($previous_col);
+    if ($debug) {
+        echo 'Col: '; print_human($col); echo "<br>";
+        echo 'Previous col: '; print_human($previous_col); echo ", ";
+        echo 'Previous item: '; print_human($previous_item); echo "<br>";
     }
-    
-    // set which actions are allowed
-    $add_edit_item['add'] = false;
-    if (@$config['add_view']) $add_edit_item['add'] = true;
-    
-    $add_edit_item['edit_view'] = false;
-    $add_edit_item['edit_change'] = false;
-    if (@$config['edit_view_show']) {
-        $add_edit_item['edit_view'] = true;
-        if (@$config['edit_view_edit']) $add_edit_item['edit_change'] = true;
-    }
-    
-    if ($action != 'add') {
-        if ($action == 'update') $view[$extant_index] = $add_edit_item;
-        $table->setAddEditView ($view);
-        return;
-    }
-    
-    // insert new record in the desired position
-    if (@$config['insert_after'] == -1) {
-        $new_view = array_merge (array ($add_edit_item), $view);
-    } else if (@$config['insert_after'] == '') {
-        $new_view = $view;
-        $new_view[] = $add_edit_item;
-    } else {
-        $inserted = false;
-        $new_view = array ();
-        foreach ($view as $search_item) {
-            if (!$inserted) {
-                $item = $search_item['item'];
-                if ($item instanceof ColumnViewItem) {
-                    if ($item->getColumn () === $previous_col) {
-                        $new_view[] = $search_item;
-                        $new_view[] = $add_edit_item;
-                        $inserted = true;
-                    } else if ($item->getColumn () === $next_col) {
-                        $new_view[] = $add_edit_item;
-                        $new_view[] = $search_item;
-                        $inserted = true;
-                    } else {
-                        $new_view[] = $search_item;
-                    }
-                } else {
-                    $new_view[] = $search_item;
-                }
-            } else {
-                $new_view[] = $search_item;
+    if ($previous_item) {
+        $pos = 0;
+        foreach ($items as $item) {
+            if ($item === $previous_item) {
+                $form->addItem($new_item, $pos + 1);
+                goto done;
             }
-        }
-        if (!$inserted) {
-            $new_view[] = $add_edit_item;
+            ++$pos;
         }
     }
     
-    // save
-    $table->setAddEditView ($new_view);
+    $next_item = null;
+    if ($next_col) $next_item = $form->getColumnItem($next_col);
+    if ($debug) {
+        echo 'Next col: '; print_human($next_col); echo ", ";
+        echo 'Next item: '; print_human($next_item); echo "<br>";
+    }
+    if ($next_item) {
+        $pos = 0;
+        foreach ($items as $item) {
+            if ($item === $next_item) {
+                $form->addItem($new_item, $pos);
+                goto done;
+            }
+            ++$pos;
+        }
+    }
+    
+    // Desired position not found; add to end
+    if ($debug) echo "Desired position not found, adding at end<br>";
+    $form->addItem($new_item);
+    
+    done:
+    if ($debug) {
+        echo '<pre>', hsc(FormManager::save($form, true));
+        die();
+    }
+    
+    FormManager::save($form);
 }
 
 

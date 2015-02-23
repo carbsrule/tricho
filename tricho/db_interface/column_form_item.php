@@ -9,7 +9,7 @@
 /**
  * A field on a form that refers to a database column
  */
-class ColumnFormItem {
+class ColumnFormItem extends FormItem {
     protected $column;
     protected $label;
     protected $value;

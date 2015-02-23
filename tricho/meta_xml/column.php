@@ -206,9 +206,12 @@ abstract class Column implements QueryField, ColumnInterface {
         
         // work out which views the column is in
         $config['list_view'] = (int) $this->table->isColumnInView('list', $this, false);
-        $config['add_view'] = $this->table->isColumnInView('add', $this, false);
-        $config['edit_view_show'] = $this->table->isColumnInView('edit', $this, false);
-        $config['edit_view_edit'] = $this->table->isColumnInView('edit', $this, true);
+        
+        $form = FormManager::load("admin.{$this->getTable()->getName()}");
+        
+        $config['add_view'] = $form->getColumnItem($this, 'add') != null;
+        $config['edit_view_show'] = $form->getColumnItem($this, 'edit-view') != null;
+        $config['edit_view_edit'] = $form->getColumnItem($this, 'edit') != null;
         $config['export_view'] = $this->table->isColumnInView('export', $this, false);
         
         $config['comments'] = $this->comment;
