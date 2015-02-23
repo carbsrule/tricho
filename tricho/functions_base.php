@@ -25,10 +25,20 @@ if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
 
 function tricho_exception_handler(Exception $ex) {
     if (!\tricho\Runtime::get('live')) {
-        header('Content-type: text/html');
+        @header('Content-type: text/html');
         echo '<pre>';
         $trace = $ex->getTrace();
-        echo '<strong>', get_class($ex), '</strong> in ', $ex->getFile(),
+        $ex_class = get_class($ex);
+        
+        // Show where error was raised, not where ErrorException was thrown  
+        if ($ex instanceof ErrorException) {
+            $file = $trace[0]['file'];
+            $line = $trace[0]['line'];
+            echo '<strong>', $ex_class, '</strong> in ', $file,
+                ':', $line, "<br><i>", $ex->getMessage(), "</i><br>\n";
+            die();
+        }
+        echo '<strong>', $ex_class, '</strong> in ', $ex->getFile(),
             ':', $ex->getLine (), "<br><i>", $ex->getMessage(), "</i><br>\n";
         foreach ($trace as &$step) {
             foreach ($step['args'] as $key => &$arg) {
@@ -65,6 +75,40 @@ function tricho_exception_handler(Exception $ex) {
     throw $ex;
 }
 set_exception_handler('tricho_exception_handler');
+
+function tricho_error_handler($code, $str, $file, $line) {
+    if (error_reporting() == 0) return false;
+    $type = '';
+    switch ($code) {
+    case E_USER_ERROR:
+        $type = 'User error';
+        break;
+    
+    case E_USER_WARNING:
+        $type = 'User warning';
+        break;
+    
+    case E_USER_NOTICE:
+        $type = 'User notice';
+        break;
+    
+    case E_ERROR:
+        $type = 'Fatal error';
+        break;
+    
+    case E_WARNING:
+        $type = 'Warning';
+        break;
+    
+    case E_NOTICE:
+        $type = 'Notice';
+        break;
+    }
+    if ($type == '') $type = "[{$code}] Unknown error";
+    
+    throw new ErrorException("{$type}: {$str}");
+}
+set_error_handler('tricho_error_handler');
 
 
 /**
