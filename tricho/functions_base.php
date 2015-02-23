@@ -1603,7 +1603,7 @@ function print_human ($var, $indent_tab = 0, $indent_self = true) {
     if (defined ('PRINT_HUMAN_INDENT_WIDTH')) {
         $indent_width = PRINT_HUMAN_INDENT_WIDTH;
     } else {
-        $indent_width = 2;
+        $indent_width = 4;
     }
     
     $indent = str_repeat (' ', $indent_width * $indent_tab);
@@ -1614,15 +1614,21 @@ function print_human ($var, $indent_tab = 0, $indent_self = true) {
             if ($indent_self) echo $indent;
             echo get_class ($var), ': ', $var->__printHuman ($indent_tab, false);
         } else {
-            $out = explode ("\n", print_r ($var, true));
-            $first_line = true;
-            foreach ($out as $line) {
-                if ($first_line and !$indent_self) {
-                    echo $line, "\n";
-                    $first_line = false;
-                } else {
-                    echo $indent, $line, "\n";
+            echo get_class($var);
+            $members = (array) $var;
+            if ($indent_tab <= 4 and count($members) > 0) {
+                echo " {\n";
+                $member_count = 0;
+                foreach ($members as $key => $member) {
+                    if ($member_count++ > 0) echo ",\n";
+                    $null_pos = strrpos($key, "\0");
+                    if ($null_pos !== false) {
+                        $key = substr($key, $null_pos + 1);
+                    }
+                    echo $indent, str_repeat(' ', $indent_width), $key, ': ';
+                    print_human($member, $indent_tab + 1, false);
                 }
+                echo "\n{$indent}}";
             }
         }
         
@@ -1640,7 +1646,11 @@ function print_human ($var, $indent_tab = 0, $indent_self = true) {
     } else if (is_bool ($var)) {
         
         if ($indent_self) echo $indent;
-        echo ($var? 'true': 'false');
+        echo ($var? 'TRUE': 'FALSE');
+        
+    } else if (is_null($var)) {
+        if ($indent_self) echo $indent;
+        echo 'NULL';
         
     } else {
         
