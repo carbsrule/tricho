@@ -185,7 +185,7 @@ if ($permissions_ok) {
 <?php
     } else {
 ?>
-        <li><a href="../main.php?t=<?= urlencode($_GET['t']); ?>">Administration</a></li>
+        <li><a href="../browse.php?t=<?= urlencode($_GET['t']); ?>">Administration</a></li>
 <?php
     }
 ?>
