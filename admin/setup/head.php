@@ -144,6 +144,7 @@ if ($permissions_ok) {
 ?>
     </select>
     <input name="task" type="submit" value="Edit">
+    <input name="task" type="submit" value="Delete">
     </form>
 <?php
     }
