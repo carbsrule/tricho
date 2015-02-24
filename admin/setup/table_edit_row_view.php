@@ -18,6 +18,9 @@ require 'table_head.php';
 
 $form_file = "admin.{$table->getName()}";
 $form = FormManager::load($form_file);
+if ($form == null) {
+    $form = new Form();
+}
 $form_table = $table;
 $success_redirect = 'table_edit_row_view.php?t=' . $table->getName();
 $no_heading = true;
