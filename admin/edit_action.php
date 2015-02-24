@@ -66,7 +66,7 @@ $form->setFormURL($form_url);
 $form->setSuccessURL($success_url);
 $form->load("admin.{$table->getName()}");
 $form->setType('edit');
-$form->process($pk);
+$form->process($pk, $row);
 
 /* ***************************** OLD, DEAD CODE **************************** */
 

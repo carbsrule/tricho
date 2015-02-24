@@ -511,9 +511,11 @@ class Form {
      * redirects on error/success.
      * 
      * @param mixed $pk Primary Key value(s). Only applies for edit forms.
+     * @param array $db_row The row from the DB with the extant data for this
+     *        record. Only applies for edit forms.
      * @return void An HTTP redirect is performed, so nothing is returned.
      */
-    function process($pk = 0) {
+    function process($pk = null, array $db_row = []) {
         if ($this->form_url == '' or $this->success_url == '') {
             throw new Exception('Invalid configuration');
         }
@@ -564,6 +566,11 @@ class Form {
             // No need to ask for the current password when adding new record
             if ($col instanceof PasswordColumn and $this->type == 'add') {
                 $col->setExistingRequired(false);
+            }
+            
+            // No need to upload a new file if there's already one
+            if ($col instanceof FileColumn and $this->type == 'edit') {
+                if ($db_row[$col->getName()] != '') $col->setMandatory(false);
             }
             
             $input = null;
