@@ -17,11 +17,7 @@ require_once 'column_definition.php';
 $session = & $_SESSION['setup']['create_table'];
 $col_num = $_POST['_col_id'];
 
-$table = $session['table'];
-if ($table == null) {
-    $_SESSION['setup']['err'] = 'Session lost';
-    redirect ('./');
-}
+$table = new Table($session['table_name']);
 
 if ($_POST['action'] == 'cancel') {
     redirect ('table_create1_done.php');
@@ -104,7 +100,6 @@ foreach ($session['columns'] as $col => $col_data) {
     if ($column->getName () == 'Name') $table->setRowIdentifier (array ($column));
     
     $table->addColumn ($column);
-    column_def_update_views ($column, $col_data);
 }
 redirect ('table_create1_done.php');
 ?>

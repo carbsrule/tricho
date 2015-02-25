@@ -36,45 +36,6 @@ foreach ($options as $option) {
 $session['has_links'] = 0;
 $session['comments'] = trim($_POST['comments']);
 
-check_1 ();
-
-$table = new Table ($session['table_name']);
-$table->setEngName ($session['table_name_eng']);
-$table->setNameSingle ($session['table_name_single']);
-$table->setAccessLevel ($session['access_level']);
-$table->setStatic ($session['static']);
-$table->setDisplay ($session['display']);
-$table->setDisplayStyle ($session['display_style']);
-$table->setComments ($session['comments']);
-$options = array ('add', 'edit', 'del');
-
-foreach ($options as $option) {
-    if ($session["allow_{$option}"] == 1) {
-        $table->setAllowed ($option, true);
-    } else {
-        $table->setAllowed ($option, false);
-    }
-}
-$table->setConfirmDel (true);
-
-// make sure there are no duplicate masks
-$db = Database::parseXML();
-
-if ($db !== null) {
-    $tables = $db->getTables ();
-    
-    $other_masks = array ();
-    foreach ($tables as $other_table) {
-        $other_masks[] = $other_table->getMask ();
-    }
-    
-    while (in_array ($table->getMask (), $other_masks)) {
-        $table->newMask ();
-    }
-}
-
-$session['table'] = $table;
+check_1();
 
 redirect ('table_create1.php?id=1');
-
-?>

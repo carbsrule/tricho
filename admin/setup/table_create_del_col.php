@@ -12,13 +12,6 @@ test_setup_login (true, SETUP_ACCESS_LIMITED);
 $col_to_del = $_GET['id'];
 $col_to_del_name = $_GET['name'];
 
-$table = $_SESSION['setup']['create_table']['table'];
-
-$col = $table->get($col_to_del_name);
-if ($col != null) {
-    $table->removeColumn ($col);
-}
-
 // we do not care about warnings
 unset ($_SESSION['setup']['warn']);
 

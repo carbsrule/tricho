@@ -9,8 +9,6 @@ require 'head.php';
 require_once 'setup_functions.php';
 
 $session = & $_SESSION['setup']['create_table'];
-$table = $session['table'];
-
 ?>
 
 <h2>Create table <?= $session['table_name']; ?></h2>

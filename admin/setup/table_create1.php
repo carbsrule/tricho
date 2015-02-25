@@ -25,8 +25,6 @@ if (@$meta['class'] != '') $onload_javascript = "column_edit_init();";
 
 require 'head.php';
 require_once 'setup_functions.php';
-
-$table = $session['table'];
 ?>
 
 <h2>Create table <?= $session['table_name']; ?></h2>
@@ -43,7 +41,8 @@ if (is_array(@$session['columns'])) {
 <?php
 report_session_info ('err', 'setup');
 
-column_def_form ($table, $action, 'table_create1_action.php', $meta, array ('_col_id' => $col));
+$table = new Table($session['table_name']);
+column_def_form($table, $action, 'table_create1_action.php', $meta, array('_col_id' => $col));
 
 require 'foot.php';
 ?>

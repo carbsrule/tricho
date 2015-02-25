@@ -385,7 +385,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
  * by this function after the SQL config options have been dealt with.
  * 
  * @param Table $table The Table to which the column will belong
- * @param string $action 'add' or 'edit'
+ * @param string $action Whether to 'add' or 'edit' a column
  * @param string $form_url The form URL to redirect to in case of validation failure
  * @param array $config Config options (e.g. $_POST data)
  * @return Column the column created/updated
