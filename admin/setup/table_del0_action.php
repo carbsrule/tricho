@@ -10,6 +10,8 @@ require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
+use tricho\Runtime;
+
 $db = Database::parseXML();
 $table = $db->getTable ($_POST['table']);
 
@@ -90,6 +92,17 @@ foreach ($tables as $curr_table) {
     }
 }
 
+// Remove forms which store data in the table
+$form_dir = Runtime::get('root_path') . 'tricho/data/';
+$forms = path_glob($form_dir, '*.form.xml');
+$del_forms = [];
+foreach ($forms as $form_file) {
+    $form = FormManager::load($form_file);
+    if ($form == null) throw new Exception("Failed to load {$form_file}");
+    if ($form->getTable() !== $table) continue;
+    FormManager::delete($form);
+}
+
 // then remove the table itself
 if ($db->removeTable ($table_name)) {
     try {
@@ -99,9 +112,8 @@ if ($db->removeTable ($table_name)) {
     } catch (FileNotWriteableException $ex) {
         $_SESSION['setup']['err'] = "Failed to save XML";
     }
-    redirect ('./');
 } else {
     $_SESSION['setup']['err'] = "Table data couldn't be removed from meta-data store";
-    redirect ('./');
 }
-?>
+
+redirect('./');

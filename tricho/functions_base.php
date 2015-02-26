@@ -2216,4 +2216,22 @@ function url_append_param($url, $name, $value) {
     $url .= urlencode($name) . '=' . urlencode($value);
     return $url;
 }
+
+
+/**
+ * Runs glob within a directory, giving the file names relative to it
+ * @param string $path
+ * @param string $glob_pattern
+ * @return array
+ */
+function path_glob($path, $glob_pattern) {
+    $files = [];
+    if (!ends_with($path, '/')) $path .= '/';
+    $res = glob($path . $glob_pattern);
+    foreach ($res as $file) {
+        $file = trim_start($file, $path);
+        $files[] = $file;
+    }
+    return $files;
+}
 ?>

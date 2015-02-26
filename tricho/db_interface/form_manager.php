@@ -119,4 +119,13 @@ class FormManager {
         $bytes_written = file_put_contents($file, $contents);
         return $bytes_written;
     }
+    
+    
+    static function delete(Form $form) {
+        $file = $form->getFile() . '.form.xml';
+        if (!file_exists($file)) return;
+        if (!unlink($file)) {
+            throw new Exception('Failed to delete ' . basename($file));
+        }
+    }
 }

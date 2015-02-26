@@ -23,7 +23,7 @@ if ($table->getAccessLevel () == TABLE_ACCESS_SETUP_FULL and
 }
 ?>
 <h2>Delete a table</h2>
-Are you sure you want to delete <?= $_GET['table']; ?>?<br>
+<p>Are you sure you want to delete <?= $_GET['table']; ?>?<br>
 <?php
 $links = array();
 $tables = $db->getTables();
@@ -46,7 +46,8 @@ if ($num > 0) {
     echo "<br>\n";
 }
 ?>
-<b>Make sure you have backed up the database and the XML file before continuing</b><br>&nbsp;
+All forms relating to this table will be deleted.</p>
+
 <table>
 <tr>
 <form method="get" action="./"><td><input type="submit" value="&lt;&lt; No"></td></form>
