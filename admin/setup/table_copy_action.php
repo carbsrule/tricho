@@ -56,21 +56,11 @@ foreach ($source->getPKnames() as $pk_name) {
 $dest->addIndex('PRIMARY KEY', $pk_cols);
 
 // Copy views
-$view_types = array('list', 'add_edit', 'export');
+$view_types = array('list', 'export');
 foreach ($view_types as $type) {
     $items = array();
-    if ($type == 'add_edit') {
-        $view = $source->getAddEditView();
-    } else {
-        $view = $source->getView($type);
-    }
+    $view = $source->getView($type);
     foreach ($view as $item) {
-        if ($type == 'add_edit') {
-            $add = $item['add'];
-            $edit_view = $item['edit_view'];
-            $edit_change = $item['edit_change'];
-            $item = $item['item'];
-        }
         if (!($item instanceof ColumnViewItem)) {
             $items[] = $item;
             continue;
@@ -78,21 +68,9 @@ foreach ($view_types as $type) {
         $column = $item->getColumn();
         $item = new ColumnViewItem();
         $item->setColumn($dest->get($column->getName()));
-        if ($type == 'add_edit') {
-            $item = array(
-                'item' => $item,
-                'add' => $add,
-                'edit_view' => $edit_view,
-                'edit_change' => $edit_change,
-            );
-        }
         $items[] = $item;
     }
-    if ($type == 'add_edit') {
-        $dest->setAddEditView($items);
-    } else {
-        $dest->setView($type, $items);
-    }
+    $dest->setView($type, $items);
 }
 
 
@@ -115,8 +93,19 @@ foreach ($source->getRowIdentifier() as $ident_part) {
 }
 $dest->setRowIdentifier($ident);
 
+// Save in tables.xml
 $db->addTable($dest);
 $db->dumpXML('../tables.xml', '');
+
+// Copy admin add/edit form
+$form = FormManager::load('admin.' . $source->getName());
+if ($form != null) {
+    $form->setTable($dest);
+    $form->setFile('admin.' . $dest->getName());
+    FormManager::save($form);
+}
+
+// Actually create the table
 try {
     execq($dest->getCreateQuery());
     $_SESSION['setup']['msg'] = 'Table has been copied';
@@ -161,4 +150,4 @@ if (count($indexes) > 0) {
 }
 execq($q);
 
-redirect('./');
+redirect('table_edit_cols.php?t=' . urlencode($dest->getName()));
