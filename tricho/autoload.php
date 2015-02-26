@@ -48,7 +48,7 @@ function tricho_autoload ($class_name) {
             }
         }
         
-        $tricho_path = $root_path . 'tricho/meta_xml/' . $file_name;
+        $tricho_path = $root_path . 'tricho/meta/' . $file_name;
         if (!file_exists($tricho_path)) return;
         require_once $tricho_path;
         tricho\Runtime::add_column_class($class_name);
@@ -71,7 +71,7 @@ function tricho_autoload ($class_name) {
         case 'IncludeViewItem':
         case 'UploadedFile':
         case 'UploadedImage':
-            require_once $root_path . 'tricho/meta_xml/' . $file_name;
+            require_once $root_path . 'tricho/meta/' . $file_name;
             break;
         
         case 'Form':
