@@ -33,18 +33,26 @@ $name = hsc($table->getName());
 <table>
 <tr>
     <td></td>
-    <th>Name</th>
-    <th>English name</th>
-<tr>
     <th>Existing table</th>
+    <th>New table</th>
+<tr>
+    <th>Name</th>
     <td><?= $name; ?></td>
-    <td><?= hsc($table->getEngName()); ?></td>
+    <td><input type="text" name="dest"></td>
 </tr>
 <tr>
-    <th>New table</th>
-    <td><input type="text" name="dest"></td>
-    <td><input type="text" name="dest_eng">
-        <input type="submit" value="Make copy"></td>
+    <th>English name</th>
+    <td><?= hsc($table->getEngName()); ?></td>
+    <td><input type="text" name="dest_eng"></td>
+</tr>
+<tr>
+    <th>Singular name</th>
+    <td><?= hsc($table->getNameSingle()); ?></td>
+    <td><input type="text" name="dest_single"></td>
+</tr>
+<tr>
+    <td colspan="2"></td>
+    <td><input type="submit" value="Make copy"></td></td>
 </tr>
 </table>
 </form>

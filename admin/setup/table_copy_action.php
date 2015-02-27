@@ -31,6 +31,7 @@ if ($extant_dest != null) {
 
 $dest = new Table($_POST['dest']);
 $dest->setEngName(trim($_POST['dest_eng']));
+$dest->setNameSingle(trim($_POST['dest_single']));
 foreach ($source->getColumns() as $col) {
     $new_col = clone $col;
     $new_col->setTable($dest);
