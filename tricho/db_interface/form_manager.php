@@ -57,7 +57,7 @@ class FormManager {
         }
         $file .= '.form.xml';
         if (file_exists($file)) {
-            $doc->load($file);
+            $doc->load($file, true);
             $forms = $doc->getElementsByTagName('form');
             $form_el = $forms->item(0);
             if (!$form_el) throw new Exception('Invalid extant file');

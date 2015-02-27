@@ -12,8 +12,10 @@ if (empty($_GET['f'])) {
     die();
 }
 
-$form = FormManager::load($_GET['f']);
-if (!$form) {
+$form = new Form();
+try {
+    $form->load($_GET['f'], true);
+} catch (Exception $ex) {
     report_error('Invalid form');
     die();
 }
