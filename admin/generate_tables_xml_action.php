@@ -21,6 +21,7 @@ $num_ok_tables = 0;
 
 // get list of current tables from database
 $tables = execq("SHOW TABLES");
+$form = new Form();
 while ($table = fetch_row($tables)) {
     
     $table_name = $table[0];
@@ -295,14 +296,6 @@ while ($table = fetch_row($tables)) {
             // because the column definitions were overwritten earlier, and thus object equality checks would fail,
             // as the ColumnViewItems still currently point to the original Column objects. The ColumnViewItems
             // will point to the updated Column definitions after the XML is saved and read again.
-            $add_edit_cols = array ();
-            $add_edit_view = $table_obj->getAddEditView ();
-            foreach ($add_edit_view as $item_data) {
-                if ($item_data['item'] instanceof ColumnViewItem) {
-                    $add_edit_cols[] = $item_data['item']->getColumn ()->getName ();
-                }
-            }
-            
             $main_cols = array ();
             $main_view = $table_obj->getView('list');
             foreach ($main_view as $item) {
@@ -320,14 +313,17 @@ while ($table = fetch_row($tables)) {
             }
             
             $num_main_columns = 0;
+            $form->setTable($table_obj);
+            $form->setFile('admin.' . $table_obj->getName());
             foreach ($table_obj->getColumns () as $col) {
                 if (in_array ($col, $pk_columns, true)) continue;
                 
                 $view_item = new ColumnViewItem ();
                 $view_item->setDetails ($col, true);
-                if (!in_array ($col->getName (), $add_edit_cols)) {
-                    $table_obj->appendAddEditView ($view_item, 'y', 'y');
-                }
+                
+                $form_item = new ColumnFormItem($col);
+                $form_item->setApply('add,edit');
+                $form->addItem($form_item);
                 
                 if (($col->isMandatory () or $num_main_columns < 5) and $col->getSqlType () != SQL_TYPE_TEXT) {
                     if (!in_array ($col->getName (), $main_cols)) {
@@ -380,8 +376,16 @@ if (count($temp_errs) > 0) $_SESSION[ADMIN_KEY]['err'] = $temp_errs;
 
 if ($num_ok_tables > 0) {
     
-    // save the meta-data to an XML file
-    $db->dumpXML ('tables.xml', 'generate_tables_xml.php');
+    // Save the meta-data
+    $db->dumpXML('tables.xml', null);
+    
+    // Save the form
+    if ($form) {
+        FormManager::save($form);
+    }
+    
+    redirect('generate_tables_xml.php');
+    
 } else {
     redirect ('generate_tables_xml.php');
 }
