@@ -8,6 +8,8 @@
 require_once '../../tricho.php';
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
+
+use tricho\Runtime;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -80,16 +82,18 @@ echo "nice_labels();\">\n";
 <?php
 
 // check write permissions
-$filename = '../tables.xml';
+$filename = Runtime::get('root_path') . 'tricho/data/tables.xml';
 
-$permissions_ok = false;
-if ((is_file ($filename) and is_writeable ($filename)) or (!file_exists ($filename) and is_writeable ('../'))) {
-    $permissions_ok = true;
-    
-    $db = Database::parseXML();
+$permissions_ok = true;
+if (is_file($filename) and !is_writeable($filename)) {
+    $permissions_ok = false;
+}
+if (!is_writeable(dirname($filename))) {
+    $permissions_ok = false;
 }
 
 if ($permissions_ok) {
+    $db = Database::parseXML();
 ?>
 
 <table id="setup-head"><tr>
@@ -195,7 +199,7 @@ if ($permissions_ok) {
 </tr></table>
 <?php
 } else {
-    report_error ("Write permission denied for file {$filename}");
+    report_error("Write permission denied for tables.xml or data dir");
 }
 
 report_session_info ('err', 'setup');
