@@ -9,7 +9,7 @@ require_once '../../tricho.php';
 require_once 'setup_functions.php';
 
 // Force autoloading of all Column classes
-$class_files = glob(ROOT_PATH_FILE . 'tricho/meta_xml/*_column.php');
+$class_files = glob(ROOT_PATH_FILE . 'tricho/meta/*_column.php');
 $ext_base = ROOT_PATH_FILE . 'tricho/ext/';
 $exts = scandir($ext_base);
 foreach ($exts as $ext) {
