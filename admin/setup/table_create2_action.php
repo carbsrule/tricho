@@ -140,7 +140,7 @@ FormManager::save($form);
 
 // Save Table metadata
 $url = 'table_edit_main_view.php?t=' . urlencode($table->getName());
-$db->dumpXML('../tables.xml', null);
+$db->dumpXML('', null);
 
 // Create database table
 $sql = $table->getCreateQuery($session['engine'], $session['collation']);

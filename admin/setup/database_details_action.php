@@ -24,5 +24,5 @@ $db->setHelpTable ($table);
 
 $db->setConvertOutput ((int) @$_POST['convert_output']);
 
-$db->dumpXML ('../tables.xml', 'database_details2.php');
+$db->dumpXML('', 'database_details2.php');
 ?>

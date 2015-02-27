@@ -37,5 +37,5 @@ if (isset($_POST['desc'])) {
 
 // set the identifier
 $table->setRowIdentifier($desc);
-$db->dumpXML('../tables.xml', $url);
+$db->dumpXML('', $url);
 ?>

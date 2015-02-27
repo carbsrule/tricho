@@ -68,7 +68,7 @@ unset($session[$id]);
 
 $db = $table->getDatabase ();
 try {
-    $db->dumpXML ('../tables.xml', null);
+    $db->dumpXML('', null);
     $log_message = "Changed column ". $table->getName (). '.'. $old_sql_defn['name'];
     if ($new_col->getName () != $old_sql_defn['name']) {
         $log_message .= " - renamed to ". $new_col->getName ();

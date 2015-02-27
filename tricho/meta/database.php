@@ -71,7 +71,7 @@ class Database {
      */
     static function parseXML($file_name = '', $force_reload = false) {
         if ($file_name == '') {
-            $file_name = Runtime::get('root_path') . 'admin/tables.xml';
+            $file_name = Runtime::get('root_path') . 'tricho/data/tables.xml';
         }
         if (!$force_reload and isset(self::$loaded_files[$file_name])) {
             return self::$loaded_files[$file_name];
@@ -183,8 +183,12 @@ class Database {
      * @return void
      * @author benno, 2011-08-09 (rewrite)
      */
-    function dumpXML ($file_loc, $success_page = 'table_edit.php') {
+    function dumpXML($file_loc = '', $success_page = 'table_edit.php') {
         require_once ROOT_PATH_FILE . 'tricho/data_setup.php';
+        
+        if ($file_loc == '') {
+            $file_loc = Runtime::get('root_path') . 'tricho/data/tables.xml';
+        }
         
         // check write permissions
         $dir = dirname ($file_loc);

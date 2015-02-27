@@ -31,5 +31,5 @@ foreach ($page_urls as $id => $page) {
 
 // store xml
 $url = 'table_edit_alt_pages.php?t=' . urlencode($_POST['t']);
-$db->dumpXML('../tables.xml', $url);
+$db->dumpXML('', $url);
 ?>

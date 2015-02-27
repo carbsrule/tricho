@@ -94,5 +94,5 @@ if ($ordernum) {
 
 $url = 'table_edit_order_iframe.php?t=' . urlencode($_GET['t']) .
     "&list={$_GET['list']}";
-$db->dumpXML ('../tables.xml', $url);
+$db->dumpXML('', $url);
 ?>

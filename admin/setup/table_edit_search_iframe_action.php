@@ -39,6 +39,6 @@ if ($_GET['sect'] == 'in') {
 
 // echo "(After) Table: <pre>"; print_r ($table); echo "</pre><br>\n";
 $url = 'table_edit_search_iframe.php?t=' . urlencode($_GET['t']);
-$db->dumpXML('../tables.xml', $url);
+$db->dumpXML('', $url);
 
 ?>

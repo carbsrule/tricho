@@ -106,7 +106,7 @@ foreach ($forms as $form_file) {
 // then remove the table itself
 if ($db->removeTable ($table_name)) {
     try {
-        $db->dumpXML ('../tables.xml', null);
+        $db->dumpXML('', null);
         $log_message = "Removed table {$table_name}";
         log_action ($db, $log_message, $q);
     } catch (FileNotWriteableException $ex) {

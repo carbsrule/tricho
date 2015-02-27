@@ -138,7 +138,7 @@ if ($update_xml) {
     
     // dump the XML
     try {
-        $db->dumpXML('../tables.xml', null);
+        $db->dumpXML('', null);
         $log_message = "Modified Primary Key on {$_POST['t']}";
         log_action ($db, $log_message, implode (";\n", $query_list));
     } catch (FileNotWriteableException $ex) {

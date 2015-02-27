@@ -104,7 +104,7 @@ $dest->setDisplay($source->getDisplay());
 
 // Save in tables.xml
 $db->addTable($dest);
-$db->dumpXML('../tables.xml', '');
+$db->dumpXML('', '');
 
 // Copy admin add/edit form
 $form = FormManager::load('admin.' . $source->getName());

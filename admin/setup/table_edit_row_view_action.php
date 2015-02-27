@@ -97,5 +97,5 @@ if (@count ($_POST['desc']) > 0) {
 }
 
 
-$db->dumpXML('../tables.xml', $url);
+$db->dumpXML('', $url);
 ?>

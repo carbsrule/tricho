@@ -105,7 +105,7 @@ if ($_POST['display_style'] == TABLE_DISPLAY_STYLE_TREE) {
 }
 
 try {
-    $db->dumpXML ('../tables.xml', null);
+    $db->dumpXML('', null);
     $log_message = "Changed table {$old_name}";
     if ($_POST['table_name'] != $old_name) {
         $log_message .= " - renamed to {$_POST['table_name']}";

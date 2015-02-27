@@ -33,5 +33,5 @@ if (@is_array($_POST['button'])) {
 
 // store xml
 $url = 'table_edit_alt_buttons.php?t=' . urlencode($_POST['t']);
-$db->dumpXML('../tables.xml', $url);
+$db->dumpXML('', $url);
 ?>

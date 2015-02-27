@@ -377,7 +377,7 @@ if (count($temp_errs) > 0) $_SESSION[ADMIN_KEY]['err'] = $temp_errs;
 if ($num_ok_tables > 0) {
     
     // Save the meta-data
-    $db->dumpXML('tables.xml', null);
+    $db->dumpXML('', null);
     
     // Save the form
     if ($form) {

@@ -53,7 +53,7 @@ column_def_update_views ($col, $config);
 unset ($session['add_column'][$_POST['t']]);
 
 try {
-    $db->dumpXML ('../tables.xml', null);
+    $db->dumpXML('', null);
     $log_message = "Added column ". $table->getName (). '.'. $col->getName ();
     log_action ($db, $log_message, $q);
 } catch (FileNotWriteableException $ex) {
