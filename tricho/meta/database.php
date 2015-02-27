@@ -242,11 +242,6 @@ class Database {
             $database_node->appendChild ($table->toXMLNode ($doc));
         }
         
-        // Backup the existing tables.xml if it exists
-        if (file_exists ($file_loc)) {
-            @copy ($file_loc, $file_loc. '.bak');
-        }
-        
         // Save new XML
         $xml = $doc->saveXML ();
         unset ($doc);
