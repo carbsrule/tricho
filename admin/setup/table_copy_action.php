@@ -94,6 +94,14 @@ foreach ($source->getRowIdentifier() as $ident_part) {
 }
 $dest->setRowIdentifier($ident);
 
+// Copy menu status and allowed actions
+$allowed = $source->getAllAllowed();
+$dest->setAllAllowed(false);
+foreach ($allowed as $action) {
+    $dest->setAllowed($action, true);
+}
+$dest->setDisplay($source->getDisplay());
+
 // Save in tables.xml
 $db->addTable($dest);
 $db->dumpXML('../tables.xml', '');
