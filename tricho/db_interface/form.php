@@ -222,7 +222,16 @@ class Form {
     }
     
     
-    function load($file_path) {
+    /**
+     * Loads a Form from a file
+     * @param string $file_path A complete file path, or a file name
+     * @param bool $ignore_missing_cols If false, if the form references an
+     *        unknown Column, an UnknownColumnException will be thrown
+     * @return void
+     * @throws UnknownColumnException, InvalidArgumentException,
+     *         UnexpectedValueException, FormStepException, Exception
+     */
+    function load($file_path, $ignore_missing_cols = false) {
         $file_path = (string) $file_path;
         if ($file_path[0] != '/') {
             $root = tricho\Runtime::get('root_path') . 'tricho/data/';
@@ -272,7 +281,10 @@ class Form {
             if ($type == 'field') {
                 $col_name = $node->getAttribute('name');
                 $col = $table->get($col_name);
-                if (!$col) throw new Exception('Unknown column: ' . $col_name);
+                if (!$col) {
+                    if ($ignore_missing_cols) continue;
+                    throw new UnknownColumnException($col_name);
+                }
                 
                 $item = new ColumnFormItem($col);
                 $item->setLabel($node->getAttribute('label'));

@@ -142,3 +142,17 @@ class QueryException extends Exception {
             "In addition, the following error occurred:\n{$extra_error}";
     }
 }
+
+
+/**
+ * Column doesn't exist in metadata
+ */
+class UnknownColumnException extends Exception {
+    
+    /**
+     * @param string $column_name The name of the missing column
+     */
+    function __construct($column_name) {
+        $this->message = $column_name;
+    }
+}
