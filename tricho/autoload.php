@@ -107,16 +107,6 @@ function tricho_autoload ($class_name) {
             require_once $root_path . 'tricho/query/' . $file_name;
             break;
         
-        case 'UploadFailedException':
-        case 'ImageResizeException':
-        case 'InvalidSizeException':
-        case 'FileNotWriteableException':
-        case 'InvalidColumnConfigException':
-        case 'DataValidationException':
-        case 'QueryException':
-            require_once $root_path . 'tricho/custom_exceptions.php';
-            break;
-        
         case 'StringNumber':
         case 'HtmlDom':
             require_once $root_path . 'tricho/'. $file_name;
@@ -135,6 +125,10 @@ function tricho_autoload ($class_name) {
     if (ends_with($class_name, 'FormItem')) {
         require_once $root_path . 'tricho/db_interface/' . $file_name;
         return;
+    }
+    
+    if (ends_with($class_name, 'Exception')) {
+        require_once $root_path . 'tricho/custom_exceptions.php';
     }
     
     foreach ($extensions as $ext) {
