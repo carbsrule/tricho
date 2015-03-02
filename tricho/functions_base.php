@@ -32,8 +32,12 @@ function tricho_exception_handler(Exception $ex) {
         
         // Show where error was raised, not where ErrorException was thrown  
         if ($ex instanceof ErrorException) {
-            $file = $trace[0]['file'];
-            $line = $trace[0]['line'];
+            if (isset($trace[0]['file'])) {
+                $file = $trace[0]['file'];
+                $line = $trace[0]['line'];
+            } else {
+                list($file, $line) = array_slice($trace[0]['args'], 2);
+            }
             echo '<strong>', $ex_class, '</strong> in ', $file,
                 ':', $line, "<br><i>", $ex->getMessage(), "</i><br>\n";
             die();
