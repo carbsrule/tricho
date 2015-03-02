@@ -7,7 +7,6 @@
 
 require 'head.php';
 require_once 'setup_functions.php';
-require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
 $page_opts = array ('tab' => 'detail');
 require 'table_head.php';

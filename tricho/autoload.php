@@ -19,12 +19,17 @@ function tricho_autoload ($class_name) {
         }
     }
     
-    if (substr($class_name, 0, 7) == 'tricho\\') {
-        $file = $root_path . str_replace('\\', '/', $class_name) . '.php';
+    if (substr($class_name, 0, 7) == 'Tricho\\') {
+        $file_name = str_replace('\\', '/', substr($class_name, 7)) . '.php';
+        $file = __DIR__ . '/' . $file_name;
         if (file_exists($file)) {
             require_once $file;
             return;
         }
+    }
+    
+    if (strpos($class_name, 'Tricho') !== false) {
+        die('$class_name: ' . $class_name);
     }
     
     $file_name = class_name_to_file_name($class_name);
@@ -37,8 +42,6 @@ function tricho_autoload ($class_name) {
         if (strpos ($class_name, 'QueryColumn') !== false) $is_column = false;
     }
     if ($is_column) {
-        require_once $root_path . 'tricho/data_objects.php';
-        
         foreach ($extensions as $ext) {
             $ext_path = "{$root_path}tricho/ext/{$ext}/{$file_name}";
             if (file_exists($ext_path)) {
@@ -60,8 +63,6 @@ function tricho_autoload ($class_name) {
         case 'Table':
         case 'Column':
         case 'Link':
-            // TODO: remove this one day
-            require_once $root_path . 'tricho/data_objects.php';
             // there is no break here for a reason
             
         case 'ViewItem':

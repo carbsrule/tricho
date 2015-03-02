@@ -6,8 +6,7 @@
  */
 
 require_once '../tricho.php';
-test_admin_login ();
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
+test_admin_login();
 
 $db = Database::parseXML();
 $table = $db->getTable ($_GET['t']);

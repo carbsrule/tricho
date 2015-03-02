@@ -5,13 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package meta_xml
- */
+use Tricho\Meta;
 
 /**
  * Stores meta-data about a column that stores a password
- * @package meta_xml
  */
 class PasswordColumn extends InputColumn {
     protected $sql_collation = 'latin1_general_cs';
@@ -41,7 +38,7 @@ class PasswordColumn extends InputColumn {
         
         $param = HtmlDom::appendNewChild ($node, 'param');
         $param->setAttribute ('name', 'require_existing');
-        $param->setAttribute ('value', to_yn ($this->require_existing));
+        $param->setAttribute ('value', Meta::toYesNo($this->require_existing));
         
         $param = HtmlDom::appendNewChild ($node, 'param');
         $param->setAttribute ('name', 'encryption');
@@ -68,7 +65,7 @@ class PasswordColumn extends InputColumn {
             if ($name == 'encryption') {
                 $this->setEncryptionMethod ($param->getAttribute ('value'));
             } else if ($name == 'require_existing') {
-                $this->setExistingRequired (to_bool ($param->getAttribute ('value')));
+                $this->setExistingRequired (Meta::toBool($param->getAttribute ('value')));
             } else if ($name == 'salt') {
                 $this->setSalt($param->getAttribute('value'));
             }

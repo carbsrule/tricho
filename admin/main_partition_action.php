@@ -6,8 +6,8 @@
  */
 
 require_once '../tricho.php';
-require_once '../tricho/data_objects.php';
-test_admin_login ();
+test_admin_login();
+
 $db = Database::parseXML();
 $table = $db->getTable ($_POST['_t']);
 list ($urls, $seps) = $table->getPageUrls ();

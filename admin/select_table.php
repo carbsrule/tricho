@@ -6,7 +6,7 @@
  */
 
 require '../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
+
 if ($_GET['table'] == '') {
     if ($_SERVER['HTTP_REFERER'] != '') {
         redirect ($_SERVER['HTTP_REFERER']);

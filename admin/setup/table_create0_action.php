@@ -6,10 +6,8 @@
  */
 
 require '../../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
-require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 require_once 'table_create_checks.php';
-test_setup_login (true, SETUP_ACCESS_LIMITED);
+test_setup_login(true, SETUP_ACCESS_LIMITED);
 
 $session = &$_SESSION['setup']['create_table'];
 

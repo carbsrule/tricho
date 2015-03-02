@@ -6,7 +6,6 @@
  */
 
 require_once '../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
 /*
 The root is determined here in case there's a .htaccess mapping that makes all requests be directed to

@@ -8,8 +8,6 @@
 require_once '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
 $root = tricho\Runtime::get('root_path');
-require_once $root . 'tricho/data_objects.php';
-require_once $root . 'tricho/data_setup.php';
 
 $db = Database::parseXML();
 

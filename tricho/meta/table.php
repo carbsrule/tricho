@@ -5,13 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package meta_xml
- */
+use Tricho\Meta;
 
 /**
  * Stores meta-data about a database table
- * @package meta_xml
  */
 class Table implements QueryTable {
     private $name;
@@ -75,29 +72,29 @@ class Table implements QueryTable {
      */
     function toXMLNode (DOMDocument $doc) {
         $params = array (
-            'name' => $this->getName (),
-            'name_single' => $this->getNameSingle (),
-            'access' => to_access_string ($this->getAccessLevel ()),
+            'name' => $this->getName(),
+            'name_single' => $this->getNameSingle(),
+            'access' => Meta::toAccessString($this->getAccessLevel()),
             'engname' => $this->getEngName(),
-            'display' => to_yn ($this->getDisplay ()),
-            'display_style' => to_row_type ($this->getDisplayStyle ())
+            'display' => Meta::toYesNo($this->getDisplay()),
+            'display_style' => Meta::toRowType($this->getDisplayStyle())
         );
         
         if ($this->getDisplayStyle () == TABLE_DISPLAY_STYLE_TREE) {
-            $params['tree_top_nodes'] = to_yn ($this->getTopNodesEnabled ());
+            $params['tree_top_nodes'] = Meta::toYesNo($this->getTopNodesEnabled());
             if ($this->getTreeNodeChars () != null) {
                 $params['tree_node_chars'] = (int) $this->getTreeNodeChars ();
             }
         }
         
-        $params['show_sub_record_count'] = to_yni ($this->getShowSubRecordCount ());
-        $params['show_search'] = to_yni ($this->getShowSearch ());
-        $params['cascade_del'] = to_yn ($this->getCascadeDel ());
+        $params['show_sub_record_count'] = Meta::toYesNoInherit($this->getShowSubRecordCount());
+        $params['show_search'] = Meta::toYesNoInherit($this->getShowSearch());
+        $params['cascade_del'] = Meta::toYesNo($this->getCascadeDel());
         
         // table actions
-        $params['confirm_del'] = to_yn ($this->getConfirmDel ());
-        $params['disable_parent_edit'] = to_yn ($this->getDisableParentEdit ());
-        $params['allow'] = implode (',', $this->getAllAllowed ());
+        $params['confirm_del'] = Meta::toYesNo($this->getConfirmDel());
+        $params['disable_parent_edit'] = Meta::toYesNo($this->getDisableParentEdit());
+        $params['allow'] = implode(',', $this->getAllAllowed());
         
         // A few additional options
         if ($this->isJoiner ()) $params['joiner'] = 'y';
@@ -318,10 +315,10 @@ class Table implements QueryTable {
         $table->setEngName($attribs['engname']);
         $table->setNameSingle($attribs['name_single']);
         $table->setComments(@$attribs['comment']);
-        $table->setDisplay(to_bool($attribs['display']));
+        $table->setDisplay(Meta::toBool($attribs['display']));
         $table->setMask(@$attribs['mask']);
-        $table->setCascadeDel(to_bool($attribs['cascade_del']));
-        $table->setStatic(to_bool(@$attribs['static']));
+        $table->setCascadeDel(Meta::toBool($attribs['cascade_del']));
+        $table->setStatic(Meta::toBool(@$attribs['static']));
         $table->setTreeNodeChars(@$attribs['tree_node_chars']);
         
         switch ($attribs['access']) {
@@ -348,7 +345,7 @@ class Table implements QueryTable {
                 $table->setDisplayStyle (TABLE_DISPLAY_STYLE_ROWS);
         }
         
-        if (to_num(@$attribs['tree_top_nodes']) == 0) {
+        if (Meta::toNum(@$attribs['tree_top_nodes']) == 0) {
             $table->setTopNodesEnabled (false);
         } else {
             $table->setTopNodesEnabled ($attribs['tree_top_nodes']);
@@ -385,14 +382,14 @@ class Table implements QueryTable {
         } else {
             $table->setConfirmDel (true);
         }
-        $table->setDisableParentEdit (to_bool ($attribs['disable_parent_edit']));
+        $table->setDisableParentEdit(Meta::toBool($attribs['disable_parent_edit']));
         
-        if (to_bool(@$attribs['joiner'])) $table->setJoiner(true);
+        if (Meta::toBool(@$attribs['joiner'])) $table->setJoiner(true);
         if (isset ($attribs['show_sub_record_count'])) {
-            $table->setShowSubRecordCount (to_bool_i ($attribs['show_sub_record_count']));
+            $table->setShowSubRecordCount(Meta::toBoolInherit($attribs['show_sub_record_count']));
         }
         if (isset ($attribs['show_search'])) {
-            $table->setShowSearch (to_bool_i ($attribs['show_search']));
+            $table->setShowSearch(Meta::toBoolInherit($attribs['show_search']));
         }
         
         // apply columns

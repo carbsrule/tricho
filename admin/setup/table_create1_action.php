@@ -6,10 +6,8 @@
  */
 
 require '../../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
-require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
+test_setup_login(true, SETUP_ACCESS_LIMITED);
 
-test_setup_login (true, SETUP_ACCESS_LIMITED);
 require 'table_create_checks.php';
 require_once 'setup_functions.php';
 require_once 'column_definition.php';

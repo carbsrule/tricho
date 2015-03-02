@@ -6,8 +6,7 @@
  */
 
 require_once '../../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
-test_setup_login (true, SETUP_ACCESS_LIMITED);
+test_setup_login(true, SETUP_ACCESS_LIMITED);
 
 $col_to_del = $_GET['id'];
 $col_to_del_name = $_GET['name'];

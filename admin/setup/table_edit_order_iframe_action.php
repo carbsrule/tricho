@@ -6,11 +6,9 @@
  */
 
 require_once '../../tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
+test_setup_login(true, SETUP_ACCESS_LIMITED);
 
-test_setup_login (true, SETUP_ACCESS_LIMITED);
 require_once 'order_functions.php';
-require_once ROOT_PATH_FILE. 'tricho/data_setup.php';
 
 $db = Database::parseXML();
 $table = $db->getTable($_GET['t']);

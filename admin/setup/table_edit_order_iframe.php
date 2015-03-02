@@ -6,9 +6,8 @@
  */
 
 require_once '../../tricho.php';
-require_once ROOT_PATH_FILE . 'tricho/data_objects.php';
-
 test_setup_login(true, SETUP_ACCESS_LIMITED);
+
 require 'order_functions.php';
 
 

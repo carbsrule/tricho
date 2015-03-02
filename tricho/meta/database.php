@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta;
 use Tricho\Runtime;
 
 /**
@@ -115,17 +116,17 @@ class Database {
         $db = new Database ();
         
         // N.B. deprecated options are ignored: menutype, data_check, convert_output
-        if ($node->hasAttribute ('primary_headings')) {
-            $db->setShowPrimaryHeadings (to_bool ($node->getAttribute ('primary_headings')));
+        if ($node->hasAttribute('primary_headings')) {
+            $db->setShowPrimaryHeadings(Meta::toBool($node->getAttribute('primary_headings')));
         }
-        if ($node->hasAttribute ('section_headings')) {
-            $db->setShowSectionHeadings (to_bool ($node->getAttribute ('section_headings')));
+        if ($node->hasAttribute('section_headings')) {
+            $db->setShowSectionHeadings(Meta::toBool($node->getAttribute('section_headings')));
         }
-        if ($node->hasAttribute ('show_sub_record_count')) {
-            $db->setShowSubRecordCount (to_bool ($node->getAttribute ('show_sub_record_count')));
+        if ($node->hasAttribute('show_sub_record_count')) {
+            $db->setShowSubRecordCount(Meta::toBool($node->getAttribute('show_sub_record_count')));
         }
-        if ($node->hasAttribute ('show_search')) {
-            $db->setShowSubRecordCount (to_bool ($node->getAttribute ('show_search')));
+        if ($node->hasAttribute('show_search')) {
+            $db->setShowSubRecordCount(Meta::toBool($node->getAttribute('show_search')));
         }
         
         // load tables
@@ -184,8 +185,6 @@ class Database {
      * @author benno, 2011-08-09 (rewrite)
      */
     function dumpXML($file_loc = '', $success_page = 'table_edit.php') {
-        require_once ROOT_PATH_FILE . 'tricho/data_setup.php';
-        
         if ($file_loc == '') {
             $file_loc = Runtime::get('root_path') . 'tricho/data/tables.xml';
         }
@@ -208,12 +207,12 @@ class Database {
         $doc->formatOutput = true;
         $database_node = $doc->createElement ('database');
         $doc->appendChild ($database_node);
-        $params = array (
-            'primary_headings' => to_yn ($this->primary_headings),
-            'section_headings' => to_yn ($this->section_headings),
-            'show_sub_record_count' => to_yn ($this->show_sub_record_count),
-            'show_search' => to_yn ($this->show_search)
-        );
+        $params = [
+            'primary_headings' => Meta::toYesNo($this->primary_headings),
+            'section_headings' => Meta::toYesNo($this->section_headings),
+            'show_sub_record_count' => Meta::toYesNo($this->show_sub_record_count),
+            'show_search' => Meta::toYesNo($this->show_search)
+        ];
         
         if ($this->help_table != null) {
             $params['help_table'] = $this->help_table->getName();

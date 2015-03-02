@@ -5,10 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package meta_xml
- */
-
+use Tricho\Meta;
 
 interface ColumnInterface {
     /**
@@ -68,8 +65,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $node->setAttribute ('name', $this->name);
         $node->setAttribute ('engname', $this->engname);
         $node->setAttribute ('class', get_class ($this));
-        $node->setAttribute ('sql_defn', get_sql_defn ($this));
-        $node->setAttribute ('mandatory', to_yn ($this->mandatory));
+        $node->setAttribute ('sql_defn', Meta::getSqlDefn($this));
+        $node->setAttribute ('mandatory', Meta::toYesNo($this->mandatory));
         
         // TODO: params are deprecated so this is no longer necessary
         if (count ($this->params) > 0) {
@@ -93,14 +90,14 @@ abstract class Column implements QueryField, ColumnInterface {
                     }
                     
                     foreach ($data as $name => $value) {
-                        if (is_bool ($value)) $data = to_yn ($value);
+                        if (is_bool ($value)) $data = Meta::toYesNo($value);
                         $paramdata_node = $doc->createElement ('paramdata');
                         $param_node->appendChild ($paramdata_node);
                         if (!$auto_keys) $paramdata_node->setAttribute ('name', $name);
                         $paramdata_node->setAttribute ('value', $value);
                     }
                 } else {
-                    if (is_bool ($data)) $data = to_yn ($data);
+                    if (is_bool ($data)) $data = Meta::toYesNo($data);
                     $param_node->setAttribute ('value', (string) $data);
                 }
             }
@@ -141,9 +138,9 @@ abstract class Column implements QueryField, ColumnInterface {
      */
     function applyXMLNode(DOMElement $node) {
         $attribs = HtmlDom::getAttribArray ($node);
-        $this->setMandatory (to_bool ($attribs['mandatory']));
+        $this->setMandatory (Meta::toBool($attribs['mandatory']));
         $this->setEngName ($attribs['engname']);
-        list ($sql_type, $size, $sql_attribs) = get_sql_params ($attribs['sql_defn']);
+        list ($sql_type, $size, $sql_attribs) = Meta::getSqlParams($attribs['sql_defn']);
         $sql_type = sql_type_string_to_defined_constant ($sql_type);
         
         $this->setSqlType ($sql_type);

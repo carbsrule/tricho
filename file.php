@@ -6,7 +6,6 @@
  */
 
 require_once 'tricho.php';
-require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 
 $return_404 = false;
 
