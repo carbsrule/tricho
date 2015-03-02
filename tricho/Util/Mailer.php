@@ -5,7 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-namespace tricho\util;
+namespace Tricho\Util;
 require_once 'Mail.php';
 require_once 'Mail/mime.php';
 use \Mail as Mail;

@@ -7,7 +7,7 @@
 
 if (!class_exists('\tricho\Runtime', false)) die('Include me');
 
-use tricho\Runtime;
+use Tricho\Runtime;
 
 if (empty($no_heading)) {
     if ($form != null) {

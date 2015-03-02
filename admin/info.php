@@ -6,7 +6,7 @@
  */
 
 require_once '../tricho.php';
-use tricho\Runtime;
+use Tricho\Runtime;
 
 if (@$_GET['view'] == 'session') {
     test_setup_login (true, SETUP_ACCESS_FULL);

@@ -6,7 +6,7 @@
  */
 
 require '../tricho.php';
-use tricho\Runtime;
+use Tricho\Runtime;
 $root = Runtime::get('root_path');
 require "{$root}tricho/db/sql_parser.php";
 

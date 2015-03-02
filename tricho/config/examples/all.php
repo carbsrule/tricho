@@ -5,7 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-use tricho\Runtime;
+use Tricho\Runtime;
 
 // See /tricho/runtime_defaults.php
 $data = array(

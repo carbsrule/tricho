@@ -5,7 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-namespace tricho;
+namespace Tricho;
 
 /**
  * Stores constant-ish information (configuration etc.) that needs to be

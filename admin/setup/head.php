@@ -9,7 +9,7 @@ require_once '../../tricho.php';
 require_once ROOT_PATH_FILE. 'tricho/data_objects.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 
-use tricho\Runtime;
+use Tricho\Runtime;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

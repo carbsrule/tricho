@@ -13,7 +13,7 @@ if (!isset($_SERVER['SERVER_NAME'])) {
     $_SERVER['HTTP_USER_AGENT'] = '';
 }
 
-use tricho\Runtime;
+use Tricho\Runtime;
 $_data = array(
     'live' => false,
     'site_name' => 'My site TEST',
