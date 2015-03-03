@@ -58,20 +58,6 @@ foreach ($pk_fields as $pk_field) {
     }
 }
 
-// check the ordernum column is in the table order, and is the last col
-//$columns = $table->getColumns ();
-foreach ($columns as $column) {
-    if ($column->getOption() == 'ordernum') {
-        // check if the column is in the order
-        $order = $table->getOrder ('view');
-        $orderitem = array_pop ($order);
-        if ($orderitem[0] !== $column) {
-            $warnings[] = "The order number column <i>{$column->getName()}</i> is not in the table order, or is not the last column in the table order";
-        }
-        break;
-    }
-}
-
 if (count ($table->getRowIdentifier ()) == 0) {
     $warnings[] = "This table does not have a row identifier";
 }
