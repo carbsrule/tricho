@@ -28,10 +28,6 @@ function tricho_autoload ($class_name) {
         }
     }
     
-    if (strpos($class_name, 'Tricho') !== false) {
-        die('$class_name: ' . $class_name);
-    }
-    
     $file_name = class_name_to_file_name($class_name);
     
     $is_column = false;
