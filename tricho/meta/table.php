@@ -17,7 +17,7 @@ class Table implements QueryTable {
     private $columns;
     private $order;
     private $comments;
-    private $indices;
+    private $indexes;
     private $is_joiner = false;
     private $display;
     private $display_style = TABLE_DISPLAY_STYLE_ROWS;
@@ -52,7 +52,7 @@ class Table implements QueryTable {
         
         // use an empty primary key by default,
         // so that the code doesn't break if we import a table that doesn't have a primary key
-        $this->indices = array ('PRIMARY KEY' => array ());
+        $this->indexes = ['PRIMARY KEY' => []];
         $this->home_page = '';
         $this->mask = generate_code (6);
         $this->allowed_actions = array ();
@@ -221,9 +221,9 @@ class Table implements QueryTable {
      */
     function appendIndexesToXMLNode (DOMElement $parent) {
         $doc = $parent->ownerDocument;
-        $indexes = $doc->createElement ('indices');
+        $indexes = $doc->createElement('indexes');
         $parent->appendChild ($indexes);
-        foreach ($this->getIndices () as $name => $cols) {
+        foreach ($this->getIndexes() as $name => $cols) {
             if (is_numeric ($name)) $name = '';
             if (is_array ($cols)) {
                 $col_names_arr = array ();
@@ -460,7 +460,7 @@ class Table implements QueryTable {
         }
         
         // indexes
-        $indexes = $node->getElementsByTagName ('indices')->item (0);
+        $indexes = $node->getElementsByTagName('indexes')->item(0);
         if (!$indexes) {
             throw new Exception ('No indexes defined for table '. $table->name);
         }
@@ -664,7 +664,7 @@ class Table implements QueryTable {
         }
         $result .= implode (",\n    ", $col_defns);
         
-        $indexes = $this->getIndices ();
+        $indexes = $this->getIndexes();
         $index_defns = array ();
         foreach ($indexes as $name => $index) {
             if (is_numeric ($name)) $name = '';
@@ -1666,7 +1666,7 @@ class Table implements QueryTable {
     function wipe () {
         $this->columns = array ();
         $this->order = array ('view' => array (), 'search' => array ());
-        $this->indices = array ('PRIMARY KEY' => array ());
+        $this->indexes = ['PRIMARY KEY' => []];
         
         $this->list_view = array ();
         $this->export_view = array ();
@@ -1857,11 +1857,11 @@ class Table implements QueryTable {
             }
         }
         
-        $pk = $this->indices['PRIMARY KEY'];
+        $pk = $this->indexes['PRIMARY KEY'];
         foreach ($pk as $key => $col) {
             if ($col === $old) {
                 $pk[$key] = $new;
-                $this->indices['PRIMARY KEY'] = $pk;
+                $this->indexes['PRIMARY KEY'] = $pk;
                 break;
             }
         }
@@ -2545,16 +2545,16 @@ class Table implements QueryTable {
         $result = true;
         if (strtoupper ($name) == 'PRIMARY KEY') {
             if (is_array ($columns) and count($columns) > 0) {
-                $this->indices['PRIMARY KEY'] = $columns;
+                $this->indexes['PRIMARY KEY'] = $columns;
             } else {
                 $result = false;
             }
         } else if (!is_array ($columns)) {
             if ($name == '') {
                 // auto-assign key number
-                $this->indices[] = $columns;
+                $this->indexes[] = $columns;
             } else {
-                $this->indices[$name] = $columns;
+                $this->indexes[$name] = $columns;
             }
         } else {
             $result = false;
@@ -2753,7 +2753,7 @@ class Table implements QueryTable {
     function getAutoIncPK () {
         $auto_inc_pk = false;
         
-        $pk = $this->indices['PRIMARY KEY'];
+        $pk = $this->indexes['PRIMARY KEY'];
         if (count($pk) > 0) {
             foreach ($pk as $pk_col) {
                 if (in_array ('AUTO_INCREMENT', $pk_col->getSqlAttributes ())) {
@@ -2826,7 +2826,7 @@ class Table implements QueryTable {
     function getPostedPK () {
         $val = true;
         
-        $pk = $this->indices['PRIMARY KEY'];
+        $pk = $this->indexes['PRIMARY KEY'];
         
         $pk_vals_arr = array ();
         foreach ($pk as $pk_col) {
@@ -2931,13 +2931,13 @@ class Table implements QueryTable {
     }
     
     /**
-     * Gets the list of indices that are defined for this table.
+     * Gets the list of indexes that are defined for this table.
      * 
-     * @return array The list of indices. Each Index is an array of Column
+     * @return array The list of indexes. Each Index is an array of Column
      *         objects.
      */
-    function getIndices () {
-        return $this->indices;
+    function getIndexes() {
+        return $this->indexes;
     }
     
     /**
@@ -2947,24 +2947,25 @@ class Table implements QueryTable {
      * @return array The desired index (an array of Column objects).
      */
     function getIndex ($name) {
-        if (isset ($this->indices[$name])) {
-            return $this->indices[$name];
+        if (isset ($this->indexes[$name])) {
+            return $this->indexes[$name];
         } else {
             throw new Exception ("Key {$name} is not defined for table ". $this->getName ());
         }
     }
     
     /**
-     * Gets the names and columns for all the UNIQUE indices on this table.
+     * Gets the names and columns for all the UNIQUE indexes on this table.
      * Will not return the primary key.
-     * Uses a SHOW INDEX query, so will also get indices not known by Tricho.
+     * Uses a SHOW INDEX query, so will also get indexes not known by Tricho.
      * 
      * Return format: [ 'index_name' => [ 'col_name', 'col_name', ... ], ... ]
      * 
      * @return array The index information for all the unique indexes on the
      *         table in the format specified above
      */
-    function getUniqueIndices () {
+    function getUniqueIndexes()
+    {
         $q = "SHOW INDEX FROM `{$this->getName()}`";
         $res = execq($q);
         
@@ -3200,7 +3201,7 @@ class Table implements QueryTable {
     function vis () {
         $str = "<h3>". $this->name. " (". $this->english_name. ")</h3>\n";
         $str .= $this->visColumns ();
-        $str .= $this->visIndices ();
+        $str .= $this->visIndexes ();
         $str .= $this->visSearchOptions ();
         return $str;
     }
@@ -3254,17 +3255,17 @@ class Table implements QueryTable {
     }
     
     /**
-     * Get a string that is a visualisation of indices of this table.
+     * Get a string that is a visualisation of indexes of this table.
      * 
      * Used in debugging.
      * 
-     * @return string Visualisation of the indices defined for this Table.
+     * @return string Visualisation of the indexes defined for this Table.
      * @deprecated Remove this
      */
-    function visIndices () {
-        $str = "<table>\n<tr><td><b>Indices</b></td><td>";
-        if (count($this->indices) > 0) {
-            foreach ($this->indices as $id => $index) {
+    function visIndexes () {
+        $str = "<table>\n<tr><td><b>Indexes</b></td><td>";
+        if (count($this->indexes) > 0) {
+            foreach ($this->indexes as $id => $index) {
                 // echo "Index: <pre>"; print_r ($index); echo "</pre>\n";
                 $str .= "{$id}: ";
                 

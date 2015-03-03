@@ -153,7 +153,7 @@ if (count ($editable_pk_names) > 0) {
 }
 
 // check the unique indexes are not in use
-$unique_indexes = $table->getUniqueIndices ();
+$unique_indexes = $table->getUniqueIndexes();
 foreach ($unique_indexes as $index_columns) {
     $q = "SELECT 1 FROM `{$table->getName ()}` WHERE ";
     $j = 0;

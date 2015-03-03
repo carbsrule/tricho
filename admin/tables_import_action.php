@@ -514,9 +514,9 @@ for ($table_num = 0; $table_num < $tables->length; $table_num++) {
                 }
                 
                 // once columns have been imported, need to import all other table meta-data:
-                // views (main, add_edit, export), ordering (vieworder), indices, row_identifier
+                // views (main, export), ordering (vieworder), indexes, row_identifier
                 $properties_to_replace = array (
-                    'main', 'add_edit', 'export', 'vieworder', 'indices', 'row_identifier'
+                    'main', 'export', 'vieworder', 'indexes', 'row_identifier'
                 );
                 foreach ($properties_to_replace as $property) {
                     if (import_and_overwrite_node ($extant_table, $table, $property)) {

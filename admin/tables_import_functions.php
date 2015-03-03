@@ -30,7 +30,7 @@ function get_xml_columns (DOMNode $table) {
  */
 function get_xml_indexes (DOMNode $table) {
     $return_indexes = array ();
-    $indexes = $table->getElementsByTagName ('indices')->item (0)->getElementsByTagName ('index');
+    $indexes = $table->getElementsByTagName('indexes')->item(0)->getElementsByTagName('index');
     for ($index_num = 0; $index_num < $indexes->length; $index_num++) {
         $index = $indexes->item ($index_num);
         $return_indexes[strtoupper ($index->getAttribute ('name'))] = preg_split ('/,\s*/', $index->getAttribute ('columns'));
@@ -39,7 +39,7 @@ function get_xml_indexes (DOMNode $table) {
 }
 
 /**
- * Replaces a table property in an existing XML definition with an updated property definition of the same node from a new XML file. This function is used to import views (main, add_edit, export), ordering (vieworder), indices, and the row_identifier of a table.
+ * Replaces a table property in an existing XML definition with an updated property definition of the same node from a new XML file. This function is used to import views (main, export), ordering (vieworder), indexes, and the row_identifier of a table.
  * 
  * @param DOMElement $extant_table The table defined in the existing XML
  * @param DOMElement $new_table The table defined in the new XML, the properties of which will be imported
