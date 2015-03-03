@@ -280,7 +280,6 @@ class MainTable {
             return;
         }
         
-        $link_data = $column->getLink ();
         if (!($column instanceof LinkColumn)) {
             $main = false;
             

@@ -1403,18 +1403,16 @@ class Table implements QueryTable {
      * @param Table $table the table to find a link to
      * @return mixed a {@link Column} if a link is found, or null otherwise
      */
-    function getLinkToTable (Table $table) {
+    function getLinkToTable(Table $table) {
         $link_col = null;
         $columns = $this->columns;
-        reset ($columns);
         foreach ($columns as $id => $col) {
-            $link_data = $col->getLink ();
-            if ($link_data != null and $link_data->getToColumn ()->getTable () === $table) {
-                $link_col = $col;
-                break;
+            if (!($col instanceof LinkColumn)) continue;
+            if ($col->getTarget()->getTable() === $table) {
+                return $col;
             }
         }
-        return $link_col;
+        return null;
     }
     
     /**
@@ -2387,15 +2385,13 @@ class Table implements QueryTable {
             if ($item instanceof Column) {
                 
                 // dates get proper formatting
-                if ($item->getOption () == 'date') {
-                    
-                    $format = $item->getParam ('date_format');
-                    if ($format == '') $format = '%d/%m/%Y';
+                if ($item instanceof DateColumn) {
+                    $format = '%d/%m/%Y';
                     $col = new DateTimeQueryColumn ($base_table, $item->getName ());
                     $col->setDateFormat ($format);
                 
                 // links get the appropriate JOINs
-                } else if ($item->hasLink ()) {
+                } else if ($item instanceof LinkColumn) {
                     
                     $to_col = $item->getLink ()->getToColumn ();
                     
