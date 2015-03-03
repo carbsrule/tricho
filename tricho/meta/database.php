@@ -115,7 +115,6 @@ class Database {
     static function fromXMLNode (DOMElement $node) {
         $db = new Database ();
         
-        // N.B. deprecated options are ignored: menutype, data_check, convert_output
         if ($node->hasAttribute('primary_headings')) {
             $db->setShowPrimaryHeadings(Meta::toBool($node->getAttribute('primary_headings')));
         }
@@ -547,20 +546,7 @@ class Database {
         return $removed;
     }
     
-    /**
-     * Provides a basic visual representation of the database meta-data (e.g.
-     * for debugging).
-     * 
-     * @return string Visualisation of the Database.
-     */
-    function vis () {
-        $str = '';
-        foreach ($this->tables as $id => $table) {
-            $str .= $table->vis();
-        }
-        return $str;
-    }
-
+    
     public function __toString () {
         return __CLASS__;
     }
