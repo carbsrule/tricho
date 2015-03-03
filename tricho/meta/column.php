@@ -68,40 +68,6 @@ abstract class Column implements QueryField, ColumnInterface {
         $node->setAttribute ('sql_defn', Meta::getSqlDefn($this));
         $node->setAttribute ('mandatory', Meta::toYesNo($this->mandatory));
         
-        // TODO: params are deprecated so this is no longer necessary
-        if (count ($this->params) > 0) {
-            $params_node = $doc->createElement ('params');
-            $node->appendChild ($params_node);
-            foreach ($this->params as $key => $data) {
-                $param_node = $doc->createElement ('param');
-                $params_node->appendChild ($param_node);
-                $param_node->setAttribute ('name', $key);
-                if (is_array ($data)) {
-                    
-                    // if using auto-numeric array keys, don't bother saving them
-                    $auto_keys = true;
-                    $expected_key = 0;
-                    foreach ($data as $name => $value) {
-                        if ($name != (string) $expected_key) {
-                            $auto_keys = false;
-                            break;
-                        }
-                        ++$expected_key;
-                    }
-                    
-                    foreach ($data as $name => $value) {
-                        if (is_bool ($value)) $data = Meta::toYesNo($value);
-                        $paramdata_node = $doc->createElement ('paramdata');
-                        $param_node->appendChild ($paramdata_node);
-                        if (!$auto_keys) $paramdata_node->setAttribute ('name', $name);
-                        $paramdata_node->setAttribute ('value', $value);
-                    }
-                } else {
-                    if (is_bool ($data)) $data = Meta::toYesNo($data);
-                    $param_node->setAttribute ('value', (string) $data);
-                }
-            }
-        }
         if ($this->comment != '') {
             $comment_node = HtmlDom::appendNewChild ($node, 'comment');
             $comment = trim ($this->comment);
