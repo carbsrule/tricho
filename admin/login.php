@@ -17,7 +17,7 @@ require '../tricho.php';
 <body>
 <h2>Login for Administration</h2>
 
-<?php report_session_error (ADMIN_KEY); ?>
+<?php check_session_response(ADMIN_KEY); ?>
 
 <form method="post" action="login_action.php">
 <table>

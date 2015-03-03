@@ -388,36 +388,6 @@ function get_email_footer_info () {
 
 
 /**
- * Displays any errors stored in the session, then clears them.
- * This function is now just a wrapper for report_session_info
- * 
- * @deprecated
- */
-function report_session_error ($partitions = array ('user', '')) {
-    report_session_info ('err', $partitions);
-}
-
-/**
- * Displays any warnings stored in the session, then clears them.
- * This function is now just a wrapper for report_session_info
- * 
- * @deprecated
- */
-function report_session_warning ($partitions = array ('user', '')) {
-    report_session_info ('warn', $partitions);
-}
-
-/**
- * Displays any confirmation messages stored in the session, then clears them.
- * This function is now just a wrapper for report_session_info
- * 
- * @deprecated
- */
-function report_session_message ($partitions = array ('user', '')) {
-    report_session_info ('msg', $partitions);
-}
-
-/**
  * Displays session information (errors, confirmation messages, and warnings).
  * 
  * @param string $type err (error), msg (confirmation message), or warn (warning).
