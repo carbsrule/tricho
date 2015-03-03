@@ -15,17 +15,6 @@ $table = $db->getTable($_GET['t']);
 
 list ($in_list, $out_list) = get_in_out_lists ($table, $_GET['list']);
 
-
-// if the IN list contains an ordernum will will output a message
-$ordernum = false;
-foreach ($in_list as $order_item) {
-    if ($order_item[0]->getOption () == 'ordernum') {
-        $ordernum = true;
-        break;
-    }
-}
-
-
 if ($_GET['sect'] == 'in') {
     if ($_GET['go'] == 'up') {
         // perform action and don't care
@@ -79,15 +68,10 @@ if ($_GET['sect'] == 'in') {
                 break;
                 
             case 'order':
-                if ($item->getOption () == 'ordernum') $ordernum = true;
-                $table->addToOrder ('view', $item);
+                $table->addToOrder('view', $item);
                 break;
         }
     }
-}
-
-if ($ordernum) {
-    $_SESSION['setup']['ordernum_changed'] = true;
 }
 
 $url = 'table_edit_order_iframe.php?t=' . urlencode($_GET['t']) .

@@ -93,13 +93,12 @@ foreach ($display_styles as $display_style => $display_style_name) {
 <?php
 $columns = $table->getColumns ();
 foreach ($columns as $column) {
-    $col_link = $column->getLink ();
-    if ($col_link !== null) {
-        if ($col_link->getToColumn ()->getTable () !== $table) {
-            echo '            <option value="', $column->getName (), '"';
-            if ($table->getPartition () === $column) echo ' selected';
-            echo '>', $column->getName (), ' (', $column->getEngName (), ")</option>\n";
-        }
+    if (!($column instanceof LinkColumn)) continue;
+    if ($column->getTarget()->getTable() !== $table) {
+        echo '            <option value="', $column->getName(), '"';
+        if ($table->getPartition() === $column) echo ' selected';
+        echo '>', $column->getName(), ' (', $column->getEngName(),
+            ")</option>\n";
     }
 }
 ?>
@@ -117,7 +116,7 @@ $columns = $table->getColumns ();
 $lines = array();
 $num_joins = 0;
 foreach ($columns as $column) {
-    $link = $column->getLink ();
+    if (!($column instanceof LinkColumn)) continue;
     if ($link != null) {
         $num_joins++;
         if ($link->isParent ()) {
