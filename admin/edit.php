@@ -9,7 +9,7 @@ require '../tricho.php';
 test_admin_login ();
 $db = Database::parseXML();
 $table = $db->getTable ($_GET['t']); // use table name
-force_redirect_to_alt_page_if_exists($table, 'edit');
+alt_page_redir($table, 'edit');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';

@@ -10,7 +10,7 @@ test_admin_login();
 
 $db = Database::parseXML();
 $table = $db->getTable ($_GET['t']);
-force_redirect_to_alt_page_if_exists ($table, 'main_order');
+alt_page_redir($table, 'main_order');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';

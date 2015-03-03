@@ -13,7 +13,7 @@ $db = Database::parseXML();
 //die("<pre>POST:\n" . print_r($_POST, true) . '</pre>');
 
 $table = $db->getTable($_POST['_t']);
-force_redirect_to_alt_page_if_exists($table, 'edit_action');
+alt_page_redir($table, 'edit_action');
 
 if ($table === null) {
     $_SESSION[ADMIN_KEY]['err'] = 'A fatal error has occurred. Perhaps you uploaded too much data?';

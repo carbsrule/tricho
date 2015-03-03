@@ -11,7 +11,7 @@ require 'main_functions.php';
 
 $db = Database::parseXML();
 $table = $db->getTable ($_GET['t']); // use table name
-force_redirect_to_alt_page_if_exists($table, 'add');
+alt_page_redir($table, 'add');
 
 if (!$table->checkAuth ()) {
     $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';

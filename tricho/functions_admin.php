@@ -57,7 +57,7 @@ function get_ancestor_pks ($parent_data = null) {
  * @param mixed $table The table the user is accessing (a Table object, or null).
  * @param string $page The page the user is accessing (e.g. 'main', 'main_add', 'main_edit_action', etc.)
  */
-function force_redirect_to_alt_page_if_exists ($table, $page) {
+function alt_page_redir($table, $page) {
     
     if (!$table instanceof Table) {
         $_SESSION[ADMIN_KEY]['err'] = 'Invalid table';

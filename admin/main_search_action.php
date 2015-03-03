@@ -10,7 +10,7 @@ test_admin_login();
 
 $db = Database::parseXML();
 $table = $db->getTable ($_POST['_t']);
-force_redirect_to_alt_page_if_exists ($table, 'main_search_action');
+alt_page_redir($table, 'main_search_action');
 
 list ($urls, $seps) = $table->getPageUrls ();
 if (@$_POST['_search_type'] == 'inline') {
