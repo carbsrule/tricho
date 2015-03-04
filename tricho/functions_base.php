@@ -21,6 +21,7 @@ if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
 
 function tricho_exception_handler(Exception $ex) {
     if (!\tricho\Runtime::get('live')) {
+        ob_end_clean();
         @header('Content-type: text/html');
         echo '<pre>';
         $trace = $ex->getTrace();
