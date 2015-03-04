@@ -5,8 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-require_once '../tricho.php';
 use Tricho\Runtime;
+use Tricho\Meta\EmailColumn;
+
+require_once '../tricho.php';
 
 if (@$_GET['view'] == 'session') {
     test_setup_login (true, SETUP_ACCESS_FULL);
