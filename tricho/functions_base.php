@@ -5,11 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package functions
- * @subpackage base
- */
-
+use Tricho\Meta\Database;
 
 // Check if PHP is misconfigured:
 // 1) register globals must be turned off

@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Table;
+
 class UpdateQuery extends Query {
     protected $table;
     protected $fields;

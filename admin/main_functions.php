@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Table;
+
 /**
  * Shows the children tables that are available for a specific table
  *

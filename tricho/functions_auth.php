@@ -5,10 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package functions
- * @subpackage auth
- */
+use Tricho\Meta\Database;
 
 /**
  * Checks to see that a site user (member) is logged in

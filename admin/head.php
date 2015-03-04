@@ -10,6 +10,8 @@ header ('Content-Type: text/html; charset=UTF-8');
 if (!defined ('ROOT_PATH_FILE')) require_once '../tricho.php';
 test_admin_login();
 
+use Tricho\Meta\Database;
+
 $db = Database::parseXML();
 
 require_once ROOT_PATH_FILE. ADMIN_DIR. 'setup_user_options.php';

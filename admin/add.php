@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+use Tricho\Util\HtmlDom;
+
 require '../tricho.php';
 test_admin_login ();
 require 'main_functions.php';

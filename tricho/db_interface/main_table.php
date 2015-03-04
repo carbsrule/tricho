@@ -5,9 +5,18 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package main_system
- */
+use Tricho\Meta\Table;
+
+use Tricho\Meta\Column;
+use Tricho\Meta\BooleanColumn;
+use Tricho\Meta\LinkColumn;
+use Tricho\Meta\NumericColumn;
+use Tricho\Meta\PasswordColumn;
+use Tricho\Meta\TemporalColumn;
+
+use Tricho\Meta\FunctionViewItem;
+use Tricho\Meta\ColumnViewItem;
+
 
 /**
  * Used to build the table seen on main.php which has rows showing a subset of the data in a database table.

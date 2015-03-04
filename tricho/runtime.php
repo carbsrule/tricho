@@ -7,6 +7,8 @@
 
 namespace Tricho;
 
+use Tricho\Meta\Table;
+
 /**
  * Stores constant-ish information (configuration etc.) that needs to be
  * accessible site-wide. Some contents may be set to read-only during site
@@ -104,7 +106,7 @@ class Runtime {
     }
     
     
-    static function load_help_text(\Table $table) {
+    static function load_help_text(Table $table) {
         $help_table = $table->getDatabase()->getHelpTable();
         if ($help_table == null) {
             throw new \Exception('No help table available');

@@ -5,9 +5,12 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package main_system
- */
+use Tricho\Meta\Database;
+use Tricho\Meta\Table;
+use Tricho\Meta\Column;
+use Tricho\Meta\FileColumn;
+use Tricho\Meta\UploadedFile;
+use Tricho\Util\HtmlDom;
 
 /**
  * Represents a form that contains multiple items (columns, headings, etc.)

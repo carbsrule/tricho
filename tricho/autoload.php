@@ -47,7 +47,7 @@ function tricho_autoload ($class_name) {
             }
         }
         
-        $tricho_path = $root_path . 'tricho/meta/' . $file_name;
+        $tricho_path = $root_path . 'tricho/Meta/' . $class_name . '.php';
         if (!file_exists($tricho_path)) return;
         require_once $tricho_path;
         tricho\Runtime::add_column_class($class_name);
@@ -55,22 +55,6 @@ function tricho_autoload ($class_name) {
     }
     
     switch ($class_name) {
-        case 'Database':
-        case 'Table':
-        case 'Column':
-        case 'Link':
-            // there is no break here for a reason
-            
-        case 'ViewItem':
-        case 'HeadingViewItem':
-        case 'ColumnViewItem':
-        case 'FunctionViewItem':
-        case 'IncludeViewItem':
-        case 'UploadedFile':
-        case 'UploadedImage':
-            require_once $root_path . 'tricho/meta/' . $file_name;
-            break;
-        
         case 'Form':
         case 'FormManager':
         case 'FormModifier':
@@ -105,7 +89,6 @@ function tricho_autoload ($class_name) {
             break;
         
         case 'StringNumber':
-        case 'HtmlDom':
             require_once $root_path . 'tricho/'. $file_name;
             break;
         

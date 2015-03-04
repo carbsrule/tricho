@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package query_builder
- */
+use Tricho\Meta\Column;
 
 /**
  * used to represent an actual column in a query (e.g. MyTable.MyColumn)

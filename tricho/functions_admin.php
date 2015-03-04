@@ -5,10 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package functions
- * @subpackage admin
- */
+use Tricho\Meta\Table;
 
 
 /**

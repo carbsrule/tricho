@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+
 require '../tricho.php';
 unset($_SESSION[ADMIN_KEY]['err']);
 unset($_SESSION['setup']['err']);

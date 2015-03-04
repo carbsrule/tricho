@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Table;
+
 /**
  * Implements a MySQL database connection using PHP's mysqli module
  */
