@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package query_builder
- */
+namespace Tricho\Query;
 
 /**
  * used to build queries more easily than hand-coding

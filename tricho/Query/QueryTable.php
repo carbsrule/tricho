@@ -5,9 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * Represents a field used in a database query.
- */
-interface QueryField {
+namespace Tricho\Query;
+
+interface QueryTable {
     function identify($context);
 }

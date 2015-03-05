@@ -6,6 +6,7 @@
  */
 
 use Tricho\Runtime;
+use Tricho\Query\RawQuery;
 
 interface DbConnValidator {
     /**

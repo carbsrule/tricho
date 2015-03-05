@@ -12,6 +12,7 @@ use \DOMElement;
 use \Form;
 
 use Tricho\Meta;
+use Tricho\Query\QueryField;
 use Tricho\Util\HtmlDom;
 
 interface ColumnInterface {
@@ -33,7 +34,7 @@ interface ColumnInterface {
  * Stores meta-data about a database column
  * @package meta_xml
  */
-abstract class Column implements \QueryField, ColumnInterface {
+abstract class Column implements QueryField, ColumnInterface {
     protected $table;
     protected $name;
     protected $engname;

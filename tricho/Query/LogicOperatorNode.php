@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package query_builder
- */
+namespace Tricho\Query;
 
 /**
  * A LogicOperatorNode represents an AND or an OR used in a {@link LogicTree}.

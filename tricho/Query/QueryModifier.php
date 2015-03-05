@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\Query;
+
 /**
  * Used for making modifications to an existing SelectQuery
  */

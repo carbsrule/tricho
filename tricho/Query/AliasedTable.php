@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package query_builder
- */
+namespace Tricho\Query;
 
 /**
  * represents an aliased SQL database table

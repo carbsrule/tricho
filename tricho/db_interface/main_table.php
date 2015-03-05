@@ -13,10 +13,15 @@ use Tricho\Meta\LinkColumn;
 use Tricho\Meta\NumericColumn;
 use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\TemporalColumn;
-
 use Tricho\Meta\FunctionViewItem;
 use Tricho\Meta\ColumnViewItem;
-
+use Tricho\Query\AliasedColumn;
+use Tricho\Query\QueryField;
+use Tricho\Query\QueryFieldList;
+use Tricho\Query\QueryFieldLiteral;
+use Tricho\Query\QueryFunction;
+use Tricho\Query\SelectQuery;
+use Tricho\Query\OrderColumn;
 
 /**
  * Used to build the table seen on main.php which has rows showing a subset of the data in a database table.

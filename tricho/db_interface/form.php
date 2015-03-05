@@ -11,6 +11,8 @@ use Tricho\Meta\Column;
 use Tricho\Meta\FileColumn;
 use Tricho\Meta\UploadedFile;
 use Tricho\Util\HtmlDom;
+use Tricho\Query\InsertQuery;
+use Tricho\Query\UpdateQuery;
 
 /**
  * Represents a form that contains multiple items (columns, headings, etc.)

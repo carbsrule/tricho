@@ -5,6 +5,11 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\Query;
+
+use \ConnManager;
+use \MysqlConn;
+
 use Tricho\Meta\Table;
 
 class InsertQuery extends Query {

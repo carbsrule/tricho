@@ -5,11 +5,18 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-class DeleteQuery extends Query {
+namespace Tricho\Query;
+
+use \ConnManager;
+
+use Tricho\Meta\Table;
+
+class UpdateQuery extends Query {
     protected $table;
+    protected $fields;
     protected $pk;
     
-    function __construct(Table $table, $pk) {
+    function __construct(Table $table, array $fields, $pk) {
         $pk_error = false;
         if (is_array($pk)) {
             foreach ($pk as $pk_val) {
@@ -26,7 +33,16 @@ class DeleteQuery extends Query {
             throw new InvalidArgumentException($error);
         }
         $this->table = $table;
+        $this->fields = $fields;
         $this->pk = $pk;
+    }
+    
+    
+    function set($field, $value) {
+        if ($this->toString_done) {
+            throw new Exception('Already generated query string');
+        }
+        $this->fields[$field] = $value;
     }
     
     
@@ -34,7 +50,19 @@ class DeleteQuery extends Query {
         $conn = $this->conn;
         if ($conn == null) $conn = ConnManager::get_active();
         $table = $conn->quote_ident($this->table);
-        $q = "DELETE FROM {$table}\nWHERE ";
+        $q = "UPDATE {$table} SET";
+        $field_num = 0;
+        foreach ($this->fields as $field => $value) {
+            if (++$field_num != 1) $q .= ',';
+            $field = $conn->quote_ident($field);
+            $q .= "\n    {$field} = ";
+            if ($value instanceof QueryField) {
+                $q .= $value->identify('update');
+            } else {
+                $q .= $conn->quote($value);
+            }
+        }
+        $q .= "\nWHERE ";
         $pk_fields = ($this->table->getPKnames());
         if (count($pk_fields) == 0) {
             throw new Exception('No PKs!');

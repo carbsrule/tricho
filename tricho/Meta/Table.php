@@ -10,12 +10,12 @@ namespace Tricho\Meta;
 use \DOMDocument;
 use \DOMElement;
 use \Form;
-use \LogicConditionNode;
-use \QueryFieldLiteral;
-use \SelectQuery;
-use \QueryTable;
 
 use Tricho\Meta;
+use Tricho\Query\LogicConditionNode;
+use Tricho\Query\SelectQuery;
+use Tricho\Query\QueryFieldLiteral;
+use Tricho\Query\QueryTable;
 use Tricho\Util\HtmlDom;
 
 /**

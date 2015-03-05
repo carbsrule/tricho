@@ -24,35 +24,14 @@ function tricho_autoload ($class_name) {
         $file = __DIR__ . '/' . $file_name;
         if (file_exists($file)) {
             require_once $file;
+            if (ends_with($class_name, 'Column')) {
+                tricho\Runtime::add_column_class($class_name);
+            }
             return;
         }
     }
     
     $file_name = class_name_to_file_name($class_name);
-    
-    $is_column = false;
-    if (substr ($class_name, -6) == 'Column') {
-        $is_column = true;
-        if (strpos ($class_name, 'AliasedColumn') !== false) $is_column = false;
-        if (strpos ($class_name, 'OrderColumn') !== false) $is_column = false;
-        if (strpos ($class_name, 'QueryColumn') !== false) $is_column = false;
-    }
-    if ($is_column) {
-        foreach ($extensions as $ext) {
-            $ext_path = "{$root_path}tricho/ext/{$ext}/{$file_name}";
-            if (file_exists($ext_path)) {
-                require_once $ext_path;
-                tricho\Runtime::add_column_class($class_name);
-                return;
-            }
-        }
-        
-        $tricho_path = $root_path . 'tricho/Meta/' . $class_name . '.php';
-        if (!file_exists($tricho_path)) return;
-        require_once $tricho_path;
-        tricho\Runtime::add_column_class($class_name);
-        return;
-    }
     
     switch ($class_name) {
         case 'Form':
@@ -68,26 +47,6 @@ function tricho_autoload ($class_name) {
             require_once $root_path . 'tricho/db_interface/' . $file_name;
             break;
         
-        case 'AliasedColumn':
-        case 'AliasedField':
-        case 'AliasedTable':
-        case 'LogicConditionNode':
-        case 'LogicOperatorNode':
-        case 'LogicTreeNode':
-        case 'LogicTree':
-        case 'OrderColumn':
-        case 'QueryFieldList':
-        case 'QueryFieldLiteral':
-        case 'QueryField':
-        case 'QueryFunction':
-        case 'QueryJoin':
-        case 'QueryTableList':
-        case 'QueryTable':
-        case 'DateTimeQueryColumn':
-        case 'QueryModifier':
-            require_once $root_path . 'tricho/query/' . $file_name;
-            break;
-        
         case 'StringNumber':
             require_once $root_path . 'tricho/'. $file_name;
             break;
@@ -98,9 +57,6 @@ function tricho_autoload ($class_name) {
     
     if (ends_with($class_name, 'Conn')) {
         require_once $root_path . 'tricho/db/' . $file_name;
-    }
-    if (ends_with($class_name, 'Query')) {
-        require_once $root_path . 'tricho/query/' . $file_name;
     }
     if (ends_with($class_name, 'FormItem')) {
         require_once $root_path . 'tricho/db_interface/' . $file_name;

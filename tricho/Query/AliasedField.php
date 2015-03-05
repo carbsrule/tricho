@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package query_builder
- */
+namespace Tricho\Query;
 
 // NOTE: the column list can either be auto-managed (in which case all
 // duplicated columns will have aliases) or manually-managed, which is probably

@@ -6,6 +6,8 @@
  */
 
 use Tricho\Meta\Database;
+use Tricho\Query\SelectQuery;
+use Tricho\Query\QueryFieldLiteral;
 
 require_once '../tricho.php';
 test_admin_login();
