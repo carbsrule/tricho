@@ -541,6 +541,11 @@ class Form {
             throw new InvalidArgumentException($err);
         }
         
+        if (!empty($_POST['_cancel'])) {
+            unset($_SESSION['forms'][$this->id]);
+            redirect($this->form_url);
+        }
+        
         if (!isset($_SESSION['forms'][$this->id])) {
             $_SESSION['forms'][$this->id] = array();
         }
