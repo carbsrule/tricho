@@ -5,12 +5,14 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+
 require_once '../tricho.php';
 test_admin_login();
 
 $db = Database::parseXML();
 $table = $db->getTable ($_POST['_t']);
-alt_page_redir($table, 'main_search_action');
+alt_page_redir($table, 'search_action');
 
 list ($urls, $seps) = $table->getPageUrls ();
 if (@$_POST['_search_type'] == 'inline') {
@@ -31,7 +33,7 @@ if ($_POST['_action'] == 'clear') {
     unset ($_SESSION[ADMIN_KEY][SEARCH_KEY][$table->getName ()]);
 
     // redirect
-    $url = $urls['main'] . $seps['main'] . 't=' . $table_name;
+    $url = $urls['browse'] . $seps['browse'] . 't=' . $table_name;
     if ($_POST['_p'] != '') $url .= '&p=' . $_POST['_p'];
     redirect ($url);
 }
@@ -132,7 +134,7 @@ $filters['_match_type'] = $_POST['_match_type'];
 
 
 // redirect
-$url = $urls['main'] . $seps['main'] . 't=' . $table_name;
+$url = $urls['browse'] . $seps['browse'] . 't=' . $table_name;
 if ($_POST['_p'] != '') $url .= '&p=' . $_POST['_p'];
 redirect ($url);
 
