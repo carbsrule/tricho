@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DbConn\ConnManager;
 use Tricho\Query\RawQuery;
 use Tricho\Util\SqlParser;
 

@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\DbConn;
+
+use \InvalidArgumentException;
+
 class ConnManager {
     static private $connections = array();
     static private $configs = array();
@@ -120,6 +124,9 @@ class ConnManager {
         }
         if (!isset($config['class'])) {
             throw new InvalidArgumentException('Config specifies no class');
+        }
+        if (!starts_with($config['class'], 'Tricho\\')) {
+            $config['class'] = "Tricho\\DbConn\\{$config['class']}";
         }
         if (!class_exists($config['class'])) {
             throw new InvalidArgumentException('Config specifies unknown class');

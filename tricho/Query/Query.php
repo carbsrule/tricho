@@ -7,8 +7,8 @@
 
 namespace Tricho\Query;
 
-use \DbConn;
-use \ConnManager;
+use Tricho\DbConn\ConnManager;
+use Tricho\DbConn\DbConn;
 
 abstract class Query {
     protected $conn;

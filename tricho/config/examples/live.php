@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DbConn\ConnManager;
+
 // Details when run outside of web environment (e.g. cron scripts)
 if (!isset($_SERVER['SERVER_NAME'])) {
     $_SERVER['SERVER_NAME'] = 'live.example.com';

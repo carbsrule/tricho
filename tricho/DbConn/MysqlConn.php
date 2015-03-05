@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\DbConn;
+
+use \InvalidArgumentException;
 use Tricho\Meta\Table;
 
 /**

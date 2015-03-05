@@ -5,8 +5,14 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\DbConn;
+
+use \PDO;
+use \PDOStatement;
+use \QueryException;
 use Tricho\Runtime;
 use Tricho\Query\InsertQuery;
+use Tricho\Query\Query;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\RawQuery;
 

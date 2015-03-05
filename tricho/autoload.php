@@ -50,14 +50,8 @@ function tricho_autoload ($class_name) {
         case 'StringNumber':
             require_once $root_path . 'tricho/'. $file_name;
             break;
-        
-        case 'ConnManager':
-            require_once $root_path . 'tricho/db/conn_manager.php';
     }
     
-    if (ends_with($class_name, 'Conn')) {
-        require_once $root_path . 'tricho/db/' . $file_name;
-    }
     if (ends_with($class_name, 'FormItem')) {
         require_once $root_path . 'tricho/db_interface/' . $file_name;
         return;
