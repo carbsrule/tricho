@@ -5,11 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package functions
- * @subpackage database
- */
-
+use Tricho\Util\SqlParser;
 
 function execq($q) {
     $conn = ConnManager::get_active();
@@ -32,11 +28,9 @@ function fetch_row($res) {
  * @return string The clean SQL query (i.e. with private data converted to ???)
  */
 function sql_remove_private ($q) {
-    require_once tricho\Runtime::get('root_path') . 'tricho/db/sql_parser.php';
-    
     $q = (string) $q;
     
-    $parser = new SQLParser ();
+    $parser = new SqlParser();
     $parser->parse ($q);
     $tokens = $parser->getTokens ();
     
@@ -46,7 +40,7 @@ function sql_remove_private ($q) {
     foreach ($tokens as $token) {
         $str = $token['value'];
         
-        if ($token['type'] == SQLParser::QUERY) {
+        if ($token['type'] == SqlParser::QUERY) {
             while (strlen ($str) > 0) {
                 if (preg_match ('/^(MD5|SHA1?)\s*\(/i', $str, $matches)) {
                     $str = substr ($str, strlen ($matches[0]));
@@ -63,8 +57,8 @@ function sql_remove_private ($q) {
                     $str = substr ($str, 1);
                 }
             }
-        } else if (($token['type'] == SQLParser::STRING_SINGLE or
-            $token['type'] == SQLParser::STRING_DOUBLE) and $in_encrypt) {
+        } else if (($token['type'] == SqlParser::STRING_SINGLE or
+            $token['type'] == SqlParser::STRING_DOUBLE) and $in_encrypt) {
             // replace private data with ???
             $token['value'] = "???";
         }

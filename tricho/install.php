@@ -5,8 +5,11 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-require '../tricho.php';
 use Tricho\Runtime;
+use Tricho\Util\SqlParser;
+
+require '../tricho.php';
+
 $root = Runtime::get('root_path');
 require "{$root}tricho/db/sql_parser.php";
 
@@ -59,7 +62,7 @@ if (count($_POST) > 0) {
     }
     
     execq("START TRANSACTION");
-    $parser = new SQLParser();
+    $parser = new SqlParser();
     $queries = $parser->parse(file_get_contents('install/tables.sql'));
     if (!$queries) {
         die('<p><strong>Error:</strong> missing table create queries.</p>');

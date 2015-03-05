@@ -5,7 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-class SQLParser {
+namespace Tricho\Util;
+
+class SqlParser {
     const TEST = false;
     const WHITESPACE = 0;
     const COMMENT = 1;
@@ -253,33 +255,27 @@ class SQLParser {
         
     }
     
-}
-
-/**
- * strips a comment from an SQL query and returns it
- */
-function get_comment (&$str) {
     
-    $matches = array ();
-    preg_match ('/^--\s*(.*)$/m', $str, $matches);
-    
-    // echo "MATCHING $str WITH --: ", print_r ($matches, true), "<br>\n";
-    
-    if (count($matches) > 0) {
-        $str = preg_replace ('/^--.*$/m', '', $str, 1);
-        return trim ($matches[1]);
+    /**
+     * Strips a comment from an SQL query and returns it
+     * @param string $str A string containing the query
+     * @return mixed A string containing the comment, or false
+     */
+    static function getComment(&$str) {
+        $matches = [];
+        preg_match('/^--\s*(.*)$/m', $str, $matches);
+        if (count($matches) > 0) {
+            $str = preg_replace('/^--.*$/m', '', $str, 1);
+            return trim($matches[1]);
+        }
+        
+        $matches = [];
+        preg_match('/^#\s*(.*)$/m', $str, $matches);
+        if (count($matches) > 0) {
+            $str = preg_replace ('/^#.*$/m', '', $str, 1);
+            return trim ($matches[1]);
+        }
+        
+        return false;
     }
-    
-    $matches = array ();
-    preg_match ('/^#\s*(.*)$/m', $str, $matches);
-    
-    // echo "MATCHING $str WITH #: ", print_r ($matches, true), "<br>\n";
-    
-    if (count($matches) > 0) {
-        $str = preg_replace ('/^#.*$/m', '', $str, 1);
-        return trim ($matches[1]);
-    }
-    
-    return false;
 }
-?>

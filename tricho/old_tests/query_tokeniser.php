@@ -5,8 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Util\SqlParser;
+
 require_once '../../tricho.php';
-require_once '../../tricho/db/sql_parser.php';
 
 $queries = array (
     "SELECT MD5('abc') FROM NoTable",
@@ -29,12 +30,12 @@ foreach ($queries as $query) {
     
     echo "Original query: ". $query. "\n";
     
-    $parser = new SQLParser ();
+    $parser = new SqlParser();
     $parser->parse ($query);
     
     echo "Tokens:\n";
     foreach ($parser->getTokens () as $token) {
-        echo str_pad(SQLParser::$state_names[$token['type']]. ':', 4, ' ', STR_PAD_RIGHT),
+        echo str_pad(SqlParser::$state_names[$token['type']]. ':', 4, ' ', STR_PAD_RIGHT),
             htmlspecialchars ($token['value']), "\n";
     }
     

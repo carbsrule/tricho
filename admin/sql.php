@@ -6,6 +6,7 @@
  */
 
 use Tricho\Query\RawQuery;
+use Tricho\Util\SqlParser;
 
 require_once '../tricho.php';
 
@@ -16,7 +17,6 @@ set_time_limit (900);
 
 $_GET['t'] = '__tools';
 require 'head.php';
-require_once tricho\Runtime::get('root_path') . 'tricho/db/sql_parser.php';
 
 echo "<div id=\"main_data\">\n";
 echo "<script type=\"text/javascript\" src=\"sql.js\"></script>\n";
@@ -59,7 +59,7 @@ if (defined ('SQL_FIELD_BREAK')) {
 settype ($_POST['max_fails'], 'int');
 if ($_POST['max_fails'] <= 0) $_POST['max_fails'] = 100;
 
-$parser = new SQLParser();
+$parser = new SqlParser();
 $queries = array();
 $file = @$_FILES['sql_file'];
 if (is_uploaded_file($file['tmp_name'])) {
@@ -99,10 +99,10 @@ if (count($queries) > 0) {
         
         // display comments, don't try to execute them
         $comments = array ();
-        $comment = get_comment ($query);
+        $comment = SqlParser::getComment($query);
         while ($comment) {
             $comments[] = $comment;
-            $comment = get_comment ($query);
+            $comment = SqlParser::getComment($query);
         }
         
         if (count($comments) > 0) {

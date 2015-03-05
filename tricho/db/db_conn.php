@@ -6,6 +6,8 @@
  */
 
 use Tricho\Runtime;
+use Tricho\Query\InsertQuery;
+use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\RawQuery;
 
 interface DbConnValidator {
