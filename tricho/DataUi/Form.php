@@ -5,6 +5,15 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\DataUi;
+
+use \DOMComment;
+use \DOMDocument;
+use \DOMElement;
+use \DOMText;
+use \Exception;
+
+use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;
@@ -240,7 +249,7 @@ class Form {
     function load($file_path, $ignore_missing_cols = false) {
         $file_path = (string) $file_path;
         if ($file_path[0] != '/') {
-            $root = tricho\Runtime::get('root_path') . 'tricho/data/';
+            $root = Runtime::get('root_path') . 'tricho/data/';
             $file_path = $root . $file_path;
         }
         if (!ends_with($file_path, '.form.xml')) $file_path .= '.form.xml';

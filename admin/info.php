@@ -6,6 +6,7 @@
  */
 
 use Tricho\Runtime;
+use Tricho\DbConn\ConnManager;
 use Tricho\Meta\EmailColumn;
 
 require_once '../tricho.php';

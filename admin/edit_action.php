@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\Form;
 use Tricho\Meta\Database;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\SelectQuery;

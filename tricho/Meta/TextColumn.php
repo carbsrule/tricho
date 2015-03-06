@@ -7,8 +7,7 @@
 
 namespace Tricho\Meta;
 
-use \Form;
-
+use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 
 /**

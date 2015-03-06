@@ -7,11 +7,11 @@
 
 namespace Tricho\Meta;
 
+use \DataValidationException;
 use \DOMDocument;
 use \DOMElement;
-use \Form;
-use \DataValidationException;
 
+use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 
 abstract class TemporalColumn extends Column {

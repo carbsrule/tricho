@@ -9,8 +9,8 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
-use \Form;
 
+use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 
 class HtmlColumn extends InputColumn {

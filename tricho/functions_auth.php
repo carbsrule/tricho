@@ -6,6 +6,7 @@
  */
 
 use Tricho\Meta\Database;
+use Tricho\Query\RawQuery;
 
 /**
  * Checks to see that a site user (member) is logged in

@@ -5,8 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-use Tricho\Meta\Table;
+namespace Tricho\DataUi;
 
+use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\BooleanColumn;
 use Tricho\Meta\LinkColumn;

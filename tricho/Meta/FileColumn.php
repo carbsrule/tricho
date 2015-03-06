@@ -10,8 +10,8 @@ namespace Tricho\Meta;
 use \DataValidationException;
 use \DOMDocument;
 use \DOMElement;
-use \Form;
 
+use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 
 /**

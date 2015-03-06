@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho\DataUi;
+
 abstract class FormModifier {
     /**
      * Supports manipulations to the form after it has been loaded

@@ -9,7 +9,8 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
-use \Form;
+
+use Tricho\DataUi\Form;
 
 /**
  * Stores meta-data about a column that stores some kind of string data

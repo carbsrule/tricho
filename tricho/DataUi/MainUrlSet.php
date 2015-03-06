@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package main_system
- */
+namespace Tricho\DataUi;
 
 /**
  * Stores a list of URLs to use for a particular table when accessing the main

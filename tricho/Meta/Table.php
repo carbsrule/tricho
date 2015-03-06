@@ -9,8 +9,8 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
-use \Form;
 
+use Tricho\DataUi\Form;
 use Tricho\Meta;
 use Tricho\Query\LogicConditionNode;
 use Tricho\Query\SelectQuery;

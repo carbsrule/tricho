@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package main_system
- */
+namespace Tricho\DataUi;
 
 /**
  * Used to draw a row in a MainTable

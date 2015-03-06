@@ -25,7 +25,7 @@ function tricho_autoload ($class_name) {
         if (file_exists($file)) {
             require_once $file;
             if (ends_with($class_name, 'Column')) {
-                tricho\Runtime::add_column_class($class_name);
+                Tricho\Runtime::add_column_class($class_name);
             }
             return;
         }
@@ -34,27 +34,9 @@ function tricho_autoload ($class_name) {
     $file_name = class_name_to_file_name($class_name);
     
     switch ($class_name) {
-        case 'Form':
-        case 'FormManager':
-        case 'FormModifier':
-        case 'MainFilter':
-        case 'MainOrderColumn':
-        case 'MainRow':
-        case 'MainTable':
-        case 'MainUrlSet':
-        case 'MenuHolder':
-        case 'RandomString':
-            require_once $root_path . 'tricho/db_interface/' . $file_name;
-            break;
-        
         case 'StringNumber':
             require_once $root_path . 'tricho/'. $file_name;
             break;
-    }
-    
-    if (ends_with($class_name, 'FormItem')) {
-        require_once $root_path . 'tricho/db_interface/' . $file_name;
-        return;
     }
     
     if (ends_with($class_name, 'Exception')) {

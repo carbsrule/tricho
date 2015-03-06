@@ -5,9 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-/**
- * @package main_system
- */
+namespace Tricho\DataUi;
 
 /**
  * Used to display cells that have order arrows (up and down) for re-ordering rows
