@@ -6,48 +6,49 @@
  */
 
 function tricho_autoload ($class_name) {
-    static $root_path = null;
-    if ($root_path == null) $root_path = tricho\Runtime::get('root_path');
     static $extensions = null;
-    if ($extensions == null) {
-        $extensions = array();
-        $ext_dir = $root_path . 'tricho/ext/';
-        $exts = scandir($ext_dir);
-        foreach ($exts as $ext) {
-            if ($ext[0] == '.') continue;
-            if (is_dir($ext_dir . $ext)) $extensions[] = $ext;
-        }
-    }
     
-    if (substr($class_name, 0, 7) == 'Tricho\\') {
-        $file_name = str_replace('\\', '/', substr($class_name, 7)) . '.php';
-        $file = __DIR__ . '/' . $file_name;
+    $tricho_ns = substr($class_name, 0, 7) == 'Tricho\\';
+    
+    if (ends_with($class_name, 'Exception') and !$tricho_ns) {
+        $file = __DIR__ . '/custom_exceptions.php';
         if (file_exists($file)) {
             require_once $file;
-            if (ends_with($class_name, 'Column')) {
-                Tricho\Runtime::add_column_class($class_name);
-            }
             return;
         }
     }
     
-    $file_name = class_name_to_file_name($class_name);
+    if (!$tricho_ns) return;
     
-    switch ($class_name) {
-        case 'StringNumber':
-            require_once $root_path . 'tricho/'. $file_name;
-            break;
-    }
-    
-    if (ends_with($class_name, 'Exception')) {
-        require_once $root_path . 'tricho/custom_exceptions.php';
-    }
-    
-    foreach ($extensions as $ext) {
-        $ext_path = "{$root_path}tricho/ext/{$ext}/{$file_name}";
-        if (file_exists($ext_path)) {
-            require_once $ext_path;
-            return;
+    $file_name = str_replace('\\', '/', substr($class_name, 7)) . '.php';
+    $file = __DIR__ . '/' . $file_name;
+    if (file_exists($file)) {
+        require_once $file;
+        if (ends_with($class_name, 'Column')) {
+            Tricho\Runtime::add_column_class($class_name);
+        }
+        return;
+    } else {
+        $ext_dir = __DIR__ . "/ext";
+        
+        if ($extensions == null) {
+            $extensions = [];
+            $exts = scandir($ext_dir);
+            foreach ($exts as $ext) {
+                if ($ext[0] == '.') continue;
+                if (is_dir($ext_dir . $ext)) $extensions[] = $ext;
+            }
+        }
+        
+        foreach ($extensions as $ext) {
+            $ext_path = "{$ext_dir}/{$ext}/{$file_name}";
+            if (file_exists($ext_path)) {
+                require_once $ext_path;
+                if (ends_with($class_name, 'Column')) {
+                    Tricho\Runtime::add_column_class($class_name);
+                }
+                return;
+            }
         }
     }
 }

@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+namespace Tricho;
+
+use \InvalidArgumentException;
+
 /**
  * Used to process numeric values stored in strings
  * (e.g. large integers, or fixed point decimal numbers)
