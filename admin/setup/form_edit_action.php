@@ -6,6 +6,10 @@
  */
 
 use Tricho\Runtime;
+use Tricho\DataUi\Form;
+use Tricho\DataUi\FormManager;
+use Tricho\DataUi\ColumnFormItem;
+use Tricho\Meta\Database;
 
 require '../../tricho.php';
 test_setup_login();

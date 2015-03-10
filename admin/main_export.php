@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+use Tricho\DataUi\MainTable;
+
 require_once '../tricho.php';
 test_admin_login();
 
@@ -13,6 +16,7 @@ $table = $db->getTable ($_GET['t']);
 
 
 // Check the validity of the selected table
+$error = false;
 if ($table == null) {
     $error = "Table does not exist: {$_GET['t']}";
 } else if (! $table->checkAuth ()) {

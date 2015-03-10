@@ -11,6 +11,7 @@ use \DOMDocument;
 use \DOMElement;
 
 use Tricho\DataUi\Form;
+use Tricho\Util\HtmlDom;
 
 /**
  * Stores meta-data about a column that stores some kind of string data

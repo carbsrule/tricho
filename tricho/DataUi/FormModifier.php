@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use \DOMDocument;
+
 abstract class FormModifier {
     /**
      * Supports manipulations to the form after it has been loaded

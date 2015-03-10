@@ -5,9 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-if (!class_exists('\tricho\Runtime', false)) die('Include me');
+if (!class_exists('Tricho\Runtime', false)) die('Include me');
 
 use Tricho\Runtime;
+use Tricho\DataUI\ColumnFormItem;
 
 if (empty($no_heading)) {
     if ($form != null) {
@@ -33,7 +34,8 @@ if ($form) {
 <?php
 }
 
-$modifiers = glob(Runtime::get('root_path') . 'tricho/ext/*/*_modifier.php');
+$ext_dir = Runtime::get('root_path') . 'tricho/ext/';
+$modifiers = glob("{$ext_dir}*/DataUi/*Modifier.php");
 if (count($modifiers) > 0) {
 ?>
 
@@ -42,17 +44,23 @@ if (count($modifiers) > 0) {
 <?php
     $form_mod = null;
     if ($form) $form_mod = $form->getModifier();
-    if ($form_mod) $form_mod = basename(get_class($form_mod));
+    if ($form_mod) $form_mod = get_class($form_mod);
     foreach ($modifiers as $mod) {
-        $ext = basename(dirname($mod));
-        $mod = basename($mod, '.php');
-        $mod = file_name_to_class_name($mod);
+        $ext = trim_start($mod, $ext_dir);
+        $ext = substr($ext, 0, strpos($ext, DIRECTORY_SEPARATOR));
+        $mod = trim_start($mod, $ext_dir . $ext);
+        $short_mod = basename($mod, '.php');
+        $mod = 'Tricho' . str_replace(DIRECTORY_SEPARATOR, '\\', $mod);
+        
+        // Trim '.php'
+        $mod = substr($mod, 0, -4);
         $selected = '';
         if ($mod == $form_mod) $selected = ' selected="selected"';
         $ext = hsc($ext);
         $mod = hsc($mod);
         
-        echo "<option value=\"{$mod}\"{$selected}>{$mod} ({$ext})</option>\n";
+        echo "<option value=\"{$mod}\"{$selected}>", hsc($short_mod),
+            " ({$ext})</option>\n";
     }
 ?>
 </select>

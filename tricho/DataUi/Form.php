@@ -12,6 +12,7 @@ use \DOMDocument;
 use \DOMElement;
 use \DOMText;
 use \Exception;
+use \UnknownColumnException;
 
 use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;

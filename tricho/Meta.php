@@ -7,6 +7,8 @@
 
 namespace Tricho;
 
+use Tricho\Meta\Column;
+
 /**
  * Stores functions related to metadata
  */
@@ -152,7 +154,7 @@ class Meta
      * @param Column $col The column
      * @return string
      */
-    static function getSqlDefn(\Column $col)
+    static function getSqlDefn(Column $col)
     {
         $type = sql_type_string_from_defined_constant($col->getSqlType());
         $sql = $type;

@@ -1178,6 +1178,7 @@ class MainTable {
         
         
         // export our data
+        $return_string = '';
         if (@$res->rowCount() > 0) {
             
             // headings
@@ -1215,7 +1216,7 @@ class MainTable {
                     
                     $data = $row->get($col->identify('row'));
                     
-                    if ($main_col instanceof MainOrderColumn) {
+                    if ($col instanceof MainOrderColumn) {
                         $value = $data;
                     } else {
                         $value = strip_tags($col->getTD($data, $row->getPrimaryKey()));

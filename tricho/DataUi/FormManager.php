@@ -7,7 +7,10 @@
 
 namespace Tricho\DataUi;
 
+use \DOMDocument;
+
 use Tricho\Runtime;
+use Tricho\Util\HtmlDom;
 
 class FormManager {
     static function loadAll() {

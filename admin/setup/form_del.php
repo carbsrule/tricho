@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\Form;
+
 require 'head.php';
 
 if (empty($_GET['f'])) {

@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Query\RawQuery;
+
 require 'head.php';
 require_once 'setup_functions.php';
 

@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+
 require_once 'setup_functions.php';
 
 function enforce_special_type ($var, $type) {

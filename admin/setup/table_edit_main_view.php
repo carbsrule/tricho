@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\FunctionViewItem;
+
 require 'head.php';
 
 $page_opts = array ('tab' => 'list_view');

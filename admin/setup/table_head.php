@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+
 if (@$_GET['t'] == '') {
     echo '<p class="error">Invalid table specified.</p>';
     require 'foot.php';

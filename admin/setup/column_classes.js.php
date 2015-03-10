@@ -18,7 +18,7 @@ foreach (tricho\Runtime::get_column_classes () as $class) {
     if (count ($types) == 0) continue;
     if (++$class_num != 1) echo ",\n";
     $default = $class::getDefaultSqlType ();
-    echo "    '{$class}': {'default': '{$default}', 'types': ['", implode ("', '", $types), "']}";
+    echo "    '", addslashes($class), "': {'default': '{$default}', 'types': ['", implode ("', '", $types), "']}";
 }
 echo "\n}\n";
 ?>

@@ -5,23 +5,29 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\FormManager;
+use Tricho\DataUi\ColumnFormItem;
+use Tricho\Meta\Table;
+use Tricho\Meta\Column;
+use Tricho\Meta\ColumnViewItem;
+
 require_once '../../tricho.php';
 require_once 'setup_functions.php';
 
 // Force autoloading of all Column classes
-$class_files = glob(ROOT_PATH_FILE . 'tricho/meta/*_column.php');
+$class_files = glob(ROOT_PATH_FILE . 'tricho/Meta/*Column.php');
 $ext_base = ROOT_PATH_FILE . 'tricho/ext/';
 $exts = scandir($ext_base);
 foreach ($exts as $ext) {
     if ($ext[0] == '.') continue;
     $ext_dir = $ext_base . $ext;
     if (!is_dir($ext_dir)) continue;
-    $class_files = array_merge($class_files, glob("{$ext_dir}/*_column.php"));
+    $class_files = array_merge($class_files, glob("{$ext_dir}/*Column.php"));
 }
 
 foreach ($class_files as $file) {
-    $class = file_name_to_class_name (basename ($file));
-    $reflection = new ReflectionClass ($class);
+    $class = 'Tricho\\Meta\\' . basename($file, '.php');
+    $reflection = new ReflectionClass($class);
 }
 unset($class_files, $file, $class);
 
@@ -168,7 +174,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     foreach ($col_classes as $class_name) {
         echo "                <option value=\"{$class_name}\"";
         if ($class_name === $config['class']) echo ' selected="selected"';
-        echo ">{$class_name}</option>\n";
+        echo '>', basename(str_replace('\\', '/', $class_name)), "</option>\n";
     }
     
     echo "            </select>\n";
@@ -414,11 +420,13 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     // get sql definition from params
     $is_link = false;
     $sql_type = 0;
-    if ($config['class'] == 'LinkColumn') {
+    if ($config['class'] == 'Tricho\\Meta\\LinkColumn') {
         $is_link = true;
     } else {
         $reflection = new ReflectionClass($config['class']);
-        if ($reflection->isSubclassOf('LinkColumn')) $is_link = true;
+        if ($reflection->isSubclassOf('Tricho\\Meta\\LinkColumn')) {
+            $is_link = true;
+        }
     }
     if (!$is_link) {
         if ($config['sqltype'] == '') {

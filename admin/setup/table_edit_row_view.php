@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\FormManager;
+
 $css_files = ['form_edit.css'];
 $js_files = [
     '//code.jquery.com/jquery-1.11.2.min.js',

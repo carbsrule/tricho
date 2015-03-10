@@ -11,6 +11,7 @@ use \DOMDocument;
 use \DOMElement;
 
 use Tricho\DataUi\Form;
+use Tricho\DataUi\FormManager;
 use Tricho\Meta;
 use Tricho\Query\QueryField;
 use Tricho\Util\HtmlDom;
@@ -99,7 +100,7 @@ abstract class Column implements QueryField, ColumnInterface {
             throw new InvalidArgumentException('Node missing class attribute');
         }
         $class = $attribs['class'];
-        if ($class[0] != '\\') $class = '\\Tricho\\Meta\\' . $class;
+        if (strpos($class, '\\') === false) $class = 'Tricho\\Meta\\' . $class;
         $col = new $class($attribs['name']);
         $col->applyXMLNode ($node);
         return $col;

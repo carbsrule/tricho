@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\FormManager;
+use Tricho\Meta\Database;
+use Tricho\Meta\Table;
+
 require_once '../../tricho.php';
 require_once 'setup_functions.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);

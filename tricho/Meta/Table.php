@@ -9,13 +9,17 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \QueryException;
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\Meta;
+use Tricho\Meta\FileColumn;
 use Tricho\Query\LogicConditionNode;
 use Tricho\Query\SelectQuery;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\QueryTable;
+use Tricho\Query\RawQuery;
 use Tricho\Util\HtmlDom;
 
 /**
@@ -407,8 +411,8 @@ class Table implements QueryTable {
         $col_nodes = HtmlDom::getChildrenByTagName ($node, 'column');
         foreach ($col_nodes as $col_node) {
             $class_name = $col_node->getAttribute ('class');
-            if ($class_name[0] != '\\') {
-                $class_name = '\\Tricho\\Meta\\' . $class_name;
+            if (strpos($class_name, '\\') === false) {
+                $class_name = 'Tricho\\Meta\\' . $class_name;
             }
             $column = $class_name::fromXMLNode ($col_node);
             $table->addColumn ($column);
@@ -630,7 +634,7 @@ class Table implements QueryTable {
      */
     function getCreateQuery ($engine = '', $table_collation = '', $col_collations = null) {
         // Nasty :(
-        $root = tricho\Runtime::get('root_path');
+        $root = Runtime::get('root_path');
         require_once $root . 'admin/setup/setup_functions.php';
         
         if ($engine == '') {
@@ -2054,9 +2058,9 @@ class Table implements QueryTable {
         
         // remove files
         if ($res) {
-            if (($col->getOption () == 'file') || ($col->getOption () == 'image')) {
+            if ($col instanceof FileColumn) {
                 $mask = $col->getTable ()->getMask () . '.' . $col->getMask ();
-                $store_loc = ROOT_PATH_FILE . $col->getParam ('storage_location');
+                $store_loc = ROOT_PATH_FILE . $col->getStorageLocation();
                 if (substr ($store_loc, -1) != '/') $store_loc .= '/';
                 
                 $files = glob ($store_loc . $mask . '.*');

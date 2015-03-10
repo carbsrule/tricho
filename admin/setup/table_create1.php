@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Table;
+
 require_once '../../tricho.php';
 require_once 'column_definition.php';
 

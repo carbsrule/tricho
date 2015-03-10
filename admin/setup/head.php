@@ -5,10 +5,12 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\Meta\Database;
+use Tricho\DataUi\FormManager;
+
 require_once '../../tricho.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);
-
-use Tricho\Runtime;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

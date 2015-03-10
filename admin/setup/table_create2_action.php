@@ -5,6 +5,13 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\ColumnFormItem;
+use Tricho\DataUi\Form;
+use Tricho\DataUi\FormManager;
+use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\Database;
+use Tricho\Meta\Table;
+
 require '../../tricho.php';
 test_setup_login();
 
