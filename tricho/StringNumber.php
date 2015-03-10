@@ -90,8 +90,6 @@ class StringNumber {
             $result = -1 * $result;
         }
         
-        //throw new Exception ("Result of {$value1}, {$value2}: {$result}");
-        
         return $result;
     }
     
