@@ -7,6 +7,10 @@
 
 namespace Tricho;
 
+use \Exception;
+use \InvalidArgumentException;
+use \ReflectionClass
+
 use Tricho\Meta\Table;
 
 /**
@@ -90,7 +94,7 @@ class Runtime {
     static function add_column_class($class_name) {
         settype($class_name, 'string');
         if (!class_exists($class_name)) return;
-        $reflection = new \ReflectionClass($class_name);
+        $reflection = new ReflectionClass($class_name);
         if ($reflection->isAbstract()) return;
         if (!in_array($class_name, self::$column_classes)) {
             self::$column_classes[] = $class_name;

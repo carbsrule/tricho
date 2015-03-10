@@ -7,6 +7,7 @@
 
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
+use Tricho\Util\HtmlDom;
 
 // Check if PHP is misconfigured:
 // 1) register globals must be turned off
@@ -601,7 +602,7 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
         if ($gd_info['PNG Support']) $formats[] = 'PNG';
         if ($gd_info['JPG Support']) $formats[] = 'JPG';
         if ($gd_info['GIF Create Support']) $formats[] = 'GIF';
-        throw new exception ("Unrecognised image type; Supported types are " . implode(', ', $formats));
+        throw new Exception("Unrecognised image type; Supported types are " . implode(', ', $formats));
     }
     
     // see if the output format was overwritten, or use the input format
@@ -618,7 +619,7 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
         if ($result) {
             apply_file_security ($new_loc);
         } else {
-            throw new exception ("Unable to copy file {$old_loc} to {$new_loc}; check permissions");
+            throw new Exception("Unable to copy file {$old_loc} to {$new_loc}; check permissions");
         }
         
         
@@ -768,7 +769,7 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
         
         // check the file save did not fail, and throw if it did
         if ($result == false) {
-            throw new exception ("Unable to save resized image to {$new_loc}; check permissions");
+            throw new Exception("Unable to save resized image to {$new_loc}; check permissions");
             
         } else {
             apply_file_security ($new_loc);

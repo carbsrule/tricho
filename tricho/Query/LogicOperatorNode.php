@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * A LogicOperatorNode represents an AND or an OR used in a {@link LogicTree}.
  * It can have any number of child nodes, of which each is a

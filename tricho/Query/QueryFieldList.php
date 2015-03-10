@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use Tricho\Meta\Column;
+
 /**
  * A list of QueryFields
  * 

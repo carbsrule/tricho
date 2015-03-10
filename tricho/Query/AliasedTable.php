@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * represents an aliased SQL database table
  * 

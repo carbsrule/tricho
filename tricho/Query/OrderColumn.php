@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * Used in an ORDER BY clause to provide ordering.
  * 

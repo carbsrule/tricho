@@ -7,6 +7,11 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+use \InvalidArgumentException;
+
+use Tricho\DbConn\ConnManager;
+
 class DeleteQuery extends Query {
     protected $table;
     protected $pk;

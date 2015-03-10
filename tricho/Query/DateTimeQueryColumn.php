@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * Additional information for a QueryColumn
  * so that it can support dates, times and both

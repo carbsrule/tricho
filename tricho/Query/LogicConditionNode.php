@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * Used in a {@link LogicTree} to add a condition for an SQL query,
  * e.g. `A` LIKE '%B%'

@@ -7,6 +7,11 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+use \InvalidArgumentException;
+
+use Tricho\Meta\Column;
+
 /**
  * Used to implement MySQL function calls in a {@link SelectQuery}
  * 

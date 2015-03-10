@@ -7,9 +7,11 @@
 
 namespace Tricho\Query;
 
-use \ConnManager;
-use \MysqlConn;
+use \Exception;
+use \InvalidArgumentException;
 
+use Tricho\DbConn\ConnManager;
+use Tricho\DbConn\MysqlConn;
 use Tricho\Meta\Table;
 
 class InsertQuery extends Query {

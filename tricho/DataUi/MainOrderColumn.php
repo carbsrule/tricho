@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use \Exception;
+
 /**
  * Used to display cells that have order arrows (up and down) for re-ordering rows
  * 

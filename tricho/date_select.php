@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+
 // This file creates the pop-up calendar used throughout the admin section of the site, and perhaps
 // a few places on the front-end, too
 

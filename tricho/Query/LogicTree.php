@@ -7,6 +7,8 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+
 /**
  * The LogicTree encapsulates all of the objects required for the advanced
  * query building system.

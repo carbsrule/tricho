@@ -8,6 +8,7 @@
 namespace Tricho\DataUi;
 
 use \DOMDocument;
+use \Exception;
 
 use Tricho\Runtime;
 use Tricho\Util\HtmlDom;

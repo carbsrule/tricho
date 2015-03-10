@@ -6,6 +6,8 @@
  */
 
 use Tricho\Runtime;
+use Tricho\Meta\Database;
+use Tricho\Query\InsertQuery;
 use Tricho\Util\SqlParser;
 
 require '../tricho.php';

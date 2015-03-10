@@ -8,7 +8,9 @@
 namespace Tricho\DbConn;
 
 use \InvalidArgumentException;
+
 use Tricho\Meta\Table;
+use Tricho\Meta\Column;
 
 /**
  * Implements a MySQL database connection using PHP's mysqli module

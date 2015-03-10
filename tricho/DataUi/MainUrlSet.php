@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use \Exception;
+
 /**
  * Stores a list of URLs to use for a particular table when accessing the main
  * interface

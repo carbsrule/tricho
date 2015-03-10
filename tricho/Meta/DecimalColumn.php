@@ -7,6 +7,8 @@
 
 namespace Tricho\Meta;
 
+use Tricho\StringNumber;
+
 /**
  * Stores meta-data about a column that stores decimal data
  * @package meta_xml

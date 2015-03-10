@@ -7,6 +7,12 @@
 
 namespace Tricho\DataUi;
 
+use \Exception;
+
+use Tricho\DbConn\ConnManager;
+use Tricho\Query\QueryFieldLiteral;
+use Tricho\Query\LogicConditionNode;
+
 /**
  * Used to search/filter the results on the main page;
  * usually stored in $_SESSION[ADMIN_KEY]['search_params'][$table->getName ()]
