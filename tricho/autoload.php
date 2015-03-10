@@ -36,7 +36,7 @@ function tricho_autoload ($class_name) {
             $exts = scandir($ext_dir);
             foreach ($exts as $ext) {
                 if ($ext[0] == '.') continue;
-                if (is_dir($ext_dir . $ext)) $extensions[] = $ext;
+                if (is_dir("{$ext_dir}/{$ext}")) $extensions[] = $ext;
             }
         }
         
