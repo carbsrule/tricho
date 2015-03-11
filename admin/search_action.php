@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\MainFilter;
 use Tricho\Meta\Database;
 
 require_once '../tricho.php';
