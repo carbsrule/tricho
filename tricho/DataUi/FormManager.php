@@ -28,9 +28,12 @@ class FormManager {
     
     /**
      * Load a form file
+     * @param string $file File path (absolute, or relative to tricho/data)
+     * @param bool $ignore_missing_cols If false, a reference to a nonexistent
+     *        column will throw an UnknownColumnException
      * @return mixed A Form instance, or null on failure
      */
-    static function load($file) {
+    static function load($file, $ignore_missing_cols = false) {
         $file = (string) $file;
         if (!ends_with($file, '.form.xml')) $file .= '.form.xml';
         
@@ -42,7 +45,7 @@ class FormManager {
         if (!file_exists($file) or !is_file($file)) return null;
         
         $form = new Form();
-        $form->load($file);
+        $form->load($file, $ignore_missing_cols);
         return $form;
     }
     
