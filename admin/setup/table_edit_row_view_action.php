@@ -51,7 +51,7 @@ if (@count ($_POST['desc']) > 0) {
             // ColumnViewItem
             case 'c':
                 $column = $table->get($params);
-                if ($column == null) throw new exception ("Invalid column '{$params}'.");
+                if ($column == null) throw new Exception("Invalid column '{$params}'.");
                 
                 if (@$_POST['desc_edit_change'][$index] != 1 and $edit_flag == 'y') $edit_flag = 'v';
                 
@@ -84,7 +84,7 @@ if (@count ($_POST['desc']) > 0) {
                 
             // Huh?
             default:
-                throw new exception ("Invalid type '{$type}'.");
+                throw new Exception("Invalid type '{$type}'.");
         }
         
         //echo '<pre>' . get_class($view_item) . " {$add_flag} {$edit_flag}</pre>";

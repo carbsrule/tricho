@@ -8,6 +8,7 @@
 namespace Tricho\Meta;
 
 use \DOMDocument;
+use \Exception;
 
 /**
  * This is the view item for a function.
@@ -83,7 +84,7 @@ class IncludeViewItem extends ViewItem {
      */
     public function loadFromXML ($xml_params, $view) {
         if ($view != 'add' and $view != 'edit') {
-            throw new exception ("Invalid usage of view item heading. Heading can only be used in the ADD or EDIT view.");
+            throw new Exception("Invalid usage of view item heading. Heading can only be used in the ADD or EDIT view.");
         }
         
         $this->file = $xml_params['FILE'];

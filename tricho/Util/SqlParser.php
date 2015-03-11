@@ -7,6 +7,8 @@
 
 namespace Tricho\Util;
 
+use \Exception;
+
 class SqlParser {
     const TEST = false;
     const WHITESPACE = 0;

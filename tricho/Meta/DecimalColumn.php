@@ -7,6 +7,8 @@
 
 namespace Tricho\Meta;
 
+use \DataValidationException;
+
 use Tricho\StringNumber;
 
 /**

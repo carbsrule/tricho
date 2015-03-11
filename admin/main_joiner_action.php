@@ -118,7 +118,7 @@ if ($valid_table_and_parent) {
                 // validate the pk2 value
                 $result = validate_type ($val, $joiner_col->getType (), $joiner_col->getTextFilterArray (), false, $joiner_col);
                 if ($result->isRubbish ()) {
-                    throw new exception ("Invalid value {$val} for field <i>{$joiner_col->getName ()}</i>");
+                    throw new Exception("Invalid value {$val} for field <i>{$joiner_col->getName ()}</i>");
                 }
                 $val = $result->getValue ();
                 

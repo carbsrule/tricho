@@ -6,6 +6,8 @@
  */
 
 use Tricho\DbConn\ConnManager;
+use Tricho\DbConn\DbConn;
+use Tricho\Query\QueryField;
 use Tricho\Util\SqlParser;
 
 function execq($q) {

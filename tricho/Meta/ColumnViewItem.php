@@ -8,6 +8,7 @@
 namespace Tricho\Meta;
 
 use \DOMDocument;
+use \Exception;
 
 /**
  * This is the view item for a column.
@@ -145,7 +146,7 @@ class ColumnViewItem extends ViewItem {
      */
     public function setColumn (Column $column) {
         if ($column == null) {
-            throw new exception ("Invalid column specified");
+            throw new Exception("Invalid column specified");
         }
         
         $this->column = $column;

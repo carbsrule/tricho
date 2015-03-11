@@ -10,7 +10,9 @@ namespace Tricho\DbConn;
 use \PDO;
 use \PDOStatement;
 use \QueryException;
+
 use Tricho\Runtime;
+use Tricho\Meta\Column;
 use Tricho\Query\InsertQuery;
 use Tricho\Query\Query;
 use Tricho\Query\QueryFieldLiteral;

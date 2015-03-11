@@ -9,6 +9,7 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \DataValidationException;
 
 /**
  * Meta-data for a column that stores a phone number

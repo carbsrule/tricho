@@ -7,6 +7,8 @@
 
 namespace Tricho\Meta;
 
+use \DataValidationException;
+
 /**
  * Stores meta-data about a column that stores floating point data
  * @package meta_xml

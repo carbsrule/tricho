@@ -6,10 +6,15 @@
  */
 
 namespace Tricho\Util;
+
+use \DOMDocument;
+use \Mail;
+use \Mail_mime;
+
+use Tricho\Meta\Database;
+
 require_once 'Mail.php';
 require_once 'Mail/mime.php';
-use \Mail as Mail;
-use \Mail_mime as Mail_mime;
 
 /**
  * Used to send e-mails with variable content, driven by a plain-text or html

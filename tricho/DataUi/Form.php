@@ -12,6 +12,8 @@ use \DOMDocument;
 use \DOMElement;
 use \DOMText;
 use \Exception;
+use \InvalidArgumentException;
+use \UnexpectedValueException;
 use \UnknownColumnException;
 
 use Tricho\Runtime;
@@ -20,10 +22,13 @@ use Tricho\Meta\Database;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\FileColumn;
+use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\UploadedFile;
 use Tricho\Util\HtmlDom;
 use Tricho\Query\InsertQuery;
 use Tricho\Query\UpdateQuery;
+use Tricho\Query\QueryFieldLiteral;
+
 
 /**
  * Represents a form that contains multiple items (columns, headings, etc.)

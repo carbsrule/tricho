@@ -7,6 +7,8 @@
 
 namespace Tricho\Meta;
 
+use \Exception;
+
 /**
  * This is the view item for a heading.
  * If this item is encounted on a view list, a heading should be rendered
@@ -49,7 +51,7 @@ class HeadingViewItem implements ViewItem {
      */
     public function loadFromXML ($xml_params, $view) {
         if ($view != 'add' and $view != 'edit') {
-            throw new exception ("Invalid usage of view item heading. Heading can only be used in the ADD or EDIT view.");
+            throw new Exception("Invalid usage of view item heading. Heading can only be used in the ADD or EDIT view.");
         }
         $this->name = trim ($xml_params['NAME']);
     }

@@ -9,6 +9,7 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \Exception;
 
 use Tricho\Util\HtmlDom;
 

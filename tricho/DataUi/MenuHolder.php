@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use Tricho\Meta\Table;
+
 /**
  * Used to group menu items in the admin area
  * 

@@ -9,17 +9,23 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \Exception;
+use \LogicException;
 use \QueryException;
 
 use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\Meta;
 use Tricho\Meta\FileColumn;
+use Tricho\Query\AliasedTable;
+use Tricho\Query\DateTimeQueryColumn;
 use Tricho\Query\LogicConditionNode;
-use Tricho\Query\SelectQuery;
+use Tricho\Query\LogicTree;
+use Tricho\Query\QueryJoin;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\QueryTable;
 use Tricho\Query\RawQuery;
+use Tricho\Query\SelectQuery;
 use Tricho\Util\HtmlDom;
 
 /**
@@ -890,7 +896,7 @@ class Table implements QueryTable {
      * @return array Children tables (array of Table)
      */
     function getChildren () {
-        if ($this->database == null) throw new exception("No database set!");
+        if ($this->database == null) throw new Exception("No database set!");
         
         $tables = $this->database->getTables();
         $children = array();
@@ -912,7 +918,7 @@ class Table implements QueryTable {
      * @return array Link objects
      */
     function getChildLinks () {
-        if ($this->database == null) throw new exception ("No database set!");
+        if ($this->database == null) throw new Exception("No database set!");
         
         $tables = $this->database->getTables ();
         $children = array ();
@@ -1094,7 +1100,7 @@ class Table implements QueryTable {
             case 'list': return $this->list_view;
             case 'export': return $this->export_view;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1112,7 +1118,7 @@ class Table implements QueryTable {
             case 'list': return $this->list_view;
             case 'export': return $this->export_view;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1134,7 +1140,7 @@ class Table implements QueryTable {
                 break;
                 
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1150,7 +1156,7 @@ class Table implements QueryTable {
             case 'list': $items = $this->list_view; break;
             case 'export': $items = $this->export_view; break;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
         $return = array();
         foreach ($items as $item) {
@@ -1193,7 +1199,7 @@ class Table implements QueryTable {
                 return false;
 
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1208,7 +1214,7 @@ class Table implements QueryTable {
             case 'list': $this->list_view[] = $view_item; break;
             case 'export': $this->export_view[] = $view_item; break;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1232,7 +1238,7 @@ class Table implements QueryTable {
                     $this->export_view = array_merge (array ($view_item), $this->export_view);
                     break;
                 default:
-                    throw new exception ("Invalid view requested; view {$view} is not valid");
+                    throw new Exception("Invalid view requested; view {$view} is not valid");
             }
             return;
         }
@@ -1251,7 +1257,7 @@ class Table implements QueryTable {
                 break;
                 
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1369,7 +1375,7 @@ class Table implements QueryTable {
             case 'list': $this->list_view = array (); break;
             case 'export': $this->export_view = array (); break;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
     }
     
@@ -1393,7 +1399,7 @@ class Table implements QueryTable {
             case 'list': $search_view = &$this->list_view; break;
             case 'export': $search_view = &$this->export_view; break;
             default:
-                throw new exception ("Invalid view requested; view {$view} is not valid");
+                throw new Exception("Invalid view requested; view {$view} is not valid");
         }
         
         // do the search itself
@@ -2144,7 +2150,7 @@ class Table implements QueryTable {
         
         // Check we got enough keys.
         if (count ($primary_key_cols) != count ($pks)) {
-            throw new exception ('Not enough primary keys passed. Expected '. count ($primary_key_cols).
+            throw new Exception('Not enough primary keys passed. Expected '. count ($primary_key_cols).
                 ', but got '. count ($pks));
         }
         
@@ -2972,7 +2978,7 @@ class Table implements QueryTable {
      */
     function getKeyError ($column_names, $edit_mode = false, $parent = null) {
         if (!is_array ($column_names)) {
-            throw new exception ('Need to specify the columns for the error as an array of strings');
+            throw new Exception('Need to specify the columns for the error as an array of strings');
         }
         
         // determine the english names for the columns
@@ -2980,7 +2986,7 @@ class Table implements QueryTable {
         foreach ($column_names as $column_name) {
             $column = $this->get ($column_name);
             if ($column == null) {
-                throw new exception ("Column '{$column_name}' does not exist in this table");
+                throw new Exception("Column '{$column_name}' does not exist in this table");
             }
             
             // if this column links to the parent table

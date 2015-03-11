@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use \Exception;
+
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\BooleanColumn;
@@ -17,11 +19,13 @@ use Tricho\Meta\TemporalColumn;
 use Tricho\Meta\FunctionViewItem;
 use Tricho\Meta\ColumnViewItem;
 use Tricho\Query\AliasedColumn;
+use Tricho\Query\DateTimeQueryColumn;
 use Tricho\Query\QueryField;
 use Tricho\Query\QueryFieldList;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\QueryFunction;
 use Tricho\Query\SelectQuery;
+use Tricho\Query\LogicOperatorNode;
 use Tricho\Query\OrderColumn;
 
 /**
@@ -1168,7 +1172,7 @@ class MainTable {
                 break;
                 
             default:
-                throw new exception ("Invalid export type specified.");
+                throw new Exception("Invalid export type specified.");
         }
         
         

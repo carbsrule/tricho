@@ -33,7 +33,7 @@ if (@count ($_POST['desc']) > 0) {
             // ColumnViewItem
             case 'c':
                 $column = $table->get ($params);
-                if ($column == null) throw new exception ("Invalid column '{$params}'.");
+                if ($column == null) throw new Exception("Invalid column '{$params}'.");
                 
                 $view_item = new ColumnViewItem ();
                 $view_item->setDetails ($column, true);
@@ -49,7 +49,7 @@ if (@count ($_POST['desc']) > 0) {
                 
             // Huh?
             default:
-                throw new exception ("Invalid opcode '{$type}'.");
+                throw new Exception("Invalid opcode '{$type}'.");
         }
         
         $table->appendView('list', $view_item);

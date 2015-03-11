@@ -10,6 +10,7 @@ namespace Tricho\DataUi;
 use \Exception;
 
 use Tricho\DbConn\ConnManager;
+use Tricho\Query\AliasedTable;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\LogicConditionNode;
 

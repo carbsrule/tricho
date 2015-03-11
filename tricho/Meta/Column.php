@@ -9,6 +9,8 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \Exception;
+use \InvalidArgumentException;
 
 use Tricho\DataUi\Form;
 use Tricho\DataUi\FormManager;

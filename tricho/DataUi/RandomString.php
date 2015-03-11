@@ -7,6 +7,8 @@
 
 namespace Tricho\DataUi;
 
+use \InvalidArgumentException;
+
 class RandomString {
     protected $length;
     

@@ -7,6 +7,9 @@
 
 namespace Tricho\Query;
 
+use \Exception;
+use \InvalidArgumentException;
+
 /**
  * used to build queries more easily than hand-coding
  * 

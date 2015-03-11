@@ -9,9 +9,16 @@ namespace Tricho\Meta;
 
 use \DOMDocument;
 use \DOMElement;
+use \DataValidationException;
 
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
+use Tricho\Query\AliasedColumn;
+use Tricho\Query\LogicConditionNode;
+use Tricho\Query\OrderColumn;
+use Tricho\Query\QueryFieldLiteral;
+use Tricho\Query\QueryFunction;
+use Tricho\Query\SelectQuery;
 
 /**
  * Stores meta-data about a column that uses a text or textarea input field
