@@ -9,6 +9,9 @@ require '../../tricho.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);
 
 use Tricho\Runtime;
+use Tricho\DataUi\FormManager;
+use Tricho\Meta\Database;
+use Tricho\Meta\LinkColumn;
 
 $db = Database::parseXML();
 $table = $db->getTable ($_POST['table']);
@@ -95,7 +98,7 @@ $form_dir = Runtime::get('root_path') . 'tricho/data/';
 $forms = path_glob($form_dir, '*.form.xml');
 $del_forms = [];
 foreach ($forms as $form_file) {
-    $form = FormManager::load($form_file);
+    $form = FormManager::load($form_file, true);
     if ($form == null) throw new Exception("Failed to load {$form_file}");
     if ($form->getTable() !== $table) continue;
     FormManager::delete($form);
