@@ -5,12 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-use Tricho\DataUi\ColumnFormItem;
-
-if (!class_exists('Tricho\Runtime', false)) die('Include me');
-
 use Tricho\Runtime;
 use Tricho\DataUI\ColumnFormItem;
+
+if (!class_exists('Tricho\Runtime', false)) die('Include me');
 
 if (empty($no_heading)) {
     if ($form != null) {
