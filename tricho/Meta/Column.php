@@ -185,6 +185,7 @@ abstract class Column implements QueryField, ColumnInterface {
         $config['list_view'] = (int) $this->table->isColumnInView('list', $this, false);
         
         $form = FormManager::load("admin.{$this->getTable()->getName()}");
+        if ($form == null) $form = new Form();
         
         $config['add_view'] = $form->getColumnItem($this, 'add') != null;
         $config['edit_view_show'] = $form->getColumnItem($this, 'edit-view') != null;
