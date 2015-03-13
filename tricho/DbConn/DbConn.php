@@ -12,6 +12,7 @@ use \PDOStatement;
 use \QueryException;
 
 use Tricho\Runtime;
+use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Query\InsertQuery;
 use Tricho\Query\Query;

@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\Meta\Database;
+use Tricho\Meta\FileColumn;
+
 /**
  * Exports the files saved in admin-driven directories as a zip archive.
  * 
@@ -33,7 +37,7 @@ $db = Database::parseXML();
 
 $tables = $db->getTables ();
 $dirs = array ();
-$root = tricho\Runtime::get('root_path');
+$root = Runtime::get('root_path');
 foreach ($tables as $table) {
     $cols = $table->getColumns ();
     foreach ($cols as $col) {
@@ -132,7 +136,7 @@ if ($debug_mode) {
         require 'foot.php';
     }
     
-    $safe_name = str_replace(' ', '_', tricho\Runtime::get('site_name'));
+    $safe_name = str_replace(' ', '_', Runtime::get('site_name'));
     $safe_name = preg_replace("/[^A-Za-z0-9_\-]+/", '', $safe_name);
     $safe_name = strtolower($safe_name);
     $file_name = $safe_name . "_export_files_" . date ('Y-m-d') . '.zip';

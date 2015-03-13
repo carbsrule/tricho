@@ -6,6 +6,7 @@
  */
 
 use Tricho\DbConn\ConnManager;
+use Tricho\Meta\Database;
 use Tricho\Query\RawQuery;
 use Tricho\Util\SqlParser;
 

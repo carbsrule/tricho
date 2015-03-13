@@ -7,6 +7,8 @@
 
 use Tricho\DataUi\MainTable;
 use Tricho\Meta\Database;
+use Tricho\Query\LogicConditionNode;
+use Tricho\Query\QueryFieldLiteral;
 
 require '../tricho.php';
 test_admin_login ();

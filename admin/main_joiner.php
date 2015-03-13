@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Query\QueryFieldLiteral;
+
 // make sure this doesn't get called by a URL or some other method
 if ($caller != 'main.php') die ();
 

@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\Meta\Database;
+
 /*
 column_definition:
     col_name type [NOT NULL | NULL] [DEFAULT default_value]
@@ -96,7 +99,7 @@ if (@$_POST['dl']) {
     require_once '../tricho.php';
     test_admin_login ();
     
-    $safe_name = str_replace(' ', '_', tricho\Runtime::get('site_name'));
+    $safe_name = str_replace(' ', '_', Runtime::get('site_name'));
     $safe_name = preg_replace("/[^A-Za-z0-9_\-]+/", '', $safe_name);
     $safe_name = strtolower($safe_name);
     $file_name = $safe_name . "_dump_" . date('Y-m-d_Hi') . '.sql';

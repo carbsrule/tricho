@@ -16,7 +16,7 @@ require '../tricho.php';
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title><?= tricho\Runtime::get('site_name'); ?>: Date select</title>
+    <title><?= Runtime::get('site_name'); ?>: Date select</title>
     <link rel="stylesheet" type="text/css" href="calendar.css">
     <script language="JavaScript" type="text/javascript" src="functions.js"></script>
     <script language="JavaScript" type="text/javascript">

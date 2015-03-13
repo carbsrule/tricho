@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\FileColumn;
+use Tricho\Meta\LinkColumn;
+use Tricho\Meta\PasswordColumn;
+
 require_once '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
 

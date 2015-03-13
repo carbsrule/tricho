@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\Meta\Database;
 use Tricho\Util\HtmlDom;
@@ -26,7 +27,7 @@ list ($urls, $seps) = $table->getPageUrls ();
 
 require 'head.php';
 
-tricho\Runtime::load_help_text($table);
+Runtime::load_help_text($table);
 
 // get the form items
 $form = new Form();

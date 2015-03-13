@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\Meta\Database;
+
 header ('Content-Type: text/html; charset=UTF-8');
 require '../tricho.php';
 test_admin_login ();
@@ -18,7 +21,7 @@ if ($table == null) die ('Invalid table');
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><?= tricho\Runtime::get('site_name'); ?> Administration</title>
+        <title><?= Runtime::get('site_name'); ?> Administration</title>
         <link rel="stylesheet" type="text/css" href="../css/messages.css">
         <link rel="stylesheet" type="text/css" href="css/tools.css">
         <link rel="stylesheet" type="text/css" href="css/layout.css">

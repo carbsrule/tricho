@@ -13,6 +13,7 @@ use \DataValidationException;
 use \InvalidArgumentException;
 use \InvalidColumnConfigException;
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 
@@ -364,7 +365,7 @@ class FileColumn extends Column {
             $text = 'Unsaved file: ' . $input_value->getName();
             HtmlDom::appendNewText($p, $text);
         } else if ($primary_key !== null and $input_value != '') {
-            $file_path = \tricho\Runtime::get('root_path') .
+            $file_path = Runtime::get('root_path') .
                 $this->storage_location;
             if (substr($file_path, -1) != '/') $file_path .= '/';
             $file_name = $this->getFullMask() . '.' .
@@ -453,7 +454,7 @@ class FileColumn extends Column {
             throw new InvalidArgumentException($err);
         }
         
-        $file_name = \tricho\Runtime::get('root_path') .
+        $file_name = Runtime::get('root_path') .
             $this->storage_location;
         if (substr ($file_name, - 1) != '/') $file_name .= '/';
         $file_name .= $this->getFullMask () . '.';

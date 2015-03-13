@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DbConn\ConnManager;
+
 require_once '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_LIMITED);
 

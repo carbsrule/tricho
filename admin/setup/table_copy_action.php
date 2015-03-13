@@ -8,6 +8,9 @@
 use Tricho\DataUi\FormManager;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;
+use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\FileColumn;
+use Tricho\Meta\LinkColumn;
 
 require_once '../../tricho.php';
 require_once 'setup_functions.php';

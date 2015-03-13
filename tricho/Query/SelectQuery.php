@@ -10,6 +10,8 @@ namespace Tricho\Query;
 use \Exception;
 use \InvalidArgumentException;
 
+use Tricho\Meta\Column;
+
 /**
  * used to build queries more easily than hand-coding
  * 

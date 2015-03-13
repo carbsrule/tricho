@@ -6,6 +6,7 @@
  */
 
 use Tricho\Meta\Database;
+use Tricho\Meta\Table;
 
 require_once '../../tricho.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);

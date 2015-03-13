@@ -5,6 +5,12 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\FunctionViewItem;
+use Tricho\Meta\HeadingViewItem;
+use Tricho\Meta\IncludeViewItem;
+
 require_once '../../tricho.php';
 test_setup_login(true, SETUP_ACCESS_LIMITED);
 

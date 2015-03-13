@@ -8,6 +8,7 @@
 use Tricho\DataUi\ColumnFormItem;
 use Tricho\DataUi\Form;
 use Tricho\DataUi\FormManager;
+use Tricho\DbConn\ConnManager;
 use Tricho\Meta\ColumnViewItem;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;

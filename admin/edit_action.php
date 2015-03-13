@@ -6,7 +6,11 @@
  */
 
 use Tricho\DataUi\Form;
+use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
+use Tricho\Meta\FileColumn;
+use Tricho\Meta\PasswordColumn;
+use Tricho\Meta\UploadedFile;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\SelectQuery;
 

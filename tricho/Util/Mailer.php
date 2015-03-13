@@ -11,6 +11,7 @@ use \DOMDocument;
 use \Mail;
 use \Mail_mime;
 
+use Tricho\Runtime;
 use Tricho\Meta\Database;
 
 require_once 'Mail.php';
@@ -56,7 +57,7 @@ class Mailer {
     public function __construct() {
         $this->params = array(
             'WEB_ROOT' => 'http://' . $_SERVER['SERVER_NAME'] . ROOT_PATH_WEB,
-            'SITE_NAME' => \tricho\Runtime::get('site_name')
+            'SITE_NAME' => Runtime::get('site_name')
         );
         
         $this->message = array(
@@ -755,9 +756,7 @@ class MailerAttachment {
         if (preg_match('#^/?file\.php#', $src)) {
             if (preg_match('/f=([a-zA-Z0-9\~\_\-\.]+)/', $src, $matches)) {
                 
-                if (!$db instanceof Database) {
-                    $db = \Database::parseXML();
-                }
+                if (!($db instanceof Database)) $db = Database::parseXML();
                 
                 $mask = $matches[1];
                 list($table_mask, $column_mask, $record_id) = explode('.', $mask, 3);

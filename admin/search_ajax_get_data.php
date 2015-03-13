@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
+
 header ('Content-Type: text/xml; charset=utf-8');
 require_once '../tricho.php';
 test_admin_login();

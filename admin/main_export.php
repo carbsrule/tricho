@@ -5,8 +5,11 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\Meta\Database;
 use Tricho\DataUi\MainTable;
+use Tricho\Query\LogicConditionNode;
+use Tricho\Query\QueryFieldLiteral;
 
 require_once '../tricho.php';
 test_admin_login();
@@ -95,7 +98,7 @@ if (@count($_SESSION[ADMIN_KEY]['search_params'][$table->getName ()]) > 0) {
 }
 
 // choose the filename and type
-$file_name = tricho\Runtime::get('site_name') . '_' . $table->getEngName() .
+$file_name = Runtime::get('site_name') . '_' . $table->getEngName() .
     '_' . date('Y-m-d') . '.csv';
 $file_name = addslashes($file_name);
 $content_type = 'text/csv';

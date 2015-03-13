@@ -5,9 +5,12 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\Meta\Database;
+
 require_once '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
-$root = tricho\Runtime::get('root_path');
+$root = Runtime::get('root_path');
 
 $db = Database::parseXML();
 

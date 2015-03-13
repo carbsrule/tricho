@@ -10,7 +10,7 @@
 ob_start();
 
 require __DIR__ . '/tricho/runtime.php';
-tricho\Runtime::set('root_path', __DIR__ . '/', true);
+Tricho\Runtime::set('root_path', __DIR__ . '/', true);
 require __DIR__ . '/tricho/functions_base.php';
 require __DIR__ . '/tricho/autoload.php';
 

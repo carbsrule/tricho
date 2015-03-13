@@ -12,6 +12,7 @@ use \DOMElement;
 use \Exception;
 use \InvalidArgumentException;
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\DataUi\FormManager;
 use Tricho\Meta;
@@ -696,7 +697,7 @@ abstract class Column implements QueryField, ColumnInterface {
      */
     function getInputLabel () {
         $label = hsc ($this->engname). $this->getMandatorySuffix ();
-        $help_columns = tricho\Runtime::get_help_text();
+        $help_columns = Runtime::get_help_text();
         
         $db = $this->table->getDatabase();
         if (@$_SESSION['setup']['view_h'] and $db->getHelpTable () != null) {

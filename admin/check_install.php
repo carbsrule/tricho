@@ -5,6 +5,9 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\DbConn\ConnManager;
+
 $output = '';
 
 function out_begin ($title) {
@@ -86,7 +89,7 @@ header ('Content-Type: text/html; charset=UTF-8');
 $admin_dir = __DIR__ . '/';
 $root_dir = realpath($admin_dir . '..') . '/';
 require_once $root_dir . 'tricho/runtime.php';
-tricho\Runtime::set('root_path', $root_dir, true);
+Runtime::set('root_path', $root_dir, true);
 require_once $root_dir . 'tricho/functions_base.php';
 require_once $root_dir . 'tricho/autoload.php';
 

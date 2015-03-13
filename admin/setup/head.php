@@ -16,7 +16,7 @@ test_setup_login(true, SETUP_ACCESS_LIMITED);
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Setup: <?= tricho\Runtime::get('site_name'); ?></title>
+        <title>Setup: <?= Runtime::get('site_name'); ?></title>
         <link rel="stylesheet" type="text/css" href="../../css/messages.css">
         <link rel="stylesheet" type="text/css" href="style.css">
 <?php

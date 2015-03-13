@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\LinkColumn;
+
 require 'head.php';
 require 'order_functions.php';
 

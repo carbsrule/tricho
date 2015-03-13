@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\Meta\Database;
 use Tricho\Query\RawQuery;
 
@@ -108,7 +109,7 @@ function authorise_admin($user, $pass, $num_tables) {
     
     // Allow an 'install' login if no database tables have yet been created
     if ($num_tables == 0) {
-        $install_pw = tricho\Runtime::get('install_pw');
+        $install_pw = Runtime::get('install_pw');
         if ($user == 'install' and $pass == $install_pw and $install_pw != '') {
             return SETUP_ACCESS_FULL;
         }

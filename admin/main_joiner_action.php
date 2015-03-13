@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use \Exception;
+
+use Tricho\Meta\Database;
+
 require_once '../tricho.php';
 test_admin_login();
 

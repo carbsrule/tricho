@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
 use Tricho\DbConn\DbConn;
 use Tricho\Query\QueryField;
@@ -202,7 +203,7 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
         $occurred = "This occurred on line {$line} of\n{$full_url}";
     }
     
-    $site_name = tricho\Runtime::get('site_name');
+    $site_name = Runtime::get('site_name');
     $message = "{$site_name} had the following slow query";
     if ($unoptimised) {
         $message .= ", which should be optimised:";
@@ -220,7 +221,7 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
     
     // Send the email to the developers
     $site_error_emails = preg_split ('/,\s*/', SITE_EMAILS_ERROR);
-    $subject = 'Slow query on ' . tricho\Runtime::get('site_name');
+    $subject = 'Slow query on ' . Runtime::get('site_name');
     foreach ($site_error_emails as $admin) {
         mail($admin, $subject, $message, 'From: ' . SITE_EMAIL);
     }

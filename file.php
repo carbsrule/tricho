@@ -6,6 +6,7 @@
  */
 
 use Tricho\Meta\Database;
+use Tricho\Meta\ImageColumn;
 
 require_once 'tricho.php';
 

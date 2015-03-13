@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 use Tricho\Meta\Database;
 use Tricho\Util\HtmlDom;
@@ -23,7 +24,7 @@ if (!$table->checkAuth ()) {
 require 'head.php';
 require_once 'main_functions.php';
 
-tricho\Runtime::load_help_text ($table);
+Runtime::load_help_text ($table);
 
 // Get the form items for this table
 $form = new Form();

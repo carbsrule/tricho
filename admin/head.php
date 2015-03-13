@@ -5,6 +5,10 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\DataUi\MenuHolder;
+use Tricho\Meta\Table;
+
 header ('Content-Type: text/html; charset=UTF-8');
 
 if (!defined ('ROOT_PATH_FILE')) require_once '../tricho.php';
@@ -28,7 +32,7 @@ $onload[] = 'nice_labels ();';
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><?= tricho\Runtime::get('site_name'); ?> Administration</title>
+        <title><?= Runtime::get('site_name'); ?> Administration</title>
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB; ?>css/messages.css">
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. ADMIN_DIR; ?>css/tools.css">
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. ADMIN_DIR; ?>css/layout.css">

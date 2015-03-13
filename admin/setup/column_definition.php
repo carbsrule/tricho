@@ -5,11 +5,17 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
+use Tricho\DataUi\Form;
 use Tricho\DataUi\FormManager;
 use Tricho\DataUi\ColumnFormItem;
+use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\IntColumn;
+use Tricho\Meta\LinkColumn;
+use Tricho\Meta\PasswordColumn;
 
 require_once '../../tricho.php';
 require_once 'setup_functions.php';
@@ -88,7 +94,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     global $recognised_SQL_types;
     global $image_cache_scales;
     global $date_formatting_options;
-    $col_classes = tricho\Runtime::get_column_classes();
+    $col_classes = Runtime::get_column_classes();
     sort($col_classes);
     
     $image_icon_options = array (

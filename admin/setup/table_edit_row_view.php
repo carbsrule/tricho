@@ -6,6 +6,7 @@
  */
 
 use Tricho\DataUi\FormManager;
+use Tricho\DataUi\Form;
 
 $css_files = ['form_edit.css'];
 $js_files = [

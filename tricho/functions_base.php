@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
 use Tricho\Util\HtmlDom;
@@ -22,7 +23,7 @@ if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
 }
 
 function tricho_exception_handler(Exception $ex) {
-    if (!\tricho\Runtime::get('live')) {
+    if (!Runtime::get('live')) {
         ob_end_clean();
         @header('Content-type: text/html');
         echo '<pre>';
@@ -127,7 +128,7 @@ function mask_private_data($user_data) {
             $user_data[$key] = mask_private_data($value);
         } else {
             $short_key = str_replace ('_', '', $key);
-            foreach (tricho\Runtime::get('private_field_names') as $field) {
+            foreach (Runtime::get('private_field_names') as $field) {
                 $field_name = str_replace('_', '', $field);
                 if (strcasecmp($short_key, $field_name) == 0) {
                     $user_data[$key] = '???';
@@ -218,7 +219,7 @@ function email_error ($info) {
     
     $message .= "\n\n". get_email_footer_info ();
     
-    $site_name = tricho\Runtime::get('site_name');
+    $site_name = Runtime::get('site_name');
     foreach ($site_error_emails as $admin) {
         mail($admin, "Error on {$site_name}", $message, 'From: ' . SITE_EMAIL);
     }
@@ -522,7 +523,7 @@ function report_error ($err, $return = false) {
  * @return string The replacement string
  */
 function add_br($string, $xhtml = null) {
-    if ($xhtml === null) $xhtml = tricho\Runtime::get('xhtml');
+    if ($xhtml === null) $xhtml = Runtime::get('xhtml');
     $br = ($xhtml? "<br />\n": "<br>\n");
     $string = str_replace(array("\r\n", "\r"), "\n", $string);
     return str_replace("\n", $br, $string);
@@ -2075,7 +2076,7 @@ function ends_with ($str, $ending) {
  * @author benno 2013-09-16
  */
 function check_config() {
-    if (tricho\Runtime::get('master_salt') == '') {
+    if (Runtime::get('master_salt') == '') {
         error_log('Tricho: a unique master_salt value is required');
         redirect(ROOT_PATH_WEB . 'system_error.php?err=conf');
     }
