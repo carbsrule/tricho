@@ -823,7 +823,10 @@ function column_def_update_admin_form(Column $col, $config, $previous_col, $next
     
     $form_file = "admin.{$table->getName()}";
     $form = FormManager::load($form_file);
-    if ($form == null) $form = new Form();
+    if ($form == null) {
+        $form = new Form();
+        $form->setTable($table);
+    }
     
     $new_props = [];
     if (@$config['add_view']) $new_props[] = 'add';
