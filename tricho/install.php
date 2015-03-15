@@ -13,7 +13,6 @@ use Tricho\Util\SqlParser;
 require '../tricho.php';
 
 $root = Runtime::get('root_path');
-require "{$root}tricho/db/sql_parser.php";
 
 function install_error($field) {
     if (!isset($_SESSION['install']['err'][$field])) return '';
@@ -33,10 +32,10 @@ if ($row = fetch_row($res)) {
 
 // check admin dir or admin/tables.xml is writeable
 $writeable = true;
-$xml_loc = "{$root}admin/tables.xml";
+$xml_loc = "{$root}tricho/data/tables.xml";
 if (file_exists($xml_loc)) {
     if (!is_writeable($xml_loc)) $writeable = false;
-} else if (!is_writeable("{$root}admin")) {
+} else if (!is_writeable("{$root}tricho/data")) {
     $writeable = false;
 }
 if (!$writeable) {

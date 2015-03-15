@@ -30,9 +30,9 @@
     <vieworder>
       <orderitem type="column" name="HelpTable" dir="ASC"/>
     </vieworder>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="HelpTable, HelpColumn"/>
-    </indices>
+    </indexes>
     <row_identifier>
       <id_item type="col" data="HelpTable"/>
       <id_item type="sep" data="."/>
@@ -66,9 +66,9 @@
     <vieworder>
       <orderitem type="column" name="User" dir="ASC"/>
     </vieworder>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="User"/>
-    </indices>
+    </indexes>
     <row_identifier>
       <id_item type="col" data="User"/>
     </row_identifier>
@@ -111,9 +111,9 @@
       <orderitem type="column" name="User"/>
       <orderitem type="column" name="Action"/>
     </searchparams>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="ID"/>
-    </indices>
+    </indexes>
     <row_identifier>
       <id_item type="col" data="DateLogged"/>
       <id_item type="sep" data=", "/>
@@ -155,9 +155,9 @@
       <orderitem type="column" name="IP"/>
       <orderitem type="column" name="Active"/>
     </searchparams>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="ID"/>
-    </indices>
+    </indexes>
     <row_identifier>
       <id_item type="col" data="User"/>
       <id_item type="sep" data=", "/>
@@ -180,9 +180,9 @@
     <searchparams>
       <orderitem type="column" name="Domain"/>
     </searchparams>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="Domain"/>
-    </indices>
+    </indexes>
   </table>
   <table name="_tricho_failed_queries" name_single="Failure" access="setup-full" engname="Failed queries" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="n" allow="add,edit,del">
     <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
@@ -212,9 +212,9 @@
       <orderitem type="column" name="Query"/>
       <orderitem type="column" name="Error"/>
     </searchparams>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="ID"/>
-    </indices>
+    </indexes>
   </table>
   <table name="_tricho_slow_queries" name_single="Slow query" access="admin" engname="Slow queries" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="add,edit,del">
     <column name="ID" engname="ID" class="IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
@@ -243,8 +243,8 @@
       <orderitem type="column" name="Query"/>
       <orderitem type="column" name="TimeTaken"/>
     </searchparams>
-    <indices>
+    <indexes>
       <index name="PRIMARY KEY" columns="ID"/>
-    </indices>
+    </indexes>
   </table>
 </database>
