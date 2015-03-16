@@ -30,16 +30,13 @@ if ($row = fetch_row($res)) {
     die('<p>Database already installed :)</p>');
 }
 
-// check admin dir or admin/tables.xml is writeable
-$writeable = true;
-$xml_loc = "{$root}tricho/data/tables.xml";
+// check data dir is writeable and that tables.xml doesn't already exist
+$data_dir = "{$root}tricho/data/";
+$xml_loc = "{$data_dir}tables.xml";
 if (file_exists($xml_loc)) {
-    if (!is_writeable($xml_loc)) $writeable = false;
-} else if (!is_writeable("{$root}tricho/data")) {
-    $writeable = false;
-}
-if (!$writeable) {
-    die('<p><strong>Error:</strong> tables.xml not writeable.</p>');
+    die("<p><strong>Error:</strong> file {$xml_loc} already exists</p>");
+} else if (!is_writeable($data_dir)) {
+    die("<p><strong>Error:</strong> data dir {$data_dir} not writeable.</p>");
 }
 
 if (count($_POST) > 0) {
@@ -62,14 +59,29 @@ if (count($_POST) > 0) {
         redirect($_SERVER['PHP_SELF']);
     }
     
-    execq("START TRANSACTION");
-    $parser = new SqlParser();
-    $queries = $parser->parse(file_get_contents('install/tables.sql'));
-    if (!$queries) {
-        die('<p><strong>Error:</strong> missing table create queries.</p>');
+    // Copy tables.xml
+    if (!copy('install/tables.xml', $xml_loc)) {
+        die('<p><strong>Error:</strong> failed to copy tables.xml</p>');
     }
-    foreach ($queries as $q) execq($q);
     
+    // Copy forms
+    $forms = glob('install/*.form.xml');
+    foreach ($forms as $form) {
+        $file = basename($form);
+        if (!copy($form, "{$data_dir}{$file}")) {
+            die("<p><strong>Error:</strong> failed to copy {$file}</p>");
+        }
+    }
+    
+    execq("START TRANSACTION");
+    
+    $db = Database::parseXML($xml_loc);
+    foreach ($db->getTables() as $table) {
+        $q = $table->getCreateQuery();
+        execq($q);
+    } 
+    
+    $parser = new SqlParser();
     $queries = $parser->parse(file_get_contents('install/tlds.sql'));
     if (!$queries) {
         die('<p><strong>Error:</strong> missing TLD values.</p>');
@@ -88,11 +100,6 @@ if (count($_POST) > 0) {
         'AccessLevel' => 2
     ));
     execq($q);
-    
-    // copy tables.xml
-    if (!copy('install/tables.xml', $xml_loc)) {
-        die('<p><strong>Error:</strong> failed to copy tables.xml</p>');
-    }
     
     execq('COMMIT');
     
