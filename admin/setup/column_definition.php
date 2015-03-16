@@ -428,7 +428,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     $sql_type = 0;
     if ($config['class'] == 'Tricho\\Meta\\LinkColumn') {
         $is_link = true;
-    } else {
+    } else if ($config['class'] != '') {
         $reflection = new ReflectionClass($config['class']);
         if ($reflection->isSubclassOf('Tricho\\Meta\\LinkColumn')) {
             $is_link = true;
