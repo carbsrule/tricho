@@ -653,27 +653,21 @@ function column_def_edit (Column $col, $old_col, $form_url, $config) {
         $sql_position = ' AFTER `'. $previous_col->getName (). '`';
     }
     
-    // change column definition in DB, as long as it's not an ENUM or TIMESTAMP column
-    $is_enum = false;
+    // change column definition in DB, as long as it's not a TIMESTAMP column
     $is_timestamp = false;
     $q = "SHOW COLUMNS FROM `{$table->getName ()}`";
     $res = execq($q);
     $col_name = $col->getName ();
     while ($row = fetch_assoc($res)) {
         if ($row['Field'] != $col_name) continue;
-        if (strcasecmp (substr ($row['Type'], 0, 4), 'ENUM') == 0) {
-            $is_enum = true;
-            break;
-        } else if (strcasecmp ($row['Type'], 'TIMESTAMP') == 0) {
+        if (strcasecmp ($row['Type'], 'TIMESTAMP') == 0) {
             $is_timestamp = true;
             break;
         }
     }
     
     $q = '';
-    if ($is_enum) {
-        $_SESSION['setup']['msg'][] = 'ENUM column definition unchanged';
-    } else if ($is_timestamp) {
+    if ($is_timestamp) {
         $_SESSION['setup']['msg'][] = 'TIMESTAMP column definition unchanged';
     } else {
         
