@@ -12,6 +12,7 @@ use \DOMDocument;
 use \DOMElement;
 use \DOMText;
 use \Exception;
+use \DataValidationException;
 use \InvalidArgumentException;
 use \UnexpectedValueException;
 use \UnknownColumnException;
