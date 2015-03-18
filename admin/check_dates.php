@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\SqlTypes;
+
 require_once '../tricho.php';
 
 test_setup_login (true, SETUP_ACCESS_FULL);
@@ -44,9 +46,7 @@ foreach ($tables as $table) {
     $date_cols = array ();
     $columns = $table->getColumns ();
     foreach ($columns as $column) {
-        if ($column->getSqlType () == SQL_TYPE_DATE
-                or $column->getSqlType () == SQL_TYPE_DATETIME
-                or $column->getSqlType () == SQL_TYPE_TIME) {
+        if (SqlTypes::isTemporal($column->getSqlType())) {
             $date_cols[] = $column;
         }
     }
@@ -56,7 +56,7 @@ foreach ($tables as $table) {
         foreach ($date_cols as $column) {
             // determine errors
             $errors = array();
-            if ($column->getSqlType () != SQL_TYPE_TIME) {
+            if ($column->getSqlType() != 'TIME') {
                 $val = $column->getMinYear();
                 if ($val == '') $errors[] = 'no min year set';
                 if ($val[0] == '+') $errors[] = 'min year must not be an offset';
@@ -80,10 +80,10 @@ foreach ($tables as $table) {
             echo "<td>{$column->getName ()}</td>\n";
             
             // SQL type
-            echo '<td>'. sql_type_string_from_defined_constant ($column->getSqlType ()). "</td>\n";
+            echo '<td>', $column->getSqlType(), "</td>\n";
             
             // date range
-            if ($column->getSqlType() != SQL_TYPE_TIME) {
+            if ($column->getSqlType() != 'TIME') {
                 echo '<td>', $column->getMinYear(), '</td><td>', 
                     $column->getMaxYear(), "</td>\n";
             } else {

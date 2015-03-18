@@ -50,7 +50,7 @@ foreach ($columns as $col) {
         <td><small><?= $col->getInfo(); ?></small></td>
         <td>
             <small><?php
-    echo sql_type_string_from_defined_constant ($col->getSqlType ());
+    echo $col->getSqlType();
     if ($col->getSqlSize () != '') {
         echo '(', $col->getSqlSize (), ')';
     }

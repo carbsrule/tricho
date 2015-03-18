@@ -62,14 +62,14 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
             
         } else {
             // value switching based on type
-            switch ($col->getSqlType ()) {
-                case SQL_TYPE_DATE:
+            switch ($col->getSqlType()) {
+                case 'DATE':
                     $value = work_out_date ($id, 0);
                     if ($value === false) continue 2;
                     $value = $value->getVal ();
                     break;
                     
-                case SQL_TYPE_DATETIME:
+                case 'DATETIME':
                     $value = work_out_date ($id, 0);
                     if ($value === false) continue 2;
                     $value2 = work_out_time ($id, 0);
@@ -77,7 +77,8 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
                     $value = $value->concat ($value2);
                     $value = $value->getVal ();
                     break;
-                case SQL_TYPE_TIME:
+                    
+                case 'TIME':
                     $value = work_out_time ($id, 0);
                     if ($value === false) continue 2;
                     $value = $value->getVal ();
@@ -100,14 +101,14 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
             
             // clever stuff for between
             if ($cond == LOGIC_CONDITION_BETWEEN) {
-                switch ($col->getSqlType ()) {
-                    case SQL_TYPE_DATE:
+                switch ($col->getSqlType()) {
+                    case 'DATE':
                         $value_right = work_out_date ($id, 1);
                         if ($value_right === false) continue 2;
                         $value_right = $value_right->getVal ();
                         break;
                         
-                    case SQL_TYPE_DATETIME:
+                    case 'DATETIME':
                         $value_right = work_out_date ($id, 1);
                         if ($value_right === false) continue 2;
                         $value_right2 = work_out_time ($id, 1);
@@ -115,7 +116,8 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
                         $value_right = $value_right->concat ($value_right2);
                         $value_right = $value_right->getVal ();
                         break;
-                    case SQL_TYPE_TIME:
+                        
+                    case 'TIME':
                         $value_right = work_out_time ($id, 1);
                         if ($value_right === false) continue 2;
                         $value_right = $value_right->getVal ();

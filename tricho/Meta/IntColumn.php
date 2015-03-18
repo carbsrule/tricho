@@ -28,12 +28,12 @@ class IntColumn extends NumericColumn {
     
     function getMaxLength() {
         switch ($this->sqltype) {
-        case 'TINYINT': case SQL_TYPE_TINYINT: return 3;
-        case 'SMALLINT': case SQL_TYPE_SMALLINT: return 5;
-        case 'MEDIUMINT': case SQL_TYPE_MEDIUMINT: return 7;
-        case 'INT': case SQL_TYPE_INT: return 10;
-        case 'BIGINT': case SQL_TYPE_BIGINT: return 19;
-        case 'BIT': case SQL_TYPE_BIT: return 1;
+        case 'TINYINT': return 3;
+        case 'SMALLINT': return 5;
+        case 'MEDIUMINT': return 7;
+        case 'INT': return 10;
+        case 'BIGINT': return 19;
+        case 'BIT': return 1;
         default: return 0;
         }
     }

@@ -11,6 +11,7 @@ use Tricho\DataUi\FormManager;
 use Tricho\Meta\ColumnViewItem;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;
+use Tricho\Meta\SqlTypes;
 
 require_once '../tricho.php';
 test_setup_login (true, SETUP_ACCESS_FULL);
@@ -182,10 +183,9 @@ while ($table = fetch_row($tables)) {
                 $matches[1] = 'DATETIME';
             }
             
-            try {
-                $sql_type = sql_type_string_to_defined_constant ($matches[1]);
-            } catch (Exception $e) {
-                // if an unsupported column type is found, ignore this table
+            // if an unsupported column type is found, ignore this table
+            $sql_type = $matches[1];
+            if (!SqlTypes::isValid($sql_type)) { 
                 $temp_errs[] = "Could not import table {$table_name}: column ({$column['Field']}) is ".
                     "of unsupported type ". strtoupper ($column['Type']);
                 $db->removeTable ($table_name);
@@ -330,7 +330,10 @@ while ($table = fetch_row($tables)) {
                 $form_item->setApply('add,edit');
                 $form->addItem($form_item);
                 
-                if (($col->isMandatory () or $num_main_columns < 5) and $col->getSqlType () != SQL_TYPE_TEXT) {
+                if ($col->isMandatory() or $num_main_columns < 5) {
+                    if (SqlTypes::isText($col->getSqlType())) continue;
+                    if (SqlTypes::isBinary($col->getSqlType())) continue;
+                    
                     if (!in_array ($col->getName (), $main_cols)) {
                         $table_obj->appendView('list', $view_item);
                         $num_main_columns++;

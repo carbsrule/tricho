@@ -62,7 +62,7 @@ foreach ($tables as $table) {
                 $link->getTarget()->getName() . '<br><small>';
             
             // show from column type
-            echo sql_type_string_from_defined_constant($link->getSqlType());
+            echo $link->getSqlType();
             if ($link->getSqlSize() != '') echo '(' . $link->getSqlSize() . ')';
             if ($link->isUnsigned()) echo ' UNSIGNED';
             
@@ -70,7 +70,7 @@ foreach ($tables as $table) {
             
             // show to column type
             echo get_class($link->getTarget()) . ':';
-            echo sql_type_string_from_defined_constant ($link->getTarget()->getSqlType ());
+            echo $link->getTarget()->getSqlType();
             if ($link->getTarget()->getSqlSize () != '') {
                 echo '(' . $link->getTarget()->getSqlSize() . ')';
             }

@@ -52,7 +52,7 @@ $warnings = array();
 $pk_fields = $table->getIndex ('PRIMARY KEY');
 foreach ($pk_fields as $pk_field) {
     $pk_sql_type = $pk_field->getSqlType ();
-    if ($pk_sql_type == SQL_TYPE_FLOAT or $pk_sql_type == SQL_TYPE_DOUBLE) {
+    if ($pk_sql_type == 'FLOAT' or $pk_sql_type == 'DOUBLE') {
         $warnings[] = 'This table is using a FLOAT or DOUBLE foating-point type '.
             'for one of its primary key columns. This is very likely to cause problems. Try using a fixed-point '.
             'type such as DECIMAL instead.';

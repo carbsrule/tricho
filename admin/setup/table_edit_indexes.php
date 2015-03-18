@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\SqlTypes;
+
 require 'head.php';
 
 $page_opts = array ('tab' => 'indexes');
@@ -145,22 +147,10 @@ foreach ($columns as $id => $col) {
     
     // determine type - text types are allowed to index a set number of characters at the start of the field,
     // and can also use FULLTEXT indexes.
-    switch ($col->getSqlType ()) {
-        case SQL_TYPE_CHAR:
-        case SQL_TYPE_VARCHAR:
-        case SQL_TYPE_TEXT:
-        case SQL_TYPE_TINYTEXT:
-        case SQL_TYPE_MEDIUMTEXT:
-        case SQL_TYPE_LONGTEXT:
-        case SQL_TYPE_BLOB:
-        case SQL_TYPE_TINYBLOB:
-        case SQL_TYPE_MEDIUMBLOB:
-        case SQL_TYPE_LONGBLOB:
-            $type = 'text';
-            break;
-        
-        default:
-            $type = 'other';
+    if (in_array($col->getSqlType(), SqlTypes::getTextish())) {
+        $type = 'text';
+    } else {
+        $type = 'other';
     }
     echo "                            <option value=\"{$type}:{$col->getName ()}\">{$col->getName ()}</option>\n";
 }

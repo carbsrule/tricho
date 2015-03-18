@@ -29,13 +29,9 @@ class BooleanColumn extends Column {
         return 'TINYINT';
     }
     
-    // TODO: remove old SQL_TYPE_* constants
-    function setSqlType ($type) {
-        if (!is_int ($type)) $type = strtoupper ($type);
-        if ($type == 'BIT' or $type == SQL_TYPE_BIT) {
-            array_remove ('UNSIGNED', $this->sql_attributes);
-        }
-        parent::setSqlType ($type);
+    function setSqlType($type) {
+        parent::setSqlType($type);
+        if ($type == 'BIT') array_remove('UNSIGNED', $this->sql_attributes);
     }
     
     
@@ -53,7 +49,7 @@ class BooleanColumn extends Column {
         $default = $this->getDefault();
         
         // BIT fields are returned as 1-byte strings, need to convert to ints
-        if ($this->sqltype == SQL_TYPE_BIT) {
+        if ($this->sqltype == 'BIT') {
             $input_value = ord($input_value);
         }
         

@@ -27,7 +27,7 @@ class DatetimeColumn extends TemporalColumn {
     
     function identify($context) {
         if ($context == 'row') return $this->name;
-        if ($this->sqltype == SQL_TYPE_INT) {
+        if ($this->sqltype == 'INT') {
             return 'FROM_UNIXTIME(`' .
                 $this->table->getName() . '`.`' . $this->name . '`' .
                 ') AS `' . $this->name . '`';
@@ -37,7 +37,7 @@ class DatetimeColumn extends TemporalColumn {
     
     
     function displayValue($input_value = '') {
-        if ($this->sqltype == SQL_TYPE_INT) {
+        if ($this->sqltype == 'INT') {
             if ($input_value > 0) {
                 return date('Y-m-d H:i:s', $input_value);
             }

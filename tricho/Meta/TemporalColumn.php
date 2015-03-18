@@ -190,7 +190,7 @@ abstract class TemporalColumn extends Column {
         }
         
         // Un*x timestamp (only valid for DatetimeColumn)
-        if ($this->sqltype == SQL_TYPE_INT) {
+        if ($this->sqltype == 'INT') {
             $value = mktime($hr, $min, $sec, $m, $d, $y);
         }
         
@@ -205,7 +205,7 @@ abstract class TemporalColumn extends Column {
         $p = self::initInput($form);
         
         // Only applies to DatetimeColumns
-        if ($this->sqltype == SQL_TYPE_INT and preg_match('/^[0-9]+$/', $input_value)) {
+        if ($this->sqltype == 'INT' and preg_match('/^[0-9]+$/', $input_value)) {
             $input_value = date('Y-m-d H:i:s', $input_value);
         }
         

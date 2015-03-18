@@ -158,7 +158,7 @@ class Meta
      */
     static function getSqlDefn(Column $col)
     {
-        $type = sql_type_string_from_defined_constant($col->getSqlType());
+        $type = $col->getSqlType();
         $sql = $type;
         $txt = $col->getSqlSize();
         if ($txt != '') {

@@ -121,8 +121,6 @@ abstract class Column implements QueryField, ColumnInterface {
         $this->setMandatory (Meta::toBool($attribs['mandatory']));
         $this->setEngName ($attribs['engname']);
         list ($sql_type, $size, $sql_attribs) = Meta::getSqlParams($attribs['sql_defn']);
-        $sql_type = sql_type_string_to_defined_constant ($sql_type);
-        
         $this->setSqlType ($sql_type);
         $this->setSqlSize ($size);
         $this->setSqlAttributes ($sql_attribs);
@@ -247,48 +245,17 @@ abstract class Column implements QueryField, ColumnInterface {
     
     /**
      * Sets the SQL type of this column.
-     * Examples of SQL type are: SQL_TYPE_INT; SQL_TYPE_VARCHAR;
-     * SQL_TYPE_DECIMAL.
+     * Examples of SQL type are: INT; VARCHAR; DECIMAL.
      * 
-     * @param int $type The SQL type to use.
+     * @param string $type The SQL type to use. {@See SqlTypes}
      */
-    function setSqlType ($type) {
-        if (is_integer ($type)) {
-            switch ($type) {
-                case SQL_TYPE_INT:
-                case SQL_TYPE_TINYINT:
-                case SQL_TYPE_SMALLINT:
-                case SQL_TYPE_MEDIUMINT:
-                case SQL_TYPE_BIGINT:
-                case SQL_TYPE_BIT:
-                case SQL_TYPE_DECIMAL:
-                case SQL_TYPE_FLOAT:
-                case SQL_TYPE_DOUBLE:
-                case SQL_TYPE_CHAR:
-                case SQL_TYPE_VARCHAR:
-                case SQL_TYPE_BINARY:
-                case SQL_TYPE_VARBINARY:
-                case SQL_TYPE_TEXT:
-                case SQL_TYPE_TINYTEXT:
-                case SQL_TYPE_MEDIUMTEXT:
-                case SQL_TYPE_LONGTEXT:
-                case SQL_TYPE_BLOB:
-                case SQL_TYPE_TINYBLOB:
-                case SQL_TYPE_MEDIUMBLOB:
-                case SQL_TYPE_LONGBLOB:
-                case SQL_TYPE_DATE:
-                case SQL_TYPE_DATETIME:
-                case SQL_TYPE_TIME:
-                    $this->sqltype = $type;
-                     break;
-                
-                default:
-                    throw new Exception ("Type must match defined SQL type");
-            }
-            return true;
-        } else {
-            throw new Exception ("Type must be an integer and match defined SQL type");
+    function setSqlType($type) {
+        $type = (string) $type;
+        if (!in_array($type, SqlTypes::getAll())) {
+            throw new Exception("Invalid type: {$type}");
         }
+        $this->sqltype = $type;
+        return true;
     }
     
     
@@ -370,11 +337,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return;
         }
         
-        static $text_types = array('CHAR', 'VARCHAR', 'TEXT',
-            'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT');
-        $type = sql_type_string_from_defined_constant($this->sqltype);
-        if (!in_array($type, $text_types)) {
-            $err = "Wrong kind of column ({$type}) for a collation";
+        if (!in_array($this->sqltype, SqlTypes::getTextual())) {
+            $err = "Wrong kind of column ({$this->sqltype}) for a collation";
             throw new InvalidArgumentException($err);
         }
         $this->sql_collation = $collation;
@@ -525,23 +489,8 @@ abstract class Column implements QueryField, ColumnInterface {
      * Gets whether or not this column is of a numeric SQL type
      * @return bool
      */
-    function isNumeric () {
-        switch ($this->sqltype) {
-            case SQL_TYPE_INTEGER:
-            case SQL_TYPE_TINYINT:
-            case SQL_TYPE_SMALLINT:
-            case SQL_TYPE_MEDIUMINT:
-            case SQL_TYPE_BIGINT:
-            case SQL_TYPE_BIT:
-            case SQL_TYPE_DECIMAL:
-            case SQL_TYPE_FLOAT:
-            case SQL_TYPE_DOUBLE:
-                return true;
-                break;
-            
-            default:
-                return false;
-        }
+    function isNumeric() {
+        return in_array($this->sqltype, SqlTypes::getNumeric());
     }
     
     
@@ -620,8 +569,8 @@ abstract class Column implements QueryField, ColumnInterface {
      * 
      * @return string The SQL definition.
      */
-    function getSqlDefn () {
-        $sql = sql_type_string_from_defined_constant ($this->sqltype);
+    function getSqlDefn() {
+        $sql = $this->sqltype;
         $txt = $this->sql_size;
         if ($txt != '') {
             $sql .= "($txt)";

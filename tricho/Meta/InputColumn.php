@@ -20,7 +20,7 @@ abstract class InputColumn extends Column {
     
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
-        if ($this->sqltype == SQL_TYPE_BIT and strlen($input_value) == 1) {
+        if ($this->sqltype == 'BIT' and strlen($input_value) == 1) {
             $ord = ord($input_value);
             if ($ord == 0 or $ord == 1) $input_value = $ord;
         }

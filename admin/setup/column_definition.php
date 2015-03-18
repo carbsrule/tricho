@@ -16,6 +16,7 @@ use Tricho\Meta\ColumnViewItem;
 use Tricho\Meta\IntColumn;
 use Tricho\Meta\LinkColumn;
 use Tricho\Meta\PasswordColumn;
+use Tricho\Meta\SqlTypes;
 
 require_once '../../tricho.php';
 require_once 'setup_functions.php';
@@ -420,12 +421,9 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         $col->setTable($table);
     }
     
-    $sized_types = array(SQL_TYPE_VARCHAR, SQL_TYPE_CHAR, SQL_TYPE_DECIMAL,
-        SQL_TYPE_BINARY, SQL_TYPE_VARBINARY);
-    
     // get sql definition from params
     $is_link = false;
-    $sql_type = 0;
+    $sql_type = $config['sqltype'];
     if ($config['class'] == 'Tricho\\Meta\\LinkColumn') {
         $is_link = true;
     } else if ($config['class'] != '') {
@@ -435,16 +433,13 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         }
     }
     if (!$is_link) {
-        if ($config['sqltype'] == '') {
+        if ($sql_type == '') {
             $errors[] = "You must specify an SQL type";
-        } else {
-            $sql_type = sql_type_string_to_defined_constant($config['sqltype']);
-            if ($sql_type == 0) {
-                $errors[] = "Unknown SQL type: {$config['sqltype']}";
-            }
+        } else if (!SqlTypes::isValid($sql_type)) {
+            $errors[] = "Unknown SQL type: {$sql_type}";
         }
-        if (in_array($sql_type, $sized_types) and $config['sql_size'] == '') {
-            $errors[] = $config['sqltype'] . ' columns need a defined SQL size';
+        if (in_array($sql_type, SqlTypes::getSized()) and $config['sql_size'] == '') {
+            $errors[] = $sql_type . ' columns need a defined SQL size';
         }
     }
     
@@ -472,7 +467,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     
     // auto-increment
     if (in_array ('AUTO_INCREMENT', $sql_attributes)) {
-        if (!in_array ($sql_type, array (SQL_TYPE_INT, SQL_TYPE_TINYINT, SQL_TYPE_SMALLINT, SQL_TYPE_MEDIUMINT, SQL_TYPE_BIGINT))) {
+        if (!in_array($sql_type, SqlTypes::getAutoIncrementable())) {
             $errors[] = "AUTO_INCREMENT can only be used for integer type fields";
         }
         $auto_increment = true;
@@ -480,7 +475,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     
     // unsigned
     if (in_array ('UNSIGNED', $sql_attributes)) {
-        if (!in_array ($sql_type, array (SQL_TYPE_INT, SQL_TYPE_TINYINT, SQL_TYPE_SMALLINT, SQL_TYPE_MEDIUMINT, SQL_TYPE_BIGINT, SQL_TYPE_DECIMAL, SQL_TYPE_FLOAT, SQL_TYPE_DOUBLE))) {
+        if (!in_array($sql_type, SqlTypes::getUnsignable())) {
             $errors[] = "UNSIGNED can only be used for number type fields";
         }
     }
@@ -529,7 +524,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
                 }
             }
         } else {
-            if ($sql_type > 0) $col->setSqlType($sql_type);
+            if ($sql_type != '') $col->setSqlType($sql_type);
             $col->applyConfig($config, $errors);
         }
     }
@@ -541,7 +536,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     }
     
     // set the type
-    $config['sqltype'] = (int) $config['sqltype'];
+    $config['sqltype'] = (string) $config['sqltype'];
     $col->setName($config['name']);
     $col->setEngName($config['engname']);
     $col->setSqlSize($config['sql_size']);
