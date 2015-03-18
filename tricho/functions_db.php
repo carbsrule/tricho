@@ -318,7 +318,7 @@ function enum_to_array ($string) {
         }
         if ($char == "'") {
             if ($in_str) {
-                if ($string[$pos + 1] == "'") {
+                if (@$string[$pos + 1] == "'") {
                     $sub_string .= "'";
                     $pos += 2;
                     continue;
