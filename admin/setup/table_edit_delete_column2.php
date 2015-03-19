@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\DataUi\Form;
+use Tricho\DataUi\FormManager;
 use Tricho\Meta\Database;
 
 require '../../tricho.php';
@@ -23,8 +25,24 @@ if ($column == null) {
     redirect('./');
 }
 
+$forms = FormManager::loadAll();
+$changed_forms = [];
+foreach ($forms as $form_file) {
+    $form = FormManager::load($form_file);
+    if (!$form) continue;
+    if ($form->getTable() != $table) continue;
+    $item = $form->getColumnItem($column);
+    if (!$item) continue;
+    $form->removeItem($item);
+    $changed_forms[] = $form;
+}
+
 $url = 'table_edit_cols.php?t=' . urlencode($_POST['t']);
 if ($table->removeColumn($column)) {
+    foreach ($changed_forms as $form) {
+        FormManager::save($form);
+    }
+    
     $q = "ALTER TABLE `" . $table->getName() . "` DROP COLUMN `" .
         $_POST['col'] . '`';
     $res = execq($q);
