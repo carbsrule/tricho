@@ -16,11 +16,7 @@ require 'column_definition.php';
 echo "var column_classes = {\n";
 $class_num = 0;
 foreach (Runtime::get_column_classes () as $class) {
-    $bs_pos = strrpos($class, '\\');
-    $short_class = $class;
-    if ($bs_pos !== false) {
-        $short_class = substr($class, $bs_pos + 1);
-    }
+    $short_class = rem_ns($class);
     $types = $class::getAllowedSqlTypes ();
     if (count ($types) == 0) continue;
     if (++$class_num != 1) echo ",\n";

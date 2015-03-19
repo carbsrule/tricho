@@ -179,9 +179,10 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     echo "                <option value=\"\">- Select below -</option>\n";
     
     foreach ($col_classes as $class_name) {
-        echo "                <option value=\"{$class_name}\"";
+        $short_class = rem_ns($class_name);
+        echo "                <option value=\"{$short_class}\"";
         if ($class_name === $config['class']) echo ' selected="selected"';
-        echo '>', basename(str_replace('\\', '/', $class_name)), "</option>\n";
+        echo '>', $short_class, "</option>\n";
     }
     
     echo "            </select>\n";
@@ -304,11 +305,12 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     echo "</div>\n";
     
     foreach ($col_classes as $class) {
+        $short_class = rem_ns($class);
         $css_class = 'display-none';
         if ($config['class'] == $class) $css_class = '';
-        echo "<div id=\"options-{$class}\" class=\"{$css_class}\">\n";
+        echo "<div id=\"options-{$short_class}\" class=\"{$css_class}\">\n";
         $config_fields = '';
-        $config_fields .= $class::getConfigFormFields ($config, $class);
+        $config_fields .= $class::getConfigFormFields($config, $short_class);
         if ($config_fields != '') {
             echo $config_fields;
         } else {

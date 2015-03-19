@@ -86,6 +86,9 @@ foreach ($_POST as $field => $value) {
     $config[$field] = $value;
 }
 if (!@$_POST['set_default']) $config['sql_default'] = null;
+if ($config['class'] != '') {
+    $config['class'] = 'Tricho\\Meta\\' . $config['class'];
+}
 $session['columns'][$col_num] = $config;
 
 $table->wipe ();

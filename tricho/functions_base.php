@@ -2129,4 +2129,14 @@ function path_glob($path, $glob_pattern) {
     }
     return $files;
 }
+
+
+/**
+ * Removes a namespace from an entity (class, interface, ...)
+ * @param string $entity e.g. 'Tricho\Meta\AwesomeColumn'
+ * @return string
+ */
+function rem_ns($entity) {
+    return ltrim(substr($entity, strrpos($entity, '\\')), '\\');
+}
 ?>

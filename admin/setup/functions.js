@@ -72,16 +72,7 @@ function default_ticker () {
 function set_col_class (class_name) {
     var form = document.forms.coldata;
     if (!form) return;
-    var opt, opts, full_class_name = class_name;
-    opts = form.elements['class'].getElementsByTagName('option');
-    for (var i = 0; i < opts.length; ++i) {
-        opt = opts.item(i);
-        if (opt.firstChild.data == class_name) {
-            full_class_name = opt.value;
-            break;
-        }
-    }
-    form.elements['class'].value = full_class_name;
+    form.elements['class'].value = class_name;
     col_class_presets (class_name);
     sql_type_options ();
 }

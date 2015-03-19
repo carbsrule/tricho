@@ -40,6 +40,9 @@ foreach ($_POST as $field => $value) {
     $config[$field] = $value;
 }
 if (!@$_POST['set_default']) $config['sql_default'] = null;
+if ($config['class'] != '') {
+    $config['class'] = 'Tricho\\Meta\\' . $config['class'];
+}
 $session['add_column'][$_POST['t']] = $config;
 $col = column_config_to_meta ($table, 'add', $form_url, $config);
 

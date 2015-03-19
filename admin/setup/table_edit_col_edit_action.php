@@ -54,6 +54,9 @@ foreach ($_POST as $field => $value) {
 }
 if (!@$_POST['set_default']) $config['sql_default'] = null;
 $config['old_name'] = $column->getName();
+if ($config['class'] != '') {
+    $config['class'] = 'Tricho\\Meta\\' . $config['class'];
+}
 $session[$id] = $config;
 $new_col = column_config_to_meta ($table, 'edit', $form_url, $config);
 $table->replaceColumn($column, $new_col);
