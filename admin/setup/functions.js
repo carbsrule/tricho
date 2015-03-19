@@ -454,7 +454,6 @@ function sql_type_options () {
         case 'FLOAT':
         case 'DOUBLE':
             sql_unsigned.disabled = false;
-            include_seconds.disabled = true;
             auto_inc.disabled = true;
             
             // make sure that if default exists, it is a decimal number
