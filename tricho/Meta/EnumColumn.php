@@ -75,16 +75,20 @@ class EnumColumn extends Column {
         
         $fields = "<p>Choices</p>\n";
         if (!isset($config['choices'])) $config['choices'] = [];
+        $max = count($config['choices']) + 3;
+        if ($max < 5) $max = 5;
         reset($config['choices']);
-        for ($i = 0; $i < 10; ++$i) {
-            @list($value, $label) = each($config['choices']);
+        for ($i = 0; $i < $max; ++$i) {
+            list($junk, $choice) = each($config['choices']);
+            $value = $choice['value'];
+            $label = $choice['label'];
             $fields .= "<p>";
-            $fields .= "<strong><label for=\"enum_value_{$i}\">Value</label></strong> ";
+            $fields .= "<label for=\"enum_value_{$i}\">Value</label> ";
             $fields .= "<input id=\"enum_value_{$i}\" type=\"text\"";
             $fields .= " name=\"{$class}_choices[{$i}][value]\"";
             $fields .= ' value="' . hsc($value) . '">';
             
-            $fields .= " &nbsp; <strong><label for=\"enum_label_{$i}\">Label</label></strong> ";
+            $fields .= " &nbsp; <label for=\"enum_label_{$i}\">Label</label> ";
             $fields .= "<input id=\"enum_label_{$i}\" type=\"text\"";
             $fields .= " name=\"{$class}_choices[{$i}][label]\"";
             $fields .= ' value="' . hsc($label) . '">';
@@ -96,7 +100,10 @@ class EnumColumn extends Column {
     
     function getConfigArray() {
         $config = parent::getConfigArray();
-        $config['choices'] = $this->choices;
+        $config['choices'] = [];
+        foreach ($this->choices as $value => $label) {
+            $config['choices'][] = ['value' => $value, 'label' => $label];
+        }
         return $config;
     }
     
