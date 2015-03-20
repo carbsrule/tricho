@@ -153,10 +153,18 @@ class EnumColumn extends Column {
     
     
     function collateInput($input, &$original_value) {
-        if (isset($this->choices[$input])) {
-            return array($this->name => $input);
+        if (isset($this->choices[$input]) or $input == '') {
+            $original_value = $input;
+            return [$this->name => $input];
         }
         throw new DataValidationException('Nonexistent value');
+    }
+    
+    
+    function isInputEmpty(array $input) {
+        $value = (string) reset($input);
+        if ($value == '' and !isset( $this->choices[''])) return true;
+        return false;
     }
     
     
