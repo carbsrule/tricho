@@ -115,7 +115,6 @@ class EnumColumn extends Column {
             $this->choices[$choice['value']] = $choice['label'];
         }
         if (count($this->choices) == 0) {
-            die("No choices");
             $errors[] = 'Must specify choices';
             return;
         }
