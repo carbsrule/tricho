@@ -18,15 +18,14 @@ use Tricho\Meta\Column;
  * @package query_builder
  */
 class QueryFunction extends AliasedField {
-    
-    private $function_name;
-    private $params;
+    protected $function_name;
+    protected $params;
     
     /**
      * When a CONCAT QueryFunction is created automatically for a LinkColumn
      * on admin/main.php, this refers to the source column of the link.
      */
-    private $source = null;
+    protected $source = null;
     
     /**
      * @param string $function_name the name of the function to be called,

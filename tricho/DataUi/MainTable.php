@@ -12,6 +12,7 @@ use \Exception;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\BooleanColumn;
+use Tricho\Meta\EnumColumn;
 use Tricho\Meta\LinkColumn;
 use Tricho\Meta\NumericColumn;
 use Tricho\Meta\PasswordColumn;
@@ -23,6 +24,7 @@ use Tricho\Query\DateTimeQueryColumn;
 use Tricho\Query\QueryField;
 use Tricho\Query\QueryFieldList;
 use Tricho\Query\QueryFieldLiteral;
+use Tricho\Query\QueryCase;
 use Tricho\Query\QueryFunction;
 use Tricho\Query\SelectQuery;
 use Tricho\Query\LogicOperatorNode;
@@ -299,7 +301,13 @@ class MainTable {
             return;
         }
         
-        if (!($column instanceof LinkColumn)) {
+        if ($column instanceof EnumColumn) {
+            $func = new QueryCase('CASE', $column->getChoices());
+            $func->setAlias($column->getName());
+            $func->setSource($column);
+            $this->addField($func, $is_view_item, false, $search, $order, $order_dir);
+            
+        } else if (!($column instanceof LinkColumn)) {
             $main = false;
             
             if ($is_view_item) {

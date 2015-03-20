@@ -43,6 +43,16 @@ class EnumColumn extends Column {
     }
     
     
+    /**
+     * Gets the choices allowed in the ENUM
+     * @return array The keys are the data to be stored in the database, and
+     *         the values are their labels
+     */
+    function getChoices() {
+        return $this->choices;
+    }
+    
+    
     function toXMLNode(DOMDocument $doc) {
         $node = parent::toXMLNode($doc);
         foreach ($this->choices as $choice) {
