@@ -123,7 +123,7 @@ class EnumColumn extends Column {
         $choice_num = 0;
         foreach (array_keys($this->choices) as $choice) {
             if (++$choice_num != 1) $this->sqltype .= ',';
-            $this->sqltype .= sql_enclose($choice);
+            $this->sqltype .= sql_enclose((string) $choice, false);
         }
         $this->sqltype .= ')';
     }
