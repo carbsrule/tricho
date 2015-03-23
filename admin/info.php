@@ -6,6 +6,7 @@
  */
 
 use Tricho\Runtime;
+use Tricho\Admin\SessionEditor;
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\EmailColumn;
 
@@ -75,10 +76,11 @@ ENDSCRIPT;
 
 if (@$_GET['view'] == 'session') {
     echo '<p><a href="info.php">&laquo; back</a></p>';
-    echo '<pre>';
-    print_human ($_SESSION);
-    echo '</pre>';
-    echo "</div>\n";
+    echo '<style type="text/css">';
+    echo '.session .session .session { margin-left: 30px; padding-left: 4px; padding-bottom: 4px; }';
+    echo '.session p { margin-top: 4px; margin-bottom: 4px; }';
+    echo '</style>';
+    SessionEditor::display($_SESSION);
     require 'foot.php';
     exit;
 }
