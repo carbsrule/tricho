@@ -112,10 +112,10 @@ $form->setFormURL('add.php?t=' . $table->getName());
 $form->setActionURL('add_action.php');
 $form->load("admin.{$table->getName()}");
 $form->setType('add');
-if (!isset($_SESSION['forms'][$id])) {
-    $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
+if (!isset($_SESSION[ADMIN_KEY]['forms'][$id])) {
+    $_SESSION[ADMIN_KEY]['forms'][$id] = ['values' => [], 'errors' => []];
 }
-$session = &$_SESSION['forms'][$id];
+$session = &$_SESSION[ADMIN_KEY]['forms'][$id];
 $doc = $form->generateDoc($session['values'], $session['errors']);
 
 $form_el = $doc->getElementsByTagName('form')->item(0);

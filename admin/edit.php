@@ -159,30 +159,30 @@ if (@$_SESSION['setup']['view_q'] === true) {
 $res = execq($q);
 
 if (@$res->rowCount() == 1) {
-    
     check_session_response (ADMIN_KEY);
     
-    // layer session data over row data
-    $row = fetch_assoc($res);
+    // Init form
+    $id = empty($_GET['f'])? '': $_GET['f'];
+    $form = new Form($id);
+    if ($id == '') $id = $form->getID();
     
-    if (isset ($_SESSION[ADMIN_KEY]['edit'][$table->getName ().'.'.$_GET['id']])) {
-        foreach ($_SESSION[ADMIN_KEY]['edit'][$table->getName ().'.'.$_GET['id']] as $key => $value) {
+    // Layer session data over row data
+    $row = fetch_assoc($res);
+    if (isset($_SESSION[ADMIN_KEY]['forms'][$id])) {
+        foreach ($_SESSION[ADMIN_KEY]['forms'][$id]['values'] as $key => $value) {
             $row[$key] = $value;
         }
     }
     
     // Display form
-    $id = empty($_GET['f'])? '': $_GET['f'];
-    $form = new Form($id);
-    if ($id == '') $id = $form->getID();
     $form->setFormURL('edit.php?t=' . $table->getName());
     $form->setActionURL('edit_action.php');
     $form->load("admin.{$table->getName()}");
     $form->setType('edit');
-    if (!isset($_SESSION['forms'][$id])) {
-        $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
+    if (!isset($_SESSION[ADMIN_KEY]['forms'][$id])) {
+        $_SESSION[ADMIN_KEY]['forms'][$id] = ['values' => [], 'errors' => []];
     }
-    $session = &$_SESSION['forms'][$id];
+    $session = &$_SESSION[ADMIN_KEY]['forms'][$id];
     $doc = $form->generateDoc($row, $session['errors'], [$_GET['id']]);
     
     $form_el = $doc->getElementsByTagName('form')->item(0);
