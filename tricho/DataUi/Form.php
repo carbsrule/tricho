@@ -563,10 +563,22 @@ class Form {
             redirect($this->form_url);
         }
         
-        if (!isset($_SESSION['forms'][$this->id])) {
-            $_SESSION['forms'][$this->id] = array();
+        $file = basename($this->file, '.form.xml');
+        $file_parts = explode('.', $file);
+        
+        // Use first part of file name (e.g. admin) as extra session key
+        if (count($file_parts) > 1) {
+            $key = reset ($file_parts);
+            if (!isset($_SESSION[$key]['forms'][$this->id])) {
+                $_SESSION[$key]['forms'][$this->id] = array();
+            }
+            $session = &$_SESSION[$key]['forms'][$this->id];
+        } else {
+            if (!isset($_SESSION['forms'][$this->id])) {
+                $_SESSION['forms'][$this->id] = array();
+            }
+            $session = &$_SESSION['forms'][$this->id];
         }
-        $session = &$_SESSION['forms'][$this->id];
         
         if ($this->step > 1 and $this->step > @$session['step']) {
             redirect($this->form_url);
