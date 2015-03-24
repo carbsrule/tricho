@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Runtime;
 use Tricho\DataUi\Form;
 
 require 'head.php';
@@ -18,8 +19,12 @@ $form = new Form();
 try {
     $form->load($_GET['f'], true);
 } catch (Exception $ex) {
-    report_error('Invalid form');
-    die();
+    $path = Runtime::get('root_path') . 'tricho/data/';
+    if (!file_exists($path . $_GET['f'] . '.form.xml')) {
+        echo "<p>Form doesn't exist</p>\n";
+        require 'foot.php';
+        die();
+    }
 }
 ?>
 <h2>Delete a form</h2>
@@ -35,3 +40,6 @@ Are you sure you want to delete <?= $_GET['f']; ?>?<br>
 </tr>
 </table>
 </form>
+
+<?php
+require 'foot.php';
