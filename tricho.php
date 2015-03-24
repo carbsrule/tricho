@@ -5,6 +5,14 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+if (version_compare(PHP_VERSION, '5.4.0') < 0) {
+    ob_end_clean();
+    @header('Content-type: text/html');
+    echo "<html><head><title>ERROR</title></head>\n";
+    echo "<body><b>Error:</b> Requires PHP 5.4 or greater</body></html>";
+    exit(1);
+}
+
 // Output buffering is always on so that errors can be handled correctly, even
 // mid-way through a page which is outputting data
 ob_start();

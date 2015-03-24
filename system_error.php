@@ -32,8 +32,6 @@
 <?php
 $errors = array (
     "db" => "Couldn't connect to the database; please wait a few moments and then try again",
-    "glob" => "PHP is misconfigured; register_globals must be off",
-    "mq" => "PHP is misconfigured; magic_quotes_* must be off",
     "q" => "Database query failed",
     "sys" => "Internal site error",
     "conf" => "Site configuration error"

@@ -10,18 +10,6 @@ use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
 use Tricho\Util\HtmlDom;
 
-// Check if PHP is misconfigured:
-// 1) register globals must be turned off
-if (ini_get('register_globals')) {
-    header('Location: '. ROOT_PATH_WEB. 'system_error.php?err=glob');
-    die();
-}
-// 2) magic_quotes_* must be turned off
-if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
-    header('Location: '. ROOT_PATH_WEB. 'system_error.php?err=mq');
-    die();
-}
-
 function tricho_exception_handler(Exception $ex) {
     if (!Runtime::get('live')) {
         ob_end_clean();
