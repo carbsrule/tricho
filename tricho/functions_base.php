@@ -5,6 +5,8 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use \QueryException;
+
 use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
@@ -1597,43 +1599,41 @@ function print_human ($var, $indent_tab = 0, $indent_self = true) {
  * @param string $sql The SQL query used (if any) to perform the action.
  */
 function log_action (Database $db, $action, $sql = '') {
+    if (!defined('SETUP_LOG_ACTIONS') or !SETUP_LOG_ACTIONS) return;
+    $sql = trim ($sql);
+    if ($sql == '') return;
     
-    if (defined ('SETUP_LOG_ACTIONS') and SETUP_LOG_ACTIONS) {
-        
-        // store SQL queries with trailing ; to support easy import/export
-        $sql = trim ($sql);
-        if ($sql != '' and $sql[strlen ($sql) - 1] != ';') $sql .= ';';
-        
-        // check that the logging table exists
-        $error = false;
-        $res = execq("SHOW TABLES LIKE '_tricho_log'");
-        if ($res->rowCount() != 1) {
-            $error = "Logging table doesn't exist\n\n".
-                "Was attempting to log the following action:\n{$action}";
-        }
-        
-        if (!$error) {
-            
-            $field_setters = array (
-                '`DateLogged` = NOW()',
-                '`User` = '. sql_enclose ((string) $_SESSION['setup']['id']),
-                '`Action` = '. sql_enclose ($action),
-                '`SQL` = '. sql_enclose ($sql)
-            );
-            $q = "INSERT INTO _tricho_log SET ". implode (', ', $field_setters);
-            if (execq($q)) {
-                return;
-            } else {
-                $error = "Failed to log the following action:\n{$action}";
-            }
-        }
-        
-        // all errors are delayed until this point to they can all be handled in the same way
-        if ($sql != '') {
-            $error .= "\n\nSQL used for this action:\n{$sql}";
-        }
-        email_error ($error);
+    // store SQL queries with trailing ; to support easy import/export
+    if ($sql[strlen($sql) - 1] != ';') $sql .= ';';
+    
+    // check that the logging table exists
+    $error = false;
+    $res = execq("SHOW TABLES LIKE '_tricho_log'");
+    if ($res->rowCount() != 1) {
+        $error = "Logging table doesn't exist\n\n".
+            "Was attempting to log the following action:\n{$action}";
     }
+    
+    if (!$error) {
+        $field_setters = [
+            '`DateLogged` = NOW()',
+            '`User` = '. sql_enclose ((string) $_SESSION['setup']['id']),
+            '`Action` = '. sql_enclose ($action),
+            '`SQL` = '. sql_enclose ($sql)
+        ];
+        $q = "INSERT INTO _tricho_log SET " . implode(', ', $field_setters);
+        try {
+            execq($q);
+            return;
+        } catch (QueryException $ex) {
+            $error = "Failed to log the following action:\n{$action}";
+        }
+    }
+    
+    // all errors are delayed until this point so they can all be handled
+    // in the same way
+    $error .= "\n\nSQL used for this action:\n{$sql}";
+    email_error ($error);
 }
 
 /**
