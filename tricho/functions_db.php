@@ -11,6 +11,12 @@ use Tricho\DbConn\DbConn;
 use Tricho\Query\QueryField;
 use Tricho\Util\SqlParser;
 
+/**
+ * Executes a database query. This is a shorthand method.
+ * @param $q mixed The query to execute (a Query or a string)
+ * @return PDOStatement
+ * @throws QueryException if the query fails
+ */
 function execq($q) {
     $conn = ConnManager::get_active();
     return $conn->exec($q, PDO::FETCH_ASSOC);
