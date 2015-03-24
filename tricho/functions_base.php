@@ -1506,9 +1506,7 @@ function cast_to_string ($object) {
             return $object->__toString ();
         } else {
             $val = 'Object['. get_class ($object). ']';
-            if (version_compare (PHP_VERSION, '5.2.0') >= 0) {
-                $val .= '#'. spl_object_hash ($object);
-            }
+            $val .= '#' . spl_object_hash($object);
             return $val;
         }
     } else {
@@ -1987,13 +1985,9 @@ function upload_file ($field_name, $storage_location, $id, $mask, $resize_detail
  * @author benno 2011-08-17 added extra params, default to utf8, specify
  *                 double encoding if PHP version is at least 5.2.3
  */
-function hsc ($str, $flags = ENT_COMPAT, $charset = '', $double_encode = true) {
+function hsc($str, $flags = ENT_COMPAT, $charset = '', $double_encode = true) {
     if ($charset == '') $charset = 'UTF-8';
-    if (version_compare (PHP_VERSION, '5.2.3') >= 0) {
-        return htmlspecialchars ($str, $flags, $charset, $double_encode);
-    } else {
-        return htmlspecialchars ($str, $flags, $charset);
-    }
+    return htmlspecialchars($str, $flags, $charset, $double_encode);
 }
 
 

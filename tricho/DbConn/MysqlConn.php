@@ -60,11 +60,6 @@ class MysqlConn extends DbConn {
     
     
     function post_connect() {
-        $charset = @$this->params['charset'];
-        if (!$charset) $charset = 'utf8';
-        if (version_compare(PHP_VERSION, '5.3.6') < 0) {
-            $this->conn->query('SET NAMES ' . $charset);
-        }
     }
     
     
