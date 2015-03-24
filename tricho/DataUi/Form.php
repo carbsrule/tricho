@@ -260,8 +260,11 @@ class Form {
             $file_path = $root . $file_path;
         }
         if (!ends_with($file_path, '.form.xml')) $file_path .= '.form.xml';
+        $file = basename($file_path);
+        
         if (!@is_file($file_path) or !is_readable($file_path)) {
-            throw new InvalidArgumentException('Missing or unreadable file');
+            $err = "Missing or unreadable file {$file}";
+            throw new InvalidArgumentException($err);
         }
         
         $this->setFile($file_path);
@@ -275,6 +278,7 @@ class Form {
         $table = $db->get($form->getAttribute('table'));
         if (!($table instanceof Table)) {
             $err = 'No table named ' . $form->getAttribute('table');
+            $err .= " in form {$file}";
             throw new UnexpectedValueException($err);
         }
         $this->setTable($table);
@@ -305,7 +309,10 @@ class Form {
                 $col = $table->get($col_name);
                 if (!$col) {
                     if ($ignore_missing_cols) continue;
-                    throw new UnknownColumnException($col_name);
+                    $err = "Unknown column '$col_name' in form {$file}";
+                    $ex = new UnknownColumnException($err);
+                    $ex->setColumn($col_name);
+                    throw $ex;
                 }
                 
                 $item = new ColumnFormItem($col);
@@ -313,7 +320,8 @@ class Form {
                 $item->setValue($node->getAttribute('value'));
                 $item->setApply($node->getAttribute('apply'));
             } else {
-                throw new Exception('Unknown element: ' . $node->tagName);
+                $err = "Unknown element '{$node->tagName}' in form {$file}";
+                throw new Exception($err);
             }
             $this->items[] = $item;
         }
@@ -339,7 +347,8 @@ class Form {
                     break;
                 
                 default:
-                    throw new Exception('No idea what to do here');
+                    $err = "Unknown preset '{$type}' in form {$file}";
+                    throw new Exception($err);
                 }
                 $field_name = $node->getAttribute('field');
                 $this->presets[$field_name] = $preset;

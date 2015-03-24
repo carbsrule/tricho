@@ -148,11 +148,12 @@ class QueryException extends Exception {
  * Column doesn't exist in metadata
  */
 class UnknownColumnException extends Exception {
+    protected $column;
     
-    /**
-     * @param string $column_name The name of the missing column
-     */
-    function __construct($column_name) {
-        $this->message = $column_name;
+    function getColumn() {
+        return $this->column;
+    }
+    function setColumn($column_name) {
+        $this->column = $column_name;
     }
 }
