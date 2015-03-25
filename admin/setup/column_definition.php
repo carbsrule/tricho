@@ -813,7 +813,7 @@ function column_def_update_admin_form(Column $col, $config, $previous_col, $next
     $table = $col->getTable ();
     
     $form_file = "admin.{$table->getName()}";
-    $form = FormManager::load($form_file);
+    $form = FormManager::load($form_file, true);
     if ($form == null) {
         $form = new Form();
         $form->setTable($table);
