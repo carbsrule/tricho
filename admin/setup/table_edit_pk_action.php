@@ -141,7 +141,7 @@ if ($update_xml) {
     try {
         $db->dumpXML('', null);
         $log_message = "Modified Primary Key on {$_POST['t']}";
-        log_action ($db, $log_message, implode (";\n", $query_list));
+        log_action($log_message, implode (";\n", $query_list));
     } catch (FileNotWriteableException $ex) {
         $_SESSION['setup']['err'] = 'Failed to write XML';
     }

@@ -67,7 +67,7 @@ class StaticAddModifier extends FormModifier {
                     $q .= "`{$field}` = ". sql_enclose ($value, false);
                 }
                 
-                log_action ($db, "Added row in static table ". $table->getName (), $q);
+                log_action("Added row in static table " . $table->getName(), $q);
             } else {
                 $log_error = "failed to fetch row";
             }

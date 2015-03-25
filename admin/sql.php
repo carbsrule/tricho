@@ -183,14 +183,15 @@ if (count($queries) > 0) {
                             break;
                         
                         case 'TRUNCATE':
-                            log_action ($db, "Query via sql.php", '-- '. $query);
+                            log_action("Query via sql.php", '-- ' . $query);
                             break;
                         
                         default:
-                            log_action ($db, "Query via sql.php", $query);
+                            log_action("Query via sql.php", $query);
                     }
                 } else {
-                    log_action ($db, "Failed to analyse query via sql.php", '-- '. $query);
+                    $log_msg = "Failed to analyse query via sql.php";
+                    log_action($log_msg, '-- ' . $query);
                 }
             }
             

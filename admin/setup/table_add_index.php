@@ -64,7 +64,7 @@ try {
         $log_message .= $col;
     }
     $log_message .= ']';
-    log_action ($db, $log_message, $q);
+    log_action($log_message, $q);
     
 } catch (QueryException $ex) {
     $conn = ConnManager::get_active();

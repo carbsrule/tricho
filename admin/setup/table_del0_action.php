@@ -109,7 +109,7 @@ if ($db->removeTable ($table_name)) {
     try {
         $db->dumpXML('', null);
         $log_message = "Removed table {$table_name}";
-        log_action ($db, $log_message, $q);
+        log_action($log_message, $q);
     } catch (FileNotWriteableException $ex) {
         $_SESSION['setup']['err'] = "Failed to save XML";
     }

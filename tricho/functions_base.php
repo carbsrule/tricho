@@ -1587,18 +1587,16 @@ function print_human ($var, $indent_tab = 0, $indent_self = true) {
     
 }
 
+
 /**
- * Logs major actions taken that affect the site's database architecture, so that actions recorded on a test
- * server can easily be played back on a live server, thereby preventing issues with site feature upgrades.
- * 
+ * Logs major actions taken that affect the site's database architecture, so
+ * that actions recorded on a test server can easily be played back on a live
+ * server as part of feature upgrades.
  * @author benno, 2008-07-07
- * 
- * @param Database $db Database meta-data, which is used to automatically create the logging table
- *     and define it in the tables.xml if it doesn't exist.
- * @param string $action A description of the action taken (e.g. "Created table X").
+ * @param string $action The action taken (e.g. "Created table X").
  * @param string $sql The SQL query used (if any) to perform the action.
  */
-function log_action (Database $db, $action, $sql = '') {
+function log_action($action, $sql) {
     if (!defined('SETUP_LOG_ACTIONS') or !SETUP_LOG_ACTIONS) return;
     $sql = trim ($sql);
     if ($sql == '') return;

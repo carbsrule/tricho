@@ -116,8 +116,9 @@ if ($ordernum_col != null) {
             // echo "Q4: {$q}<br>\n";
             $qs .= "{$q};";
             execq($q);
-            if ($table->isStatic ()) {
-                log_action ($db, "Updated order in static table ". $table->getName (), $qs);
+            if ($table->isStatic()) {
+                $log_msg = "Updated order in static table " . $table->getName();
+                log_action($log_msg, $qs);
             }
         }
     }

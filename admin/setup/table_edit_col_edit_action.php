@@ -77,7 +77,7 @@ try {
     if ($new_col->getName () != $old_sql_defn['name']) {
         $log_message .= " - renamed to ". $new_col->getName ();
     }
-    log_action ($db, $log_message, $q);
+    log_action($log_message, $q);
 } catch (FileNotWriteableException $ex) {
     $_SESSION['setup']['err'] = 'Failed to save XML';
 }

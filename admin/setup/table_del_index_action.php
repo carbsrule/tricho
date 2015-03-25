@@ -61,7 +61,7 @@ if (execq($q, false, false, false, false)) {
     
     $db = Database::parseXML();
     $log_message = "Removed index {$index} from {$table->getName()}";
-    log_action ($db, $log_message, $q);
+    log_action($log_message, $q);
     
 } else {
     $conn = ConnManager::get_active(); 

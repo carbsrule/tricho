@@ -217,12 +217,9 @@ if (count ($rejig_order_qs) > 0) {
     foreach ($rejig_order_qs as $q) {
         execq($q);
     }
-    if ($table->isStatic ()) {
-        log_action (
-            $db,
-            "Updated order in static table ". $table->getName (),
-            implode (";\n", $rejig_order_qs). ';'
-        );
+    if ($table->isStatic()) {
+        $log_msg = "Updated order in static table " . $table->getName();
+        log_action($log_msg, implode(";\n", $rejig_order_qs) . ';');
     }
 }
 
@@ -289,7 +286,9 @@ if (count($field_values) != 0) {
                     }
                     $q .= " WHERE {$pk_clause}";
                     
-                    log_action ($db, "Edited row in static table ". $table->getName (), $q);
+                    $log_msg = "Edited row in static table ";
+                    $log_msg .= $table->getName();
+                    log_action($log_msg, $q);
                 } else {
                     $log_error = "failed to fetch row";
                 }

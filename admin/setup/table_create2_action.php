@@ -154,7 +154,7 @@ $sql = $table->getCreateQuery($session['engine'], $session['collation']);
 $res = execq($sql);
 $error = $res->errorCode();
 if ($error == '00000') {
-    log_action($db, "Created table {$table->getName()}", $sql);
+    log_action("Created table {$table->getName()}", $sql);
     $_SESSION['setup']['msg'] = "Table created.<br>You can now configure this table.";
 
 } else {

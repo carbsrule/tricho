@@ -119,8 +119,9 @@ foreach ($tables as $table) {
             // update last_data
             $last_data = $curr_data;
         }
-        if ($table->isStatic () and count ($log_qs) > 0) {
-            log_action ($db, "Fixed order numbering in static table {$table_name}", implode (";\n", $log_qs));
+        if ($table->isStatic() and count($log_qs) > 0) {
+            $log_msg = "Fixed order numbering in static table {$table_name}";
+            log_action($log_msg, implode(";\n", $log_qs));
         }
         
         // there were some order errors

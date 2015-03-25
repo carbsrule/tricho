@@ -111,7 +111,7 @@ try {
     if ($_POST['table_name'] != $old_name) {
         $log_message .= " - renamed to {$_POST['table_name']}";
     }
-    log_action ($db, $log_message, $q);
+    log_action($log_message, $q);
 } catch (FileNotWriteableException $ex) {
     $_SESSION['setup']['err'] = 'Failed to save XML';
     

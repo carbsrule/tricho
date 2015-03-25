@@ -2249,7 +2249,7 @@ class Table implements QueryTable {
         execq($q);
         
         if ($this->isStatic ()) {
-            log_action ($this->getDatabase (), "Deleted row from static table ". $this->getName (), $q);
+            log_action("Deleted row from static table " . $this->getName(), $q);
         }
         
         return true;
