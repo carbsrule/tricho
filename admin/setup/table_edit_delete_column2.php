@@ -49,10 +49,8 @@ if ($table->removeColumn($column)) {
     if (!$res) {
         $_SESSION['setup']['err'] = 'Unable to remove column due to a database error.';
     } else {
-        if ($db->dumpXML('', null)) {
-            $log_message = "Removed column ". $table->getName (). '.'. $_POST['col'];
-            log_action($log_message, $q);
-        }
+        $log_message = "Removed column " . $table->getName () . '.' . $_POST['col'];
+        log_action($log_message, $q);
         redirect($url);
     }
     
