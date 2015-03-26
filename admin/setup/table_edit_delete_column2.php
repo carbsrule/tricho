@@ -43,16 +43,18 @@ if ($table->removeColumn($column)) {
         FormManager::save($form);
     }
     
-    $q = "ALTER TABLE `" . $table->getName() . "` DROP COLUMN `" .
-        $_POST['col'] . '`';
-    $res = execq($q);
-    if (!$res) {
-        $_SESSION['setup']['err'] = 'Unable to remove column due to a database error.';
-    } else {
+    // Allow removing definition even if column is missing from the actual DB
+    $db->dumpXML('', null);
+    try {
+        $q = "ALTER TABLE `" . $table->getName() . "` DROP COLUMN `" .
+            $_POST['col'] . '`';
+        execq($q);
+        
         $log_message = "Removed column " . $table->getName () . '.' . $_POST['col'];
         log_action($log_message, $q);
-        redirect($url);
+    } catch (QueryException $ex) {
     }
+    redirect($url);
     
 } else {
     $_SESSION['setup']['err'] = 'Unable to remove column.';
