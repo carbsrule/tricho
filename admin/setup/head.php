@@ -102,6 +102,10 @@ if ($permissions_ok) {
 <?php
     $tables = $db->getOrderedTables();
     $forms = FormManager::loadAll();
+    foreach ($forms as $_key => $each_form) {
+        if (starts_with($each_form, 'admin.')) unset($forms[$_key]);
+    }
+    
     if (count($tables) > 0) {
 ?>
     <form action="table_edit_pre.php" method="get">
