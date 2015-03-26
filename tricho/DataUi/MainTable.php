@@ -12,11 +12,13 @@ use \Exception;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\BooleanColumn;
+use Tricho\Meta\DateColumn;
 use Tricho\Meta\EnumColumn;
 use Tricho\Meta\LinkColumn;
 use Tricho\Meta\NumericColumn;
 use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\TemporalColumn;
+use Tricho\Meta\TimeColumn;
 use Tricho\Meta\FunctionViewItem;
 use Tricho\Meta\ColumnViewItem;
 use Tricho\Query\AliasedColumn;
@@ -729,22 +731,27 @@ class MainTable {
                     $field_defn .= $column->getTable()->getName() . "']";
                 
                 /* DATE COLUMN */
-                } elseif ($search_col instanceof DateTimeQueryColumn) {
+                } elseif ($search_col instanceof TemporalColumn) {
                     $field_defn = "'". $search_col->getName ()."' : ['". addslashes ($eng_name)."', TYPE_DATETIME, ";
                     $field_defn .= ($column->isNullAllowed() ? 'true' : 'false') . ', ';
                     
                     // time support
-                    if ($search_col->isTimeColumn()) {
-                        $field_defn .= 'true, ';
-                    } else {
+                    if ($search_col instanceof DateColumn) {
                         $field_defn .= 'false, ';
+                    } else {
+                        $field_defn .= 'true, ';
                     }
                     
                     // date support
-                    if ($search_col->isDateColumn()) {
-                        $field_defn .= 'true, ' . $search_col->getMinYear() . ', ' . $search_col->getMaxYear() . ']';
-                    } else {
+                    if ($search_col instanceof TimeColumn) {
                         $field_defn .= 'false]';
+                    } else {
+                        $min_year = $search_col->getMinYear();
+                        $max_year = $search_col->getMaxYear();
+                        if (in_array(@$max_year[0], ['+', '-'])) {
+                            $max_year = date('Y') + (int) $max_year;
+                        }
+                        $field_defn .= "true, {$min_year}, {$max_year}]";
                     }
                 
                 /* OTHER */
