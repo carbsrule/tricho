@@ -730,6 +730,17 @@ class MainTable {
                     $field_defn .= ($column->isNullAllowed() ? 'true' : 'false') . ", '";
                     $field_defn .= $column->getTable()->getName() . "']";
                 
+                /* ENUM COLUMN */
+                } elseif ($column instanceof EnumColumn) {
+                    $field_defn = "'". $column->getName()."' : ['". addslashes ($eng_name)."', TYPE_ENUM, ";
+                    $field_defn .= ($column->isNullAllowed() ? 'true' : 'false') . ", {";
+                    $val_num = 0;
+                    foreach ($column->getChoices() as $val => $label) {
+                        if (++$val_num != 1) $field_defn .= ', ';
+                        $field_defn .= $val . ": '" . addslashes($label) . "'";
+                    }
+                    $field_defn .= "}]";
+                
                 /* DATE COLUMN */
                 } elseif ($search_col instanceof TemporalColumn) {
                     $field_defn = "'". $search_col->getName ()."' : ['". addslashes ($eng_name)."', TYPE_DATETIME, ";
@@ -766,6 +777,8 @@ class MainTable {
                     }
                     
                     $field_defn .= ', ' . ($column->isNullAllowed() ? 'true' : 'false') . ']';
+                } else {
+                    throw new Exception('Unable to filter using ' . get_class($search_col));
                 }
                 
                 $fields[] = $field_defn;

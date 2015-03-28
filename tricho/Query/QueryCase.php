@@ -21,6 +21,7 @@ class QueryCase extends QueryFunction {
         if (!is_array($params)) {
             throw new InvalidArgumentException('Params must be an array');
         }
+        $this->function_name = (string) $function_name;
         $this->params = $params;
     }
     

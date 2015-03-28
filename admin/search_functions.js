@@ -12,6 +12,7 @@ var TYPE_NUMERIC = 1;
 var TYPE_DATETIME = 2;
 var TYPE_LINKED = 3;
 var TYPE_BINARY = 4;
+var TYPE_ENUM = 5;
 
 var COND_LIKE = 1;
 var COND_EQ = 2;
@@ -256,6 +257,8 @@ function Condition (field, type, value1, value2) {
             this.superClass = DateTimeCondition; break;
         case TYPE_LINKED:
             this.superClass = LinkedCondition; break;
+        case TYPE_ENUM:
+            this.superClass = EnumCondition; break;
         case TYPE_BINARY:
             this.superClass = BinaryCondition; break;
     }
@@ -645,6 +648,23 @@ function LinkedCondition (values) {
     this.valid_types = function() { return [COND_EQ, COND_NOT_EQ]; }
 }
 
+
+function EnumCondition(values) {
+    this.values = values;
+    
+    this.drawSection = function(sectionNum) {
+        var span = document.createElement('span');
+        var select = create_select(
+            {'id':'val_' + this.number, 'name':'val[' + this.number + ']'},
+            fields[this.field][3]
+        );
+        span.appendChild(select);
+        select.value = this.values[0];
+        return span;
+    }
+    
+    this.valid_types = function() { return [COND_EQ, COND_NOT_EQ]; }
+}
 
 function SearchSelectReplacementHandler (select_node_id) {
     if (select_node_id == null) {
