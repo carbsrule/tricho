@@ -72,7 +72,6 @@ unset($_tmces, $_tmce);
 $scripts = array (
     ADMIN_DIR. 'functions.js',
     ADMIN_DIR. 'search_functions.js',
-    ADMIN_DIR. 'search_functions.js',
     ADMIN_DIR. 'tree.js',
     'tricho/functions.js',
     'tricho/ajax/config.js',
