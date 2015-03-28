@@ -11,6 +11,7 @@ use \Exception;
 use \InvalidArgumentException;
 
 use Tricho\Meta\Column;
+use Tricho\Meta\LinkColumn;
 
 /**
  * used to build queries more easily than hand-coding

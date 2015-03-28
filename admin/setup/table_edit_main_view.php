@@ -7,6 +7,7 @@
 
 use Tricho\Meta\ColumnViewItem;
 use Tricho\Meta\FunctionViewItem;
+use Tricho\Meta\LinkColumn;
 
 require 'head.php';
 
@@ -45,7 +46,7 @@ require 'table_head.php';
 <?php
 $cols = $table->getColumns ();
 foreach ($cols as $col) {
-    if ($col->hasLink ()) {
+    if ($col instanceof LinkColumn) {
         echo "<option value=\"{$col->getName ()}\">{$col->getName ()}*</option>";
     } else {
         echo "<option value=\"{$col->getName ()}\">{$col->getName ()}</option>";
@@ -112,10 +113,9 @@ echo "initing = true;\n";
 echo "var link_info = [];\n";
 $cols = $table->getColumns ();
 foreach ($cols as $col) {
-    if ($col->hasLink ()) {
-        $to_col = $col->getLink ()->getToColumn ();
-        $link_info = " -> {$to_col->getTable ()->getName ()}.{$to_col->getName ()}";
-        if ($col->getLink ()->isParent ()) $link_info .= ' (parent)';
+    if ($col instanceof LinkColumn) {
+        $to_col = $col->getTarget();
+        $link_info = " -> {$to_col->getFullName()}";
         
         $col_name = str_replace ("'", "\'", $col->getName ());
         $link_info = str_replace ("'", "\'", $link_info);
