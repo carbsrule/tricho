@@ -27,6 +27,7 @@ use Tricho\Query\SelectQuery;
 class LinkColumn extends Column {
     protected $target;
     protected $type;
+    protected $is_parent = false;
     
     function getTarget() {
         return $this->target;
@@ -35,6 +36,11 @@ class LinkColumn extends Column {
     function setTarget($target) {
         if (!($target instanceof Column)) $target = (string) $target;
         $this->target = $target;
+    }
+    
+    
+    function isParentLink() {
+        return $this->is_parent;
     }
     
     

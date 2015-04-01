@@ -119,13 +119,11 @@ $lines = array();
 $num_joins = 0;
 foreach ($columns as $column) {
     if (!($column instanceof LinkColumn)) continue;
-    if ($link != null) {
-        $num_joins++;
-        if ($link->isParent ()) {
-            $text = "{$column->getName()} -&gt; ";
-            $text .= $link->getToColumn ()->getTable ()->getName ();
-            $lines[] = $text;
-        }
+    $num_joins++;
+    if ($column->isParentLink()) {
+        $text = "{$column->getName()} -&gt; ";
+        $text .= $column->getTarget()->getFullName();
+        $lines[] = $text;
     }
 }
 if (count ($lines) == 0) {
