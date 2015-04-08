@@ -258,6 +258,12 @@ class Database {
         if (!$file) {
             throw new FileNotWriteableException ($file_loc);
         }
+        
+        // use 4 spaces instead of 2 for indenting
+        if (strpos($xml, "\n  <table") !== false) {
+            $xml = preg_replace('/^( +)</m', '$1$1<', $xml);
+        }
+        
         fwrite ($file, $xml);
         fclose ($file);
         
