@@ -532,7 +532,7 @@ class Form {
         $submit = $doc->createElement('input');
         $submit->setAttribute('type', 'submit');
         $submit->setAttribute('name', '_submit');
-        $submit->setAttribute('value', 'Submit');
+        $submit->setAttribute('value', 'Save');
         $p->appendChild($submit);
         
         $cancel = $doc->createElement('input');
