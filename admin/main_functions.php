@@ -24,13 +24,11 @@ function show_children (Table $from_table, $this_identifier = '') {
     $tables = $db->getTables ();
     $child_links = array ();
     foreach ($tables as $to_table) {
-        $column = $to_table->getLinkToTable ($from_table);
-        if ($column != null) {
-            $link = $column->getLink ();
-            if ($link->isParent () and ($from_table !== $to_table)) {
-                $child_links[] = $link;
-            }
-        }
+        $column = $to_table->getLinkToTable($from_table);
+        if ($column == null) continue;
+        if (!$column->isParentLink()) continue;
+        if ($from_table === $to_table) continue;
+        $child_links[] = $column;
     }
     
     // do nothing if no children
