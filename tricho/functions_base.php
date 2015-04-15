@@ -97,6 +97,14 @@ function tricho_error_handler($code, $str, $file, $line) {
     case E_NOTICE:
         $type = 'Notice';
         break;
+    
+    case E_STRICT:
+        $type = 'Strict standards warning';
+        break;
+    
+    case E_RECOVERABLE_ERROR:
+        $type = 'Catchable fatal error';
+        break;
     }
     if ($type == '') $type = "[{$code}] Unknown error";
     
