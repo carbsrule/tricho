@@ -372,13 +372,25 @@ function get_email_footer_info () {
         $footer .= "\nCMS: ". CMS_VERSION;
     }
     
-    if ($_SERVER['REMOTE_ADDR'] != '') {
-        $hostname = gethostbyaddr ($_SERVER['REMOTE_ADDR']);
-        if ($hostname != $_SERVER['REMOTE_ADDR']) $hostname .= " ({$_SERVER['REMOTE_ADDR']})";
-        $footer .= "\n\nUSER DETAILS:\n".
-            "Host: {$hostname}\n".
-            "Referer: {$_SERVER['HTTP_REFERER']}\n".
-            "User agent: {$_SERVER['HTTP_USER_AGENT']}";
+    if (!empty($_SERVER['REMOTE_ADDR'])) {
+        $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+        if ($hostname != $_SERVER['REMOTE_ADDR']) {
+            $hostname .= " ({$_SERVER['REMOTE_ADDR']})";
+        }
+        $footer .= "\n\nUSER DETAILS:\n";
+        $footer .= "Host: {$hostname}\n";
+        
+        $referer = 'N/A';
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $referer = $_SERVER['HTTP_REFERER'];
+        }
+        $footer .= "Referer: {$referer}\n";
+        
+        $agent = 'Not supplied';
+        if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+            $agent = $_SERVER['HTTP_USER_AGENT'];
+        }
+        $footer .= "User agent: {$agent}";
     }
     
     return $footer;
