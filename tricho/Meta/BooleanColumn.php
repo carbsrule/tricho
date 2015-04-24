@@ -70,5 +70,10 @@ class BooleanColumn extends Column {
         $original_value = $value;
         return array($this->name => $value);
     }
+    
+    
+    function getTD($data, $pk) {
+        return '<td>' . ($data? 'Y': 'N') . '</td>';
+    }
 }
 ?>
