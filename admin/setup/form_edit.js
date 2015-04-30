@@ -67,11 +67,8 @@ $(document).ready(function() {
                     apply = apply.replace('edit,', '');
                 }
                 
-                var $fieldset = $(this).closest('form').find('fieldset');
-                var selector = 'input[type=hidden][value=' + name + ']';
-                var $field_div = $fieldset.find(selector).parent();
-                $field_div.find('input[name*=labels]').val(esc(label));
-                $field_div.find('input[name*=apply]').val(esc(apply));
+                $(div).find('input[name*=labels]').val(esc(label));
+                $(div).find('input[name*=apply]').val(esc(apply));
                 $div.html('<p>Applied :)</p>');
                 window.setTimeout(function() {
                     if ($div.html().match(/:\)/)) {
