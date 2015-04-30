@@ -19,6 +19,7 @@ use \UnknownColumnException;
 
 use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
+use Tricho\Meta;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
@@ -319,6 +320,8 @@ class Form {
                 $item->setLabel($node->getAttribute('label'));
                 $item->setValue($node->getAttribute('value'));
                 $item->setApply($node->getAttribute('apply'));
+                $mandatory = $node->getAttribute('mandatory');
+                $item->setMandatory(Meta::toBool($mandatory));
             } else {
                 $err = "Unknown element '{$node->tagName}' in form {$file}";
                 throw new Exception($err);
@@ -436,12 +439,14 @@ class Form {
         foreach ($this->items as $item) {
             ++$this->field_num;
             $id = $id_base . $this->field_num;
-            list($col, $label, $value, $apply) = $item->toArray();
+            list($col, $label, $value, $apply, $mand) = $item->toArray();
             if (in_array($this->type, ['add', 'edit'])) {
                 if (!in_array($this->type, preg_split('/,\s*/', $apply))) {
                     continue;
                 }
             }
+            
+            if (!$col->isMandatory()) $col->setMandatory($mand);
             
             $col_name = $col->getName();
             if (isset($values[$col_name])) $value = $values[$col_name];
@@ -609,12 +614,14 @@ class Form {
         
         $file_fields = array();
         foreach ($this->items as $item) {
-            list($col, $label, $value, $apply) = $item->toArray();
+            list($col, $label, $value, $apply, $mand) = $item->toArray();
             if (in_array($this->type, ['add', 'edit'])) {
                 if (!in_array($this->type, preg_split('/,\s*/', $apply))) {
                     continue;
                 }
             }
+            
+            if (!$col->isMandatory()) $col->setMandatory($mand);
             
             if ($label != '') $col->setEngName($label);
             if ($col instanceof FileColumn) {

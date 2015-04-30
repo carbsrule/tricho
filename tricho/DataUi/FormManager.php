@@ -11,6 +11,7 @@ use \DOMDocument;
 use \Exception;
 
 use Tricho\Runtime;
+use Tricho\Meta;
 use Tricho\Util\HtmlDom;
 
 class FormManager {
@@ -109,6 +110,7 @@ class FormManager {
             $label = $item->getLabel();
             if ($label) $attrs['label'] = $label;
             $attrs['apply'] = $item->getApply();
+            $attrs['mandatory'] = Meta::toYesNo($item->getMandatory());
             $item_el = HtmlDom::appendNewChild($items, 'field', $attrs);
             
             $comment = @$comments[$col->getName()];

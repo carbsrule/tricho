@@ -34,6 +34,8 @@ $(document).ready(function() {
         $(div).click(function() {
             var name = $(this).find('input[name*=cols]').val();
             var label = $(this).find('input[name*=label]').val();
+            var mandatory = $(this).find('input[name*=mandatory]').val();
+            var force_mandatory = $(this).find('input[name*=force_mand]').val();
             var applies = ',' + $(this).find('input[name*=apply]').val() + ',';
             var $container = $(this).closest('form').find('.item-edit');
             var id = rand_string(8);
@@ -45,6 +47,7 @@ $(document).ready(function() {
                 '<p><label><input type="checkbox" name="apply[]" value="add">Add</label> ' +
                 '<label><input type="checkbox" name="apply[]" value="edit">Edit<br><span>Normal</span></label> ' +
                 '<label><input type="checkbox" name="apply[]" value="edit-view">Edit<br><span>View only</span></label></fieldset>' +
+                '<p><label><input type="checkbox" name="mandatory" value="1">Mandatory</label></p>' +
                 '<p><input type="button" value="Apply"></p>';
             html = html.replace(/:name/g, esc(name));
             html = html.replace(/:label/g, esc(label));
@@ -54,21 +57,33 @@ $(document).ready(function() {
                     $(this).attr('checked', 'checked');
                 }
             });
+            $container.find('input[name=mandatory]').each(function() {
+                if (mandatory == '1') $(this).attr('checked', 'checked');
+                if (force_mandatory == '1') {
+                    $(this).attr('checked', 'checked');
+                    $(this).attr('disabled', 'disabled');
+                }
+            });
             $container.find('input[type=button]').click(function() {
                 var $div = $(this).closest('div');
                 var name = $div.find('input[type=hidden]').val();
                 var label = $div.find('input[name=label]').val();
                 var apply = '';
-                $div.find('input[type=checkbox]:checked').each(function() {
+                var mandatory = '';
+                $div.find('input[type=checkbox][name*=apply]:checked').each(function() {
                     if (apply.length > 0) apply += ',';
                     apply += $(this).val();
                 });
                 if (apply.match('edit,edit-view')) {
                     apply = apply.replace('edit,', '');
                 }
+                $div.find('input[name=mandatory]:checked').each(function() {
+                    mandatory = '1';
+                });
                 
                 $(div).find('input[name*=labels]').val(esc(label));
                 $(div).find('input[name*=apply]').val(esc(apply));
+                $(div).find('input[name*=mandatory]').val(mandatory);
                 $div.html('<p>Applied :)</p>');
                 window.setTimeout(function() {
                     if ($div.html().match(/:\)/)) {
@@ -96,9 +111,10 @@ $(document).ready(function() {
         if (!name) return false;
         
         var type = $select.find('option:selected').attr('data-class');
+        var force_mand = $select.find('option:selected').attr('data-mandatory');
         var $form = $(this).closest('form');
         var $container = $form.find('.sortable');
-        $container.append('<div><input type="hidden" name="cols[]" value=":name"><input type="hidden" name="labels[]" value=""><input type="hidden" name="apply[]" value="add,edit">:name <span class="type">(:type)</span><span class="handle">[===]</span><span class="delete">[DEL]</span></div>'.replace(/:name/g, esc(name)).replace(/:type/g, esc(type)));
+        $container.append('<div><input type="hidden" name="cols[]" value=":name"><input type="hidden" name="labels[]" value=""><input type="hidden" name="apply[]" value="add,edit"><input type="hidden" name="mandatory[]" value=":mand"><input type="hidden" name="force_mand[]" value=":mand">:name <span class="type">(:type)</span><span class="handle">[===]</span><span class="delete">[DEL]</span></div>'.replace(/:name/g, esc(name)).replace(/:type/g, esc(type)).replace(/:mand/g, esc(force_mand)));
         var div = $container.children().last();
         attach_item_properties(div);
         div.click();

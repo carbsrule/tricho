@@ -17,6 +17,7 @@ class ColumnFormItem extends FormItem {
     protected $label;
     protected $value;
     protected $apply;
+    protected $mandatory;
     
     function __construct(Column $col) {
         $this->column = $col;
@@ -56,11 +57,27 @@ class ColumnFormItem extends FormItem {
     
     
     /**
+     * @return bool
+     */
+    function getMandatory() {
+        return $this->mandatory;
+    }
+    /**
+     * @param bool $mandatory
+     */
+    function setMandatory($mandatory) {
+        $this->mandatory = (bool) $mandatory;
+    }
+    
+    
+    /**
      * Gets the properties as an array
-     * @return array [$column, $label, $value, $apply]
+     * @return array [$column, $label, $value, $apply, $mandatory]
      */
     function toArray() {
-        return [$this->column, $this->label, $this->value, $this->apply];
+        $arr = [$this->column, $this->label, $this->value, $this->apply];
+        $arr[] = $this->mandatory;
+        return $arr;
     }
 }
     

@@ -78,7 +78,8 @@ $cols = $form_table->getColumns();
 foreach ($cols as $col) {
     $name = hsc($col->getName());
     $class = hsc(get_class($col));
-    echo "<option value=\"{$name}\" data-class=\"{$class}\">{$name}</option>\n";
+    $mand = $col->isMandatory();
+    echo "<option value=\"{$name}\" data-class=\"{$class}\" data-mandatory=\"{$mand}\">{$name}</option>\n";
 }
 ?>
 </select> <input type="submit" class="faux" value="Add column"></p>
@@ -90,14 +91,18 @@ if ($form != null) {
     foreach ($items as $item) {
         $html = '';
         if ($item instanceof ColumnFormItem) {
-            list($column, $label, $value, $apply) = $item->toArray();
+            list($column, $label, $value, $apply, $mand) = $item->toArray();
+            $force_mand = $column->isMandatory();
+            if ($force_mand) $mand = true;
             
             // This must match the definition in form_edit.js
-            $html = '<div><input type="hidden" name="cols[]" value=":name"><input type="hidden" name="labels[]" value=":label"><input type="hidden" name="apply[]" value=":apply">:name <span class="type">(:type)</span><span class="handle">[===]</span><span class="delete">[DEL]</span></div>';
+            $html = '<div><input type="hidden" name="cols[]" value=":name"><input type="hidden" name="labels[]" value=":label"><input type="hidden" name="apply[]" value=":apply"><input type="hidden" name="mandatory[]" value=":mand"><input type="hidden" name="force_mand[]" value=":force_mand">:name <span class="type">(:type)</span><span class="handle">[===]</span><span class="delete">[DEL]</span></div>';
             $html = str_replace(':name', $column->getName(), $html);
             $html = str_replace(':type', get_class($column), $html);
             $html = str_replace(':label', hsc($label), $html);
             $html = str_replace(':apply', hsc($apply), $html);
+            $html = str_replace(':mand', $mand, $html);
+            $html = str_replace(':force_mand', $force_mand, $html);
         }
         
         

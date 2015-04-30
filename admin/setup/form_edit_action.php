@@ -48,11 +48,17 @@ if (!empty($_POST['modifier'])) {
 
 $form->removeAllItems();
 if (empty($_POST['cols'])) goto no_cols;
-foreach ($_POST['cols'] as $key => $col) {
-    $item = new ColumnFormItem($table->get($col));
+foreach ($_POST['cols'] as $key => $col_name) {
+    $column = $table->get($col_name);
+    $item = new ColumnFormItem($column);
     $label = @$_POST['labels'][$key];
     if ($label) $item->setLabel($label);
     $item->setApply(@$_POST['apply'][$key]);
+    if ($column->isMandatory()) {
+        $item->setMandatory(true);
+    } else {
+        $item->setMandatory(@$_POST['mandatory'][$key]);
+    }
     $form->addItem($item);
 }
 no_cols:
