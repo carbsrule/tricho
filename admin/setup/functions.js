@@ -122,6 +122,20 @@ function set_english_name () {
             }
             
             
+        // password
+        } else if (sql_name == 'Password') {
+            
+            new_eng_name = 'Password';
+            if (col_form) {
+                set_col_class('PasswordColumn');
+                use_form.sqltype.value = 'CHAR';
+                use_form.sql_size.value = '106';
+                use_form.enc_sha512.checked = true;
+                col_main ();
+                col_editable ();
+            }
+            
+            
         // urls
         } else if (sql_name == 'URL') {
             
