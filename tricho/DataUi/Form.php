@@ -436,14 +436,26 @@ class Form {
         $form->appendChild($input);
         $id_base = $this->table->getName() . '-' . $this->type . '-';
         $this->field_num = 0;
+        $num_inputs = 0;
         foreach ($this->items as $item) {
             ++$this->field_num;
             $id = $id_base . $this->field_num;
-            list($col, $label, $value, $apply, $mand) = $item->toArray();
+            $display = 'input';
+            list($col, $label, $value, $apply_str, $mand) = $item->toArray();
+            $apply_arr = preg_split('/,\s*/', $apply_str);
             if (in_array($this->type, ['add', 'edit'])) {
-                if (!in_array($this->type, preg_split('/,\s*/', $apply))) {
-                    continue;
+                
+                // Support 'add', 'edit', and 'edit-view'
+                $ok = false;
+                foreach ($apply_arr as $apply) {
+                    if (preg_replace('/-.*/', '', $apply) == $this->type) {
+                        $ok = true;
+                        if (in_array($apply, ['add', 'edit'])) ++$num_inputs;
+                        if ($apply == 'edit-view') $display = 'value';
+                        break;
+                    }
                 }
+                if (!$ok) continue;
             }
             
             if (!$col->isMandatory()) $col->setMandatory($mand);
@@ -470,6 +482,14 @@ class Form {
                 $form->appendChild($p);
                 $text = $doc->createTextNode($errors[$col_name]);
                 $p->appendChild($text);
+            }
+            
+            if ($display == 'value') {
+                $p = $doc->createElement('p');
+                $form->appendChild($p);
+                $text = $doc->createTextNode($col->displayValue($value));
+                $p->appendChild($text);
+                continue;
             }
             
             // Have columns make their own DOMNodes where possible
@@ -530,21 +550,24 @@ class Form {
                 $p->appendChild($node);
             }
         }
-        $p = $doc->createElement('p');
-        $p->setAttribute('class', 'submit');
-        $form->appendChild($p);
         
-        $submit = $doc->createElement('input');
-        $submit->setAttribute('type', 'submit');
-        $submit->setAttribute('name', '_submit');
-        $submit->setAttribute('value', 'Save');
-        $p->appendChild($submit);
-        
-        $cancel = $doc->createElement('input');
-        $cancel->setAttribute('type', 'submit');
-        $cancel->setAttribute('name', '_cancel');
-        $cancel->setAttribute('value', 'Cancel');
-        $p->appendChild($cancel);
+        if (!in_array($this->type, ['add', 'edit']) or $num_inputs > 0) {
+            $p = $doc->createElement('p');
+            $p->setAttribute('class', 'submit');
+            $form->appendChild($p);
+            
+            $submit = $doc->createElement('input');
+            $submit->setAttribute('type', 'submit');
+            $submit->setAttribute('name', '_submit');
+            $submit->setAttribute('value', 'Save');
+            $p->appendChild($submit);
+            
+            $cancel = $doc->createElement('input');
+            $cancel->setAttribute('type', 'submit');
+            $cancel->setAttribute('name', '_cancel');
+            $cancel->setAttribute('value', 'Cancel');
+            $p->appendChild($cancel);
+        }
         
         if ($this->modifier) {
             $this->modifier->postGenerate($this, $doc);
