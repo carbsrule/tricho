@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<form table="_tricho_tlds">
+    <items>
+        <field name="Domain" apply="add,edit" mandatory="n"/>
+    </items>
+</form>

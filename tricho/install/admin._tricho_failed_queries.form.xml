@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<form table="_tricho_failed_queries">
+    <items>
+        <field name="DateOccurred" apply="edit-view"/>
+        <field name="Query" apply="edit-view"/>
+        <field name="Error" apply="edit-view"/>
+        <field name="MailSent" apply="edit-view"/>
+    </items>
+</form>

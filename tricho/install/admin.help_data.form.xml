@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<form table="help_data">
+    <items>
+        <field name="HelpTable" apply="add,edit" mandatory="y"/>
+        <field name="HelpColumn" apply="add,edit" mandatory="y"/>
+        <field name="HelpText" apply="add,edit" mandatory="n"/>
+        <field name="QuickHelp" apply="add,edit" mandatory="n"/>
+    </items>
+</form>

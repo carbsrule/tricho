@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<form table="_tricho_login_failures">
+    <items>
+        <field name="Time" apply="edit-view" mandatory="y"/>
+        <field name="User" apply="edit-view" mandatory="y"/>
+        <field name="IP" apply="edit-view" mandatory="y"/>
+        <field name="Active" apply="edit" mandatory="n"/>
+        <field name="LockedUntil" apply="edit-view" mandatory="n"/>
+    </items>
+</form>

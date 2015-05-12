@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<form table="_tricho_log">
+    <items>
+        <field name="DateLogged" apply="edit-view" mandatory="y"/>
+        <field name="User" apply="edit-view" mandatory="y"/>
+        <field name="Action" apply="edit-view" mandatory="y"/>
+        <field name="SQL" apply="edit-view" mandatory="y"/>
+    </items>
+</form>

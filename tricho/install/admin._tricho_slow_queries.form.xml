@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<form table="_tricho_slow_queries">
+    <items>
+        <field name="DateOccurred" apply="edit-view" mandatory="y"/>
+        <field name="Query" apply="edit-view" mandatory="y"/>
+        <field name="TimeTaken" apply="edit-view" mandatory="y"/>
+        <field name="MailSent" apply="edit-view" mandatory="n"/>
+    </items>
+</form>

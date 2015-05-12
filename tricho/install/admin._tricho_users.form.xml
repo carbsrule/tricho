@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<form table="_tricho_users">
+    <items>
+        <field name="User" apply="add,edit"/>
+        <field name="Pass" apply="add,edit"/>
+        <field name="AccessLevel" apply="add,edit"/>
+    </items>
+</form>
