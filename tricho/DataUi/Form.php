@@ -485,10 +485,7 @@ class Form {
             }
             
             if ($display == 'value') {
-                $p = $doc->createElement('p');
-                $form->appendChild($p);
-                $text = $doc->createTextNode($col->displayValue($value));
-                $p->appendChild($text);
+                $col->attachValue($this, $value, $pk);
                 continue;
             }
             

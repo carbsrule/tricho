@@ -750,6 +750,23 @@ abstract class Column implements QueryField, ColumnInterface {
     
     
     /**
+     * Adds a display-only value to a Form (for a non-editable field)
+     * 
+     * @param Form $form The form on which to display the value
+     * @param string $value The value to be displayed
+     * @param array $pk The primary key of the row which contains the value
+     * @return void
+     */
+    function attachValue(Form $form, $value, array $pk) {
+        $doc = $form->getDoc();
+        $form_el = $doc->getElementsByTagName('form')->item(0);
+        $p = $doc->createElement('p');
+        $form_el->appendChild($p);
+        HtmlDom::appendNewText($p, $value);
+    }
+    
+    
+    /**
      * Returns an debugger-friendly version of this object
      */
     function __toString () {
