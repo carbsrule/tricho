@@ -162,10 +162,6 @@ define ('VALIDATION_NOT_CHANGED', 1);
 define ('VALIDATION_CHANGED', 2);
 define ('VALIDATION_RUBBISH', 3);
 
-define ('CONVERT_OUTPUT_FAIL', 1);
-define ('CONVERT_OUTPUT_WARN', 2);
-define ('CONVERT_OUTPUT_NONE', 3);
-
 // export types
 define ('EXPORT_TYPE_CSV', 1);
 define ('EXPORT_TYPE_TSV', 2);

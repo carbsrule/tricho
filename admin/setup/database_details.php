@@ -10,11 +10,6 @@ use Tricho\Meta\Database;
 require 'head.php';
 
 $db = Database::parseXML();
-$convert_types = array (
-    CONVERT_OUTPUT_FAIL => 'Show an error',
-    CONVERT_OUTPUT_WARN => 'Show a warning',
-    CONVERT_OUTPUT_NONE => 'Silently ignore'
-);
 
 $help_table = $db->getHelpTable();
 if ($help_table != null) {

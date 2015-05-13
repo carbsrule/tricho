@@ -32,7 +32,6 @@ class Database {
     private $show_sub_record_count = true;
     private $show_search = false;
     private $help_table;
-    private $convert_output;
     static private $loaded_files = [];
     
     /**
@@ -287,7 +286,6 @@ class Database {
         $this->data_check = true;
         $this->primary_headings = false;
         $this->section_headings = true;
-        $this->convert_output = CONVERT_OUTPUT_WARN;
     }
     
     /**
