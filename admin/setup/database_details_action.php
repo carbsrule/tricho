@@ -24,7 +24,5 @@ if ($table == null) {
 }
 $db->setHelpTable ($table);
 
-$db->setConvertOutput ((int) @$_POST['convert_output']);
-
 $db->dumpXML('', 'database_details2.php');
 ?>

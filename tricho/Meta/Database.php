@@ -345,20 +345,6 @@ class Database {
     
     
     /**
-     * Returns one of CONVERT_OUTPUT_FAIL|WARN|NONE
-     */
-    function getConvertOutput () {
-        return $this->convert_output;
-    }
-    
-    /**
-     * If a conversion should fail, warn or be silently ignored
-     */
-    function setConvertOutput ($value) {
-        $this->convert_output = $value;
-    }
-    
-    /**
      * Sets the data checking parameter
      *
      * @param bool $value True = perform data checking; False = Don't

@@ -50,22 +50,6 @@ if ($help_table != null) {
             </td>
         </tr>
         <tr>
-            <td><strong>Converted value output</strong></td>
-            <td>
-                <select name="convert_output">
-<?php
-foreach ($convert_types as $number => $name) {
-    if ($number == $db->getConvertOutput ()) {
-        echo "<option selected value=\"{$number}\">{$name}</option>\n";
-    } else {
-        echo "<option value=\"{$number}\">{$name}</option>\n";
-    }
-}
-?>
-                </select>
-            </td>
-        </tr>
-        <tr>
             <td colspan="2" align="right"><input type="submit" value="Modify details &gt;&gt;"></td>
         </tr>
     </table>
