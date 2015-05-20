@@ -19,6 +19,7 @@ use Tricho\Util\SqlParser;
  */
 function execq($q) {
     $conn = ConnManager::get_active();
+    if (!$conn) throw new Exception('No active connection');
     return $conn->exec($q, PDO::FETCH_ASSOC);
 }
 
