@@ -33,6 +33,7 @@ class Database {
     private $show_search = false;
     private $help_table;
     static private $loaded_files = [];
+    static private $default_path = 'tricho/data/tables.xml';
     
     /**
      * Used by {@link print_human} to create a human-readable string that
@@ -68,6 +69,26 @@ class Database {
     
     
     /**
+     * Sets the default path to the tables.xml file for parseXML to read
+     * @param string $path e.g. 'tricho/data/tables.xml' (the default)
+     * @return void
+     */
+    static function setDefaultPath($path) {
+        self::$default_path = (string) $path;
+    }
+    
+    /**
+     * Gets the default path to the tables.xml file for parseXML to read
+     * @return string
+     */
+    static function getDefaultPath() {
+        $path = self::$default_path;
+        if (@$path[0] != '/') $path = Runtime::get('root_path') . $path;
+        return $path;
+    }
+    
+    
+    /**
      * Read a Tricho-formatted XML file into meta-data store.
      * 
      * @param string $file_name Path of XML file to read; '' for default path
@@ -78,7 +99,7 @@ class Database {
      */
     static function parseXML($file_name = '', $force_reload = false) {
         if ($file_name == '') {
-            $file_name = Runtime::get('root_path') . 'tricho/data/tables.xml';
+            $file_name = self::getDefaultPath();
         }
         if (!$force_reload and isset(self::$loaded_files[$file_name])) {
             return self::$loaded_files[$file_name];
