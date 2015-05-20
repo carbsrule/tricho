@@ -119,6 +119,13 @@ class Form {
     }
     
     /**
+     * @return string
+     */
+    function getFormURL() {
+        return $this->form_url;
+    }
+    
+    /**
      * @param string $action_url
      */
     function setActionURL($action_url) {
