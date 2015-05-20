@@ -588,15 +588,14 @@ class Form {
      * @param mixed $pk Primary Key value(s). Only applies for edit forms.
      * @param array $db_row The row from the DB with the extant data for this
      *        record. Only applies for edit forms.
+     * @param array Possible key/value pairs are:
+     *        - retain_session: bool (if true, session data stored with the
+     *          form is not cleared upon success)
      * @return void An HTTP redirect is performed, so nothing is returned.
      */
-    function process($pk = null, array $db_row = []) {
+    function process($pk = null, array $db_row = [], array $options = []) {
         if ($this->form_url == '' or $this->success_url == '') {
             throw new Exception('Invalid configuration');
-        }
-        if (!in_array($this->type, ['add', 'edit', 'step'])) {
-            $err = 'Type must be add, edit, or step';
-            throw new InvalidArgumentException($err);
         }
         
         if (!empty($_POST['_cancel'])) {
@@ -734,12 +733,17 @@ class Form {
         
         if ($this->type == 'add') {
             $q = new InsertQuery($this->table, $db_data);
-        } else {
+            $q->exec();
+        } else if ($this->type == 'edit') {
             $q = new UpdateQuery($this->table, $db_data, $pk);
+            $q->exec();
         }
-        $q->exec();
         
-        unset($_SESSION['forms'][$this->id]);
+        if (empty($options['retain_session'])) {
+            unset($_SESSION['forms'][$this->id]);
+        } else {
+            $session['values'] = $source_data;
+        }
         
         $insert_id = 0;
         if ($this->type == 'add') {
@@ -747,11 +751,15 @@ class Form {
             $insert_id = $conn->get_pdo()->lastInsertId();
         }
         
-        $key = ($this->type == 'edit')? $pk: $insert_id;
-        foreach ($file_fields as $col) {
-            $name = $col->getName();
-            if (!(@$db_data[$name] instanceof UploadedFile)) continue;
-            $col->saveData($db_data[$name], $key);
+        // Data is only saved in the database for add/edit forms
+        // All other forms have to work their magic in postprocessing
+        if (in_array($this->type, ['add', 'edit'])) {
+            $key = ($this->type == 'edit')? $pk: $insert_id;
+            foreach ($file_fields as $col) {
+                $name = $col->getName();
+                if (!(@$db_data[$name] instanceof UploadedFile)) continue;
+                $col->saveData($db_data[$name], $key);
+            }
         }
         
         if ($this->modifier) {
