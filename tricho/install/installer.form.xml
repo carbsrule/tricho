@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<form table="Install">
+    <items>
+        <field name="site_name" apply="config" mandatory="y"/>
+        <field name="live_host" apply="config" mandatory="y"/>
+        <field name="live_domain" apply="config" mandatory="y"/>
+        <field name="test_domain" apply="config" mandatory="y"/>
+        <field name="db_type" apply="config" mandatory="y"/>
+        <field name="db_host" apply="config" mandatory="y"/>
+        <field name="db_port" apply="config" mandatory="y"/>
+        <field name="db_name" apply="config" mandatory="y"/>
+        <field name="db_user" apply="config" mandatory="y"/>
+        <field name="db_pass" apply="config" mandatory="y"/>
+        <field name="email_from_name" apply="config" mandatory="y"/>
+        <field name="email_from_address" apply="config" mandatory="y"/>
+        <field name="email_admin" apply="config" mandatory="y"/>
+        
+        <field name="admin_user" apply="config" mandatory="y"/>
+        <field name="admin_pass" apply="config" mandatory="y"/>
+    </items>
+</form>

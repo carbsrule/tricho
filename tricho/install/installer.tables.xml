@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database>
+    <table name="Install" name_single="Install" access="admin" engname="Install" display="y" display_style="rows" show_sub_record_count="i" show_search="i" cascade_del="y" confirm_del="y" disable_parent_edit="y" allow="add,edit,del">
+        <column name="id" engname="ID" class="Tricho\Meta\IntColumn" sql_defn="INT UNSIGNED AUTO_INCREMENT NOT NULL" mandatory="y"/>
+        <column name="site_name" engname="Site name" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(30) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="live_host" engname="Live host" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(255) NOT NULL DEFAULT 'livebox'" mandatory="y">
+            <param name="filters" value=""/>
+        </column>
+        <column name="live_domain" engname="Live domain" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(255) NOT NULL" mandatory="y">
+            <param name="filters" value=""/>
+        </column>
+        <column name="test_domain" engname="Test domain" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(255) NOT NULL DEFAULT 'livebox'" mandatory="y">
+            <param name="filters" value=""/>
+        </column>
+        <column name="db_type" engname="DB type" class="Tricho\Meta\EnumColumn" sql_defn="ENUM('Mysql') NOT NULL" mandatory="y">
+            <param value="MySQL"/>
+        </column>
+        <column name="db_host" engname="DB host" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(255) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="db_port" engname="DB port" class="Tricho\Meta\IntColumn" sql_defn="INT NOT NULL DEFAULT 3306" mandatory="y"/>
+        <column name="db_name" engname="DB name" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(50) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="db_user" engname="DB user" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(20) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="db_pass" engname="DB password (will be displayed)" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(255) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="email_from_name" engname="Email from name" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(30) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        
+        <!-- N.B. EmailColumns can't be used, because the _tricho_tlds table won't have been installed at check time -->
+        <column name="email_from_address" engname="Email from address" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(80) NOT NULL" mandatory="y" validate="dns">
+            <param name="filters" value=""/>
+        </column>
+        <column name="email_admin" engname="Email admin" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(80) NOT NULL" mandatory="y" validate="dns">
+            <param name="filters" value=""/>
+        </column>
+        
+        <column name="admin_user" engname="Admin user" class="Tricho\Meta\CharColumn" sql_defn="VARCHAR(30) NOT NULL" mandatory="y">
+            <param name="filters" value="trim,multispace,tags"/>
+        </column>
+        <column name="admin_pass" engname="Admin password" class="Tricho\Meta\PasswordColumn" sql_defn="CHAR(106) NOT NULL COLLATE latin1_general_cs" mandatory="y">
+          <param name="encryption" value="sha512"/>
+        </column>
+        
+        <list/>
+        <vieworder>
+            <orderitem type="column" name="id" dir="ASC"/>
+        </vieworder>
+        <indexes>
+            <index name="PRIMARY KEY" columns="id"/>
+        </indexes>
+        <row_identifier>
+            <id_item type="col" data="id"/>
+        </row_identifier>
+    </table>
+</database>

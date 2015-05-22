@@ -29,6 +29,8 @@ unset($_data, $_key, $_val);
 ConnManager::add_configs(array(
     'default' => array(
         'class' => 'MysqlConn',
+        'host' => '127.0.0.1',
+        'port' => 3306,
         'db' => 'live_db',
         'user' => 'live_user',
         'pass' => 'live_pass',
@@ -41,9 +43,10 @@ $_ip_pattern = '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/';
 if (!starts_with($_SERVER['SERVER_NAME'], 'www.')
     and !preg_match($_ip_pattern, $_SERVER['SERVER_NAME']))
 {
-    $_SERVER['SERVER_NAME'] = 'www.' . $_SERVER['SERVER_NAME'];
+    $_server = 'www.' . $_SERVER['SERVER_NAME'];
+    $_SERVER['SERVER_NAME'] = $_server;
 }
-unset($_ip_pattern);
+unset($_ip_pattern, $_server);
 
 
 # SITE DETAILS

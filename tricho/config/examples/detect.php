@@ -5,11 +5,12 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-if (strpos(__FILE__, '/test/') !== false
-        or strpos(__FILE__, '/dev/') !== false
-        or strpos(@$_SERVER['SERVER_NAME'], 'localhost') !== false) {
-    require __DIR__ . '/test.php';
+$_detect_uname = php_uname('n');
+$_detect_uname = preg_replace('/[^a-z0-9_\-\.]/i', '', $_detect_uname);
+if (file_exists($_detect_uname . '.php')) {
+    require __DIR__ . "/{$_detect_uname}.php";
 } else {
-    require __DIR__ . '/live.php';
+    require __DIR__ . '/dev.php';
 }
+unset($_detect_uname);
 require __DIR__ . '/all.php';

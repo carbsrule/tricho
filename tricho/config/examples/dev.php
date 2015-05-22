@@ -29,6 +29,8 @@ unset($_data, $_key, $_val);
 ConnManager::add_configs(array(
     'default' => array(
         'class' => 'MysqlConn',
+        'host' => '127.0.0.1',
+        'port' => 3306,
         'db' => 'test_db',
         'user' => 'test_user',
         'pass' => 'test_pass',
