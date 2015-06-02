@@ -34,6 +34,7 @@ $onload[] = 'nice_labels ();';
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title><?= Runtime::get('site_name'); ?> Administration</title>
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB; ?>css/messages.css">
+        <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB; ?>css/forms.css">
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. ADMIN_DIR; ?>css/tools.css">
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. ADMIN_DIR; ?>css/layout.css">
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. ADMIN_DIR; ?>css/style.css">

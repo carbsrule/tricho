@@ -225,7 +225,9 @@ abstract class TemporalColumn extends Column {
             $d = (int) $d;
             
             $select = HtmlDom::appendNewChild($p, 'select');
+            $select->setAttribute('class', 'day');
             $select->setAttribute('name', "{$fieldname}[d]");
+            $select->setAttribute('onchange', "date_change(this);");
             $attrs = array('value' => '');
             $option = HtmlDom::appendNewChild($select, 'option', $attrs);
             HtmlDom::appendNewText($option, 'D');
@@ -239,7 +241,9 @@ abstract class TemporalColumn extends Column {
             HtmlDom::appendNewText($p, ' ');
             
             $select = HtmlDom::appendNewChild($p, 'select');
+            $select->setAttribute('class', 'month');
             $select->setAttribute('name', "{$fieldname}[m]");
+            $select->setAttribute('onchange', "date_change(this);");
             $attrs = array('value' => '');
             $option = HtmlDom::appendNewChild($select, 'option', $attrs);
             HtmlDom::appendNewText($option, 'M');
@@ -256,17 +260,22 @@ abstract class TemporalColumn extends Column {
                 'type' => 'text',
                 'name' => "{$fieldname}[y]",
                 'class' => 'year',
-                'size' => 3,
-                'maxlength' => 4
+                'maxlength' => 4,
+                'placeholder' => 'YYYY',
+                'onkeyup' => 'date_change(this);',
             );
             if ($input_value != '') {
                 $attrs['value'] = str_pad($y, 4, '0', STR_PAD_LEFT);
-            } else {
-                $attrs['value'] = 'YYYY';
-                $attrs['onfocus'] = "if(this.value == 'YYYY') this.value='';";
-                $attrs['onblur'] = "if(this.value == '') this.value='YYYY';";
             }
             HtmlDom::appendNewChild($p, 'input', $attrs);
+            
+            $weekday = '';
+            if ($y > 0 and $m > 0 and $d > 0) {
+                $weekday = '(' . date('l', time(12, 0, 0, $m, $d, $y)) . ')';
+            }
+            HtmlDom::appendNewText($p, ' ');
+            $span = HtmlDom::appendNewChild($p, 'span', ['class' => 'weekday']);
+            HtmlDom::appendNewText($span, $weekday);
         }
         
         if ($this->has_time) {
@@ -298,7 +307,6 @@ abstract class TemporalColumn extends Column {
                 'type' => 'text',
                 'name' => "{$fieldname}[t]",
                 'class' => 'hour_min',
-                'size' => 6,
                 'value' => $val
             );
             HtmlDom::appendNewChild($p, 'input', $attrs);

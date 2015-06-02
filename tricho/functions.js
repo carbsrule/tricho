@@ -493,3 +493,17 @@ calendar_pass_back = function (data) {
     alert ('Pass back ' + data);
 }
 */
+
+
+function date_change(field) {
+    var $p = $(field).closest('p');
+    var d = parseInt($p.find('.day').val(), 10);
+    var m = parseInt($p.find('.month').val(), 10);
+    var y = parseInt($p.find('.year').val(), 10);
+    var date = new Date(y, m - 1, d);
+    var days = ['Sun', 'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur'];
+    var weekday = days[date.getDay()];
+    if (weekday == undefined) weekday = '';
+    if (weekday) weekday = '(' + weekday + 'day)';
+    $p.find('.weekday').html(weekday);
+}
