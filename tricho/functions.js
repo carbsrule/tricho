@@ -507,3 +507,127 @@ function date_change(field) {
     if (weekday) weekday = '(' + weekday + 'day)';
     $p.find('.weekday').html(weekday);
 }
+
+
+function init_autofill(id_base, url, min_length) {
+    if (min_length == undefined || min_length < 1) min_length = 2;
+    var $input = $('#' + id_base);
+    var $lookup = $('#' + id_base + '_lookup');
+    var $span, $select;
+    var ready_to_submit = false;
+    
+    // Disable enter key (which would submit form) until selection chosen
+    $lookup.keypress(function(e) {
+        if (e.which == 13 && !ready_to_submit) e.preventDefault();
+    });
+    
+    $lookup.keyup(function(e) {
+        var $selected_opt;
+        var index = 0, index_offset = 0, last_option;
+        
+        ready_to_submit = false;
+        
+        // Use delete key to clear a saved value
+        if (e.which == 8) {
+            if ($lookup.val() == '') {
+                $input.val('');
+                ready_to_submit = true;
+                return false;
+            }
+        }
+        
+        // Use enter key to choose selected option (a second keypress will
+        // submit the form)
+        if (e.which == 13) {
+            e.preventDefault();
+            if (!$select) return false;
+            if ($select.is(':visible') && $select.find('option').length > 0) {
+                $selected_opt = $select.find('option:selected');
+                if ($selected_opt.length > 0) {
+                    $selected_opt.click();
+                    ready_to_submit = true;
+                }
+            }
+            return false;
+        }
+        
+        // Use up/down arrows to cycle the selected option
+        if (e.which == 40 || e.which == 38) {
+            e.preventDefault();
+            if (!$select.is(':visible') || $select.find('option').length == 0) {
+                return false;
+            }
+            if (e.which == 40) {
+                index_offset = 1;
+            } else {
+                index_offset = -1;
+            }
+            
+            $selected_opt = $select.find('option').filter(':selected');
+            index = $selected_opt.index() + index_offset;
+            last_option = $select.find('option').length - 1;
+            if (index < 0) {
+                index = last_option;
+            } else if (index > last_option) {
+                index = 0;
+            }
+            $select.val($($select.find('option').get(index)).val());
+            return false;
+        }
+        
+        // Look up appropriate choices via AJAX
+        ready_to_submit = false;
+        var val = $(this).val();
+        
+        if (val.length < min_length) {
+            if ($select) $select.hide();
+            return false;
+        }
+        
+        $.post(url, {key: val}, function(data) {
+            var $opt;
+            var len = Object.keys(data).length;
+            var width;
+            
+            // Create the <select> list and position it
+            if (!$select) {
+                $span = $('<span style="display: block; height: 0"></span>');
+                $select = $('<select name="' + id_base + '_select" size="2" style="position: relative; top: -1px; left: 2px">');
+                $lookup.after($span);
+                $span.append($select);
+                width = $lookup.css('width');
+                width = width.substr(0, width.length - 2);
+                $select.css('width', (Number(width) + 5) + 'px');
+            }
+            
+            // Hack the look of the <select> list so it never looks like a
+            // dropdown
+            if (len > 0) {
+                $select.attr('size', len);
+                if (len == 1) {
+                    $select.attr('multiple', '');
+                } else {
+                    $select.removeAttr('multiple');
+                }
+                $select.show();
+            } else {
+                $select.hide();
+            }
+            
+            // Populate the <option>s, and highlight the first
+            $select.html('');
+            for (var i in data) {
+                $opt = $('<option value=""></option>');
+                $select.append($opt);
+                $opt.attr('value', i);
+                $opt.append(document.createTextNode(data[i]));
+                $opt.click(function() {
+                    $input.val($(this).val());
+                    $lookup.val($(this).html());
+                    $select.hide();
+                });
+            }
+            $select.find('option').first().attr('selected', '');
+        });
+    });
+}
