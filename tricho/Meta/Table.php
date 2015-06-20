@@ -2154,21 +2154,19 @@ class Table implements QueryTable {
                 ', but got '. count ($pks));
         }
         
-        // See what tables are children tables of this one, and store in an array.
-        // Format:    [ "<this_col_name>" => {link_obj}, ... ]
-        $child_links = array ();
-        foreach ($this->database->getTables () as $table) {
-            $column = $table->getLinkToTable ($this);
-            if ($column != null) {
-                $link = $column->getLink ();
-                if ($link->isParent ()) {
-                    if (! isset($child_links[$link->getToColumn ()->getName ()])) {
-                        $child_links[$link->getToColumn ()->getName ()] = array ();
-                    }
-                    $child_links[$link->getToColumn ()->getName ()][] = $link;
-                    if ($debug) echo "    has child link: {$link}\n";
-                }
+        // Get a list of child tables of this one
+        // Format: [this_col_name => [column_linking_from_child_table, ...]]
+        $child_links = [];
+        foreach ($this->database->getTables() as $table) {
+            $column = $table->getLinkToTable($this);
+            if ($column == null) continue;
+            if (!$column->isParentLink()) continue;
+            
+            if (!isset($child_links[$column->getTarget()->getName()])) {
+                $child_links[$column->getTarget()->getName()] = [];
             }
+            $child_links[$column->getTarget()->getName()][] = $column;
+            if ($debug) echo "    has child link: {$column->getFullName()}\n";
         }
         
         
