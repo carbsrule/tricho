@@ -431,6 +431,11 @@ class Form {
     function generateDoc($values = '', $errors = '', $pk = null) {
         if (!is_array($values)) $values = array();
         if (!is_array($errors)) $errors = array();
+        
+        if ($this->modifier) {
+            $this->modifier->preGenerate($this, $values, $errors, $pk);
+        }
+        
         $form = $this->initDocForm();
         $doc = $form->ownerDocument;
         $inner_doc = new DOMDocument();
