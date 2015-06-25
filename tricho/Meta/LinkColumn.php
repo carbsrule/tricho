@@ -217,6 +217,25 @@ class LinkColumn extends Column {
     }
     
     
+    function attachValue(Form $form, $value, array $pk) {
+        $doc = $form->getDoc();
+        $form_el = $doc->getElementsByTagName('form')->item(0);
+        
+        $q = $this->getSelectQuery();
+        $q->getWhere()->addNewCondition($this->target, '=', $value);
+        if (@$_SESSION['setup']['view_q']) {
+            $pre = HtmlDom::appendNewChild($form_el, 'pre');
+            HtmlDom::appendNewText($pre, "Q: {$q}");
+        }
+        
+        $res = execq($q);
+        $row = fetch_row($res);
+        
+        $p = HtmlDom::appendNewChild($form_el, 'p');
+        HtmlDom::appendNewText($p, $row[1]);
+    }
+    
+    
     /**
      * @author benno, 2013-12-18
      */
