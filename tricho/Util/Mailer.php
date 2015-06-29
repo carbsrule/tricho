@@ -484,7 +484,7 @@ class Mailer {
         }
         
         // Determine if the Mail mime is needed
-        $need_mail_mine = false;
+        $need_mail_mime = false;
         if ($this->message[Mailer::HTML]) $need_mail_mime = true;
         if (count($this->normal_attachments)) $need_mail_mime = true;
         if (count($this->inline_attachments)) $need_mail_mime = true;
