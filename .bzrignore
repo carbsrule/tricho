@@ -5,3 +5,4 @@
 ./TODO
 ./COMMIT*
 ./*.patch
+./js/jquery*.js
