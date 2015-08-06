@@ -23,6 +23,7 @@ use Tricho\Meta;
 use Tricho\Meta\Database;
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;
+use Tricho\Meta\EmailColumn;
 use Tricho\Meta\FileColumn;
 use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\UploadedFile;
@@ -700,7 +701,54 @@ class Form {
                     $db_data = array_merge($db_data, $value);
                 }
             } catch (DataValidationException $ex) {
-                $errors[$col->getName()] = $ex->getMessage();
+                
+                // Allow email address through on second submission if there
+                // appears to be no working DNS resolution.
+                // N.B. This is a hack, as it relies on EmailColumn's
+                // behaviour matching what's expected: a single value gets
+                // saved using exactly the posted data
+                $add_error = true;
+                $error_msg = $ex->getMessage();
+                if ($col instanceof EmailColumn
+                    and starts_with($ex->getMessage(), 'Domain ')
+                ) {
+                    $popular_sites = [
+                        'google.com',
+                        'facebook.com',
+                        'amazon.com',
+                    ];
+                    $resolved = false;
+                    foreach ($popular_sites as $site) {
+                        $ip = gethostbyname($site);
+                        if ($ip != $site) {
+                            $resolved = true;
+                            break;
+                        }
+                    }
+                    
+                    if ($resolved) {
+                        unset($_SESSION['email_dns_failed']);
+                    } else {
+                        $email = $source[$col->getPostSafeName()];
+                        
+                        // First instance of error: remember the email address
+                        // used by storing it in the session; inform the user
+                        if (@$_SESSION['email_dns_failed'] != $email) {
+                            $_SESSION['email_dns_failed'] = $email;
+                            $error_msg .= '. This may be due to a general ' .
+                                'connectivity problem. Please double check ' .
+                                'the address and try again';
+                            
+                        // Same error twice: report no error, and save the data
+                        } else {
+                            $add_error = false;
+                            $db_data[$col->getName()] = $email;
+                            unset($_SESSION['email_dns_failed']);
+                        }
+                    }
+                }
+                
+                if ($add_error) $errors[$col->getName()] = $error_msg;
             }
             $source_data[$col->getName()] = $input;
         }
