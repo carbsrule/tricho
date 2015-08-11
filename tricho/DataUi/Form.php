@@ -669,7 +669,7 @@ class Form {
             
             // No need to upload a new file if there's already one
             if ($col instanceof FileColumn and $this->type == 'edit') {
-                if ($db_row[$col->getName()] != '') $col->setMandatory(false);
+                if (!empty($db_row[$col->getName()])) $col->setMandatory(false);
             }
             
             $input = null;
