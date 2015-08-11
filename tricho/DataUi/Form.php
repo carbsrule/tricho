@@ -393,8 +393,8 @@ class Form {
     }
     
     
-    function render($values = '', $errors = '') {
-        $doc = $this->generateDoc($values, $errors);
+    function render($values = '', $errors = '', $pk = null) {
+        $doc = $this->generateDoc($values, $errors, $pk);
         return $doc->saveXML($doc->documentElement);
     }
     
@@ -830,9 +830,10 @@ class Form {
      * @param string $type {@see self::setType()}
      * @param string $action_url Where to submit the form. Defaults to
      *        {form}_action.php
+     * @param mixed $pk The primary key of the record (for edit actions only)
      * @return string
      */
-    static function loadAndRender($file, $type, $action_url = '') {
+    static function loadAndRender($file, $type, $action_url = '', $pk = null) {
         $id = empty($_GET['f'])? '': $_GET['f'];
         $form = new Form($id);
         if ($id == '') $id = $form->getID();
@@ -847,7 +848,7 @@ class Form {
             $_SESSION['forms'][$id] = ['values' => [], 'errors' => []];
         }
         $session = &$_SESSION['forms'][$id];
-        return $form->render($session['values'], $session['errors']);
+        return $form->render($session['values'], $session['errors'], $pk);
     }
     
     
