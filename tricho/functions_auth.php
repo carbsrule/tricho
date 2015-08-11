@@ -19,7 +19,7 @@ use Tricho\Query\RawQuery;
  * @return bool true if logged in, false otherwise
  */
 function test_login ($redirect_on_error = true) {
-    if ($_SESSION['user']['id'] == '') {
+    if (empty($_SESSION['user']['id'])) {
         if ($redirect_on_error) {
             $_SESSION['user']['err'] = 'You have not logged in, or your session has expired';
             
