@@ -610,6 +610,29 @@ class Form {
             redirect($this->form_url);
         }
         
+        // Load existing record if not provided
+        if ($this->type == 'edit' and empty($db_row) and !empty($pk)) {
+            if (!is_array($pk)) $pk = [$pk];
+            $pk_cols = $this->table->getPKnames();
+            if (count($pk) != count($pk_cols)) {
+                throw new Exception("Invalid PK");
+            }
+            $pk_clauses = array_combine($pk_cols, $pk);
+            $where = '';
+            foreach ($pk_clauses as $col => $val) {
+                if ($where) $where .= ' AND ';
+                $where .= "`{$col}` = " . sql_enclose($val);
+            }
+            $q = "SELECT *
+                FROM {$this->table->getName()}
+                WHERE {$where}";
+            $res = execq($q);
+            $db_row = $res->fetch();
+            if (!$db_row) {
+                throw new Exception('Failed to fetch existing data');
+            }
+        }
+        
         $file = basename($this->file, '.form.xml');
         $file_parts = explode('.', $file);
         
@@ -691,6 +714,8 @@ class Form {
                         if ($extant_value instanceof UploadedFile) {
                             $source_data[$col->getName()] = $extant_value;
                             $db_data[$col->getName()] = $extant_value;
+                            continue;
+                        } else if (!empty($db_row[$col->getName()])) {
                             continue;
                         }
                     }
