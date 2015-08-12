@@ -189,7 +189,7 @@ class PasswordColumn extends InputColumn {
         $input_name = $this->name;
         if ($this->require_existing) {
             $input = array (
-                'label' => 'Current '. hsc ($this->name),
+                'label' => 'Current ' . hsc(lcfirst($this->engname)),
                 'field' => '<input type="password" name="'. hsc ($this->name). '_existing" maxlength="200">',
                 'suffix' => 'existing'
             );
@@ -205,14 +205,14 @@ class PasswordColumn extends InputColumn {
         // (new) password
         $input = array (
             'label' => hsc ($input_name). $mandatory_suffix,
-            'field' => '<input type="password" name="'. hsc ($this->name). '" maxlength="200">',
+            'field' => '<input type="password" name="' . hsc($this->engname) . '" maxlength="200">',
             'suffix' => ''
         );
         $inputs[] = $input;
         
         // repeat (new) password
         $input = array (
-            'label' => hsc ($this->name). ' (confirm)'. $mandatory_suffix,
+            'label' => hsc($this->engname) . ' (confirm)' . $mandatory_suffix,
             'field' => '<input type="password" name="'. hsc ($this->name). '_confirm" maxlength="200">',
             'suffix' => 'confirm'
         );

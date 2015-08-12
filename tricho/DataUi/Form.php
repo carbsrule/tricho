@@ -480,6 +480,7 @@ class Form {
                 $label = $col->getEngName();
             }
             if ($label != '') {
+                $col->setEngName($label);
                 $p = $doc->createElement('p');
                 $p->setAttribute('class', 'label');
                 $form->appendChild($p);
