@@ -150,6 +150,7 @@ class EnumColumn extends Column {
         
         foreach ($this->choices as $choice => $choice_label) {
             $params = array('value' => $choice);
+            if ($choice_label == '') $choice_label = $choice;
             if ($choice == $input_value) $params['selected'] = 'selected';
             $option = HtmlDom::appendNewChild($select, 'option', $params);
             HtmlDom::appendNewText($option, $choice_label);
