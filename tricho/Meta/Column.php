@@ -805,6 +805,8 @@ abstract class Column implements QueryField, ColumnInterface {
     /**
      * Calls collateInput or collateMultiInputs using the relevant source
      * data from $_POST or $_FILES
+     * @param mixed &$original_value Reference for storage of the original value
+     * @throws DataValidationException if the input data isn't valid
      */
     function collateInputData(&$original_value) {
         if ($this instanceof FileColumn) {
@@ -831,6 +833,7 @@ abstract class Column implements QueryField, ColumnInterface {
      * @return array DB field names and their values. Note that a single Column
      *         might actually map to multiple columns in the database.
      * @author benno, 2011-08-12
+     * @throws DataValidationException if the input data isn't valid
      */
     function collateInput ($input, &$original_value) {
         $value = (string) $input;
