@@ -503,7 +503,8 @@ function date_change(field) {
     var date = new Date(y, m - 1, d);
     var days = ['Sun', 'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur'];
     var weekday = days[date.getDay()];
-    if (weekday == undefined) weekday = '';
+    if (weekday == undefined || d <= 0 || m <= 0 || y <= 0) weekday = '';
+    if (days_per_month(m, y) < d) weekday = '';
     if (weekday) weekday = '(' + weekday + 'day)';
     $p.find('.weekday').html(weekday);
 }
