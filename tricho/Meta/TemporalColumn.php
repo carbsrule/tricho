@@ -19,9 +19,9 @@ abstract class TemporalColumn extends Column {
     protected $has_time = false;
     protected $min_year = 1000;
     protected $max_year = 9999;
-    protected $year_required = false;
-    protected $month_required = false;
-    protected $day_required = false;
+    protected $year_required = true;
+    protected $month_required = true;
+    protected $day_required = true;
     
     
     static function non_neg($int) {
@@ -165,12 +165,30 @@ abstract class TemporalColumn extends Column {
             $max_year = (int) $max_year;
             
             if ($y < $min_year or $y > $max_year) {
-                $err = "Out of allowed year range ({$min_year} to {$max_year})";
-                throw new DataValidationException($err);
+                if ($this->mandatory or (int) $y != 0) {
+                    $err = "Out of allowed year range";
+                    $err .= " ({$min_year} to {$max_year})";
+                    throw new DataValidationException($err);
+                }
             }
             if ($m < 1 or $m > 12) {
-                if ($m != 0 and $this->month_required) {
+                if ($m != 0 or $this->month_required) {
                     throw new DataValidationException("Invalid month");
+                }
+            }
+            
+            if ($m == 0) {
+                $max_d = 31;
+            } else {
+                $month_check = gmmktime(12, 0, 0, $m, 1, $y);
+                $max_d = (int) gmdate('t', $month_check);
+                
+                // MySQL doesn't allow 0000-02-29
+                if ($y == 0 and $m == 2) $max_d = 28;
+            }
+            if ($d < 1 or $d > $max_d) {
+                if ($m != 0 or $this->day_required) {
+                    throw new DataValidationException("Invalid day");
                 }
             }
         }

@@ -7,6 +7,10 @@
 
 namespace Tricho\Meta;
 
+use DOMDocument;
+use DOMElement;
+
+use Tricho\Meta;
 use Tricho\Util\HtmlDom;
 
 class DateColumn extends TemporalColumn {
@@ -23,6 +27,74 @@ class DateColumn extends TemporalColumn {
     }
     
     
+    /**
+     * Sets the mandatory status for a date.
+     * A false value is ignored; while a true value will set the 'required'
+     * attribute for each part (D, M, Y) to be true.
+     * @param bool $bool
+     */
+    function setMandatory($bool) {
+        $this->mandatory = false;
+        if (!$bool) return;
+        
+        $this->year_required = true;
+        $this->month_required = true;
+        $this->day_required = true;
+    }
+    
+    /**
+     * Determines if this field is mandatory.
+     * @return bool True if all parts (D, M, Y) are required
+     */
+    function isMandatory() {
+        if (!$this->year_required) return false;
+        if (!$this->month_required) return false;
+        if (!$this->day_required) return false;
+        return true;
+    }
+    
+    
+    function toXMLNode(DOMDocument $doc) {
+        $node = parent::toXMLNode($doc);
+        
+        $params = ['name' => 'required'];
+        $reqd = [];
+        foreach (['year', 'month', 'day'] as $type) {
+            $field = "{$type}_required";
+            if ($this->$field) $reqd[] = $type;
+        }
+        $params['value'] = implode(',', $reqd);
+        HtmlDom::appendNewChild($node, 'param', $params);
+        return $node;
+    }
+    
+    function applyXMLNode(DOMElement $node) {
+        parent::applyXMLNode($node);
+        $params = $node->getElementsByTagName('param');
+        foreach ($params as $param) {
+            if ($param->getAttribute('name') != 'required') continue;
+            $reqd = $param->getAttribute('value');
+            $reqd = preg_split('/,\s*/', $reqd);
+            foreach (['year', 'month', 'day'] as $type) {
+                $field = "{$type}_required";
+                if (in_array($type, $reqd)) {
+                    $this->$field = true;
+                } else {
+                    $this->$field = false;
+                }
+            }
+        }
+    }
+    
+    
+    function getConfigArray() {
+        $config = parent::getConfigArray();
+        $config['year_required'] = $this->year_required;
+        $config['month_required'] = $this->month_required;
+        $config['day_required'] = $this->day_required;
+        return $config;
+    }
+    
     static function getConfigFormFields(array $config, $class) {
         $fields = parent::getConfigFormFields($config, $class);
         
@@ -32,7 +104,32 @@ class DateColumn extends TemporalColumn {
             '"> to ';
         $fields .= "<input type=\"text\" name=\"{$class}_max_year\" ";
         $fields .= 'style="width:2.5em;" value="' . hsc(@$config['max_year']) .
-            '">';
+            "\"><br>\n";
+        
+        if ($class == 'DateColumn') {
+            foreach (['year', 'month', 'day'] as $type) {
+                $id = $type . '_required';
+                $fields .= '<label for="' . $id . '">';
+                $fields .= '<input id="' . $id . '" type="checkbox"';
+                $fields .= " name=\"{$class}_{$type}_required\" value=\"1\"";
+                if (!isset($config["{$type}_required"])) {
+                    $fields .= ' checked="checked"';
+                } else if ($config["{$type}_required"]) {
+                    $fields .= ' checked="checked"';
+                }
+                $fields .= ">Require {$type}</label><br>\n";
+            }
+        }
+        
         return $fields;
+    }
+    
+    
+    function applyConfig(array $config, array &$errors) {
+        $this->year_required = (bool) @$config['year_required'];
+        $this->month_required = (bool) @$config['month_required'];
+        $this->day_required = (bool) @$config['day_required'];
+        
+        parent::applyConfig($config, $errors);
     }
 }
