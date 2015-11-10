@@ -2,7 +2,7 @@
 ./src/tricho/ext/*
 ./src/tricho/data/*.xml
 ./src/js/jquery*.js
-./src/dbfiles/*
+./src/dbfiles
 TODO
 COMMIT*
 *.patch
