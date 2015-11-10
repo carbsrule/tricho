@@ -1,8 +1,8 @@
-./tricho/config/*.php
-./tricho/ext/*
-./tricho/data/*.xml
-./admin/tables.xml*
-./TODO
-./COMMIT*
-./*.patch
-./js/jquery*.js
+./src/tricho/config/*.php
+./src/tricho/ext/*
+./src/tricho/data/*.xml
+./src/js/jquery*.js
+./src/dbfiles/*
+TODO
+COMMIT*
+*.patch
