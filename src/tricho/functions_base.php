@@ -1695,7 +1695,7 @@ function validate_session () {
     if (!defined ('SESSION_NEW_AGENT')) define ('SESSION_NEW_AGENT', true);
     
     $ip = $_SERVER['REMOTE_ADDR'];
-    $agent = $_SERVER['HTTP_USER_AGENT'];
+    $agent = (string) @$_SERVER['HTTP_USER_AGENT'];
     $host_name = null;
     $ip_changed = false;
     $agent_changed = false;
