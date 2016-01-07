@@ -5,8 +5,6 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-use \QueryException;
-
 use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
