@@ -7,7 +7,7 @@
 
 namespace Tricho\DataUi;
 
-use \Exception;
+use Exception;
 
 use Tricho\DbConn\ConnManager;
 use Tricho\Query\AliasedTable;

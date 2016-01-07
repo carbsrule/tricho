@@ -7,7 +7,7 @@
 
 namespace Tricho\DataUi;
 
-use \DOMDocument;
+use DOMDocument;
 
 abstract class FormModifier {
     /**

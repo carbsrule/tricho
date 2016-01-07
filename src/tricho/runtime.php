@@ -7,9 +7,9 @@
 
 namespace Tricho;
 
-use \Exception;
-use \InvalidArgumentException;
-use \ReflectionClass;
+use Exception;
+use InvalidArgumentException;
+use ReflectionClass;
 
 use Tricho\Meta\Table;
 

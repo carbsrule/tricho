@@ -7,7 +7,7 @@
 
 namespace Tricho\Query;
 
-use \Exception;
+use Exception;
 
 use Tricho\Meta\Column;
 

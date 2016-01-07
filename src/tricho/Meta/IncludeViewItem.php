@@ -7,8 +7,8 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \Exception;
+use DOMDocument;
+use Exception;
 
 /**
  * This is the view item for a function.

@@ -7,9 +7,9 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \DOMElement;
-use \DataValidationException;
+use DOMDocument;
+use DOMElement;
+use DataValidationException;
 
 /**
  * Stores meta-data about a column that stores an email address

@@ -7,7 +7,7 @@
 
 namespace Tricho\DbConn;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;

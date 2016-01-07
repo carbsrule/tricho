@@ -7,10 +7,10 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \DOMElement;
-use \Exception;
-use \InvalidArgumentException;
+use DOMDocument;
+use DOMElement;
+use Exception;
+use InvalidArgumentException;
 
 use Tricho\Runtime;
 use Tricho\DataUi\Form;

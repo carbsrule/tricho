@@ -7,7 +7,7 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
+use DOMDocument;
 
 /**
  * This is the view item for a function.

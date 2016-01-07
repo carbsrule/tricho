@@ -7,15 +7,15 @@
 
 namespace Tricho\DataUi;
 
-use \DOMComment;
-use \DOMDocument;
-use \DOMElement;
-use \DOMText;
-use \Exception;
-use \DataValidationException;
-use \InvalidArgumentException;
-use \UnexpectedValueException;
-use \UnknownColumnException;
+use DOMComment;
+use DOMDocument;
+use DOMElement;
+use DOMText;
+use Exception;
+use DataValidationException;
+use InvalidArgumentException;
+use UnexpectedValueException;
+use UnknownColumnException;
 
 use Tricho\Runtime;
 use Tricho\DbConn\ConnManager;

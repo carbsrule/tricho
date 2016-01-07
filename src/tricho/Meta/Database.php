@@ -7,10 +7,10 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \DOMElement;
-use \Exception;
-use \FileNotWriteableException;
+use DOMDocument;
+use DOMElement;
+use Exception;
+use FileNotWriteableException;
 
 use Tricho\Meta;
 use Tricho\Runtime;

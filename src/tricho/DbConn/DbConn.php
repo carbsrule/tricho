@@ -7,9 +7,9 @@
 
 namespace Tricho\DbConn;
 
-use \PDO;
-use \PDOStatement;
-use \QueryException;
+use PDO;
+use PDOStatement;
+use QueryException;
 
 use Tricho\Runtime;
 use Tricho\Meta\Table;

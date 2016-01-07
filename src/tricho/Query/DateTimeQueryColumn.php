@@ -7,7 +7,7 @@
 
 namespace Tricho\Query;
 
-use \Exception;
+use Exception;
 
 /**
  * Additional information for a QueryColumn

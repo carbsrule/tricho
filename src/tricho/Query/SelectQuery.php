@@ -7,8 +7,8 @@
 
 namespace Tricho\Query;
 
-use \Exception;
-use \InvalidArgumentException;
+use Exception;
+use InvalidArgumentException;
 
 use Tricho\Meta\Column;
 use Tricho\Meta\LinkColumn;

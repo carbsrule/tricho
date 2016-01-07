@@ -7,7 +7,7 @@
 
 namespace Tricho\Query;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 class QueryCase extends QueryFunction {
     

@@ -7,7 +7,7 @@
 
 namespace Tricho\DbConn;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 class ConnManager {
     static private $connections = array();

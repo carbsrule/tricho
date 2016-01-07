@@ -7,7 +7,7 @@
 
 namespace Tricho;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * Used to process numeric values stored in strings

@@ -7,8 +7,8 @@
 
 namespace Tricho\Query;
 
-use \Exception;
-use \InvalidArgumentException;
+use Exception;
+use InvalidArgumentException;
 
 use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Table;

@@ -7,7 +7,7 @@
 
 namespace Tricho;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 use Tricho\Meta\Column;
 

@@ -7,7 +7,7 @@
 
 namespace Tricho\Query;
 
-use \Exception;
+use Exception;
 
 /**
  * Used in a {@link LogicTree} to add a condition for an SQL query,

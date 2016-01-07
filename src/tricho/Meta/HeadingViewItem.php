@@ -7,7 +7,7 @@
 
 namespace Tricho\Meta;
 
-use \Exception;
+use Exception;
 
 /**
  * This is the view item for a heading.

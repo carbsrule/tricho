@@ -7,8 +7,8 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \DOMElement;
+use DOMDocument;
+use DOMElement;
 
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;

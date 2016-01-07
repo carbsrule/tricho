@@ -7,7 +7,7 @@
 
 namespace Tricho\Meta;
 
-use \DataValidationException;
+use DataValidationException;
 
 /**
  * Stores data about an uploaded file.

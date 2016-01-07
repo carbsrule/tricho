@@ -7,8 +7,8 @@
 
 namespace Tricho\DataUi;
 
-use \DOMDocument;
-use \Exception;
+use DOMDocument;
+use Exception;
 
 use Tricho\Runtime;
 use Tricho\Meta;

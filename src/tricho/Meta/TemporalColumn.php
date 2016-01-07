@@ -7,9 +7,9 @@
 
 namespace Tricho\Meta;
 
-use \DataValidationException;
-use \DOMDocument;
-use \DOMElement;
+use DataValidationException;
+use DOMDocument;
+use DOMElement;
 
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;

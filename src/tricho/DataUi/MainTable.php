@@ -7,7 +7,7 @@
 
 namespace Tricho\DataUi;
 
-use \Exception;
+use Exception;
 
 use Tricho\Meta\Table;
 use Tricho\Meta\Column;

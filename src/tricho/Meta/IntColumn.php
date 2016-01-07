@@ -7,7 +7,7 @@
 
 namespace Tricho\Meta;
 
-use \DataValidationException;
+use DataValidationException;
 
 /**
  * Stores meta-data about a column that stores integer data

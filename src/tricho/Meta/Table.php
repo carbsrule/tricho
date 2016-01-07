@@ -7,11 +7,11 @@
 
 namespace Tricho\Meta;
 
-use \DOMDocument;
-use \DOMElement;
-use \Exception;
-use \LogicException;
-use \QueryException;
+use DOMDocument;
+use DOMElement;
+use Exception;
+use LogicException;
+use QueryException;
 
 use Tricho\Runtime;
 use Tricho\DataUi\Form;
