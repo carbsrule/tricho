@@ -181,8 +181,8 @@ echo '<br> &nbsp; &nbsp; Version: '. phpversion (). ' ('. php_sapi_name (). ")\n
 if (php_sapi_name () == 'apache2handler') {
     echo '<br> &nbsp; &nbsp; '. apache_get_version (), "\n";
 }
-echo '<br> &nbsp; &nbsp; Timezone: '. date_default_timezone_get (), "\n";
-$php_time = date ('Y-m-d H:i:s');
+echo '<br> &nbsp; &nbsp; Timezone: '. @date_default_timezone_get(), "\n";
+$php_time = @date('Y-m-d H:i:s');
 if ($res = execq('SELECT NOW(), @@session.time_zone')) {
     $row = fetch_row($res);
     list ($mysql_time, $mysql_timezone) = $row;
