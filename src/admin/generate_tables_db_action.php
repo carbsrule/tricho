@@ -20,7 +20,7 @@ $_POST['import'] = (array) $_POST['import'];
 foreach ($_POST['import'] as $table_name) {
     if ($table = $db->get ($table_name)) {
         if ($output != '') $output .= "\n\n";
-        $output .= $table->getCreateQuery ();
+        $output .= $table->getCreateQuery() . ';';
     } else {
         $unknown_tables[] = $table_name;
     }
