@@ -35,7 +35,7 @@ if (@$_GET['view'] == 'phpinfo') {
     
     // send phpinfo() to an output handler so we can kill off head, css, etc.
     ob_start ();
-    phpinfo ();
+    @phpinfo();
     $info = ob_get_contents ();
     ob_end_clean ();
     $css = preg_replace ('/^.*?<style.*?>(.*?)<\/style>.*?$/s', '$1', $info);
