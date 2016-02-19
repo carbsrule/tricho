@@ -115,6 +115,9 @@ echo '<br> &nbsp; &nbsp; IP: ' . $_SERVER['SERVER_ADDR'], "\n";
 echo '<br> &nbsp; &nbsp; Machine name: ' . php_uname ('n'), "\n";
 echo '<br> &nbsp; &nbsp; OS: ' . php_uname ('s r v'), "\n";
 echo '<br> &nbsp; &nbsp; Architecture: ' . php_uname ('m'), "\n";
+if (!empty($_SERVER['SERVER_SOFTWARE'])) {
+    echo '<br> &nbsp; &nbsp; Web server: ', hsc($_SERVER['SERVER_SOFTWARE']); echo "\n";
+}
 echo "</p>\n";
 
 $err_span = '<span style="color: red; font-weight: bold;">';
