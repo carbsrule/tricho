@@ -10,7 +10,7 @@ use Tricho\DbConn\ConnManager;
 use Tricho\Meta\Database;
 use Tricho\Util\HtmlDom;
 
-function tricho_exception_handler(Exception $ex) {
+function tricho_exception_handler($ex) {
     if (!Runtime::get('live')) {
         ob_end_clean();
         @header('Content-type: text/html');
