@@ -996,7 +996,7 @@ function is_https () {
     } else if ($https == 'off') {
         return false;
     } else if ($https == '') {
-        if (stripos ($_SERVER['SERVER_SOFTWARE'], 'iis') !== false) {
+        if (stripos(@$_SERVER['SERVER_SOFTWARE'], 'iis') !== false) {
             return true;
         } else {
             return false;
