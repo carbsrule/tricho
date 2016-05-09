@@ -417,6 +417,12 @@ class Table implements QueryTable {
         $col_nodes = HtmlDom::getChildrenByTagName ($node, 'column');
         foreach ($col_nodes as $col_node) {
             $class_name = $col_node->getAttribute ('class');
+            if (empty($class_name)) {
+                $error = 'No class specified for column ';
+                $error .= $col_node->getAttribute('name') . ' in table ';
+                $error .= $table->getName();
+                throw new Exception($error);
+            }
             if (strpos($class_name, '\\') === false) {
                 $class_name = 'Tricho\\Meta\\' . $class_name;
             }
