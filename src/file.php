@@ -117,7 +117,7 @@ if (!$return_404) {
                 // For front-end users, cache images
                 // Admins will want to see their changes instantly, so don't cache for them
                 if ($column instanceof ImageColumn) {
-                    list ($cache_length, $cache_scale) = determine_cache_length ($column->getParam ('cache_period'));
+                    list ($cache_length, $cache_scale) = determine_cache_length('7d');
                     
                     if (test_admin_login (false)) {
                         $cache_expiry = time () + ($cache_length * $image_cache_scales[$cache_scale]['seconds']);
