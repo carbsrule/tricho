@@ -63,8 +63,7 @@ function tricho_exception_handler($ex) {
     } else {
         $err = 'sys';
     }
-    header('Location: ' . ROOT_PATH_WEB . 'system_error.php?err=' . $err);
-    throw $ex;
+    require Runtime::get('root_path') . 'system_error.php';
 }
 set_exception_handler('tricho_exception_handler');
 
@@ -2075,8 +2074,10 @@ function ends_with ($str, $ending) {
  */
 function check_config() {
     if (Runtime::get('master_salt') == '') {
-        error_log('Tricho: a unique master_salt value is required');
-        redirect(ROOT_PATH_WEB . 'system_error.php?err=conf');
+        $error_text = 'a unique master_salt value is required';
+        error_log("Tricho: {$error_text}");
+        $err = 'conf';
+        require Runtime::get('root_path'). 'system_error.php';
     }
 }
 

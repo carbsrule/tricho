@@ -4,9 +4,13 @@
  * It is released under the GNU General Public License, version 3 or later.
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
+
+@ob_end_clean();
+@http_response_code(500);
+@header('Content-type: text/html; charset=utf-8');
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>System error</title>
@@ -30,23 +34,22 @@
 </head>
 <body>
 <?php
-$errors = array (
+$errors = [
     "db" => "Couldn't connect to the database; please wait a few moments and then try again",
     "q" => "Database query failed",
     "sys" => "Internal site error",
     "conf" => "Site configuration error"
-);
-$error = @$errors[$_GET['err']];
+];
+$error = @$errors[$err];
 if (!$error) $error = "Unknown error";
-
-echo "<p class='error'>{$error}</p>\n";
-
-$_GET['redirect'] = @trim($_GET['redirect']);
-if (@$_GET['err'] == 'db') {
-    if ($_GET['redirect'] != '') {
-        echo "<p><a href=\"{$_GET['redirect']}\">Try again</a></p>\n";
-    }
-}
 ?>
+
+<p class="error"><?php
+echo $error;
+if (!empty($error_text)) echo ': ', hsc($error_text);
+?></p>
+
 </body>
 </html>
+<?php
+exit(-1);
