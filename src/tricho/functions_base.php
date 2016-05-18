@@ -12,7 +12,7 @@ use Tricho\Util\HtmlDom;
 
 function tricho_exception_handler($ex) {
     if (!Runtime::get('live')) {
-        ob_end_clean();
+        @ob_end_clean();
         @header('Content-type: text/html');
         echo '<pre>';
         $trace = $ex->getTrace();
@@ -108,7 +108,7 @@ function tricho_error_handler($code, $str, $file, $line) {
     
     throw new ErrorException("{$type}: {$str}");
 }
-set_error_handler('tricho_error_handler');
+set_error_handler('tricho_error_handler', -1);
 
 
 /**

@@ -6,10 +6,12 @@
  */
 
 if (version_compare(PHP_VERSION, '5.4.0') < 0) {
-    ob_end_clean();
-    @header('Content-type: text/html');
-    echo "<html><head><title>ERROR</title></head>\n";
-    echo "<body><b>Error:</b> Requires PHP 5.4 or greater</body></html>";
+    @ob_end_clean();
+    if (!empty($_SERVER['SERVER_PROTOCOL'])) {
+        @header("{$_SERVER['SERVER_PROTOCOL']} 500 Internal Server Error");
+    }
+    @header('Content-type: text/plain');
+    echo "Requires PHP 5.4 or greater\n";
     exit(1);
 }
 
@@ -22,7 +24,16 @@ Tricho\Runtime::set('root_path', __DIR__ . '/', true);
 require __DIR__ . '/tricho/functions_base.php';
 require __DIR__ . '/tricho/autoload.php';
 
-require __DIR__ . '/tricho/config/detect.php';
+// Pretend to be a test server while detecting the environment and loading the
+// appropriate config. If this fails, e.g. because the detection script
+// doesn't exist, the error MUST be shown.
+Tricho\Runtime::set('live', false);
+
+// N.B. use include, because require doesn't pass the ErrorException thrown
+// by tricho_error_handler to tricho_exception_handler for some reason, and
+// therefore presents a blank screen with no error message.
+include __DIR__ . '/tricho/config/detect.php';
+
 require __DIR__ . '/tricho/runtime_defaults.php';
 
 require __DIR__ . '/tricho/constants.php';
