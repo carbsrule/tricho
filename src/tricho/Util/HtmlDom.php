@@ -314,8 +314,36 @@ class HtmlDom {
         $parent->appendChild($node);
         return $node;
     }
-    
-    
+
+
+    /**
+     * Appends a string of HTML to a node, creating the appropriate nodes
+     * @param DOMElement $parent The node to append the HTML to
+     * @param string $html A HTML snippet, e.g. ' wow, <b>bold</b>'
+     * @return DOMElement The parent is returned for chaining
+     */
+    static function appendHtml(DOMElement $parent, $html) {
+        if ($html == '') return $parent;
+
+        $doc = $parent->ownerDocument;
+
+        $html = '<html><head><meta http-equiv="Content-Type" ' .
+            'content="text/html; charset=UTF-8"></head><body>' .
+            $html. '</body></html>';
+        $temp_doc = new DOMDocument();
+        $temp_doc->loadHTML($html);
+
+        $body = $temp_doc->getElementsByTagName('body')->item(0);
+        while ($body->hasChildNodes()) {
+            $child = $body->firstChild;
+            $body->removeChild($child);
+            $imported_child = $doc->importNode($child, true);
+            $parent->appendChild($imported_child);
+        }
+        return $parent;
+    }
+
+
     /**
      * Gets an element's attributes as an array, for easy access
      * @param DOMElement $element
