@@ -489,6 +489,10 @@ class Form {
                 $p->appendChild($label_node);
                 $text = $doc->createTextNode($label);
                 $label_node->appendChild($text);
+
+                // Required asterisk
+                $mandatory = $col->getMandatorySuffix();
+                HtmlDom::appendHtml($label_node, $mandatory);
             }
             if (isset($errors[$col_name])) {
                 $p = $doc->createElement('p');
@@ -539,6 +543,10 @@ class Form {
                     
                     $text = $doc->createTextNode($input_label);
                     $label->appendChild($text);
+
+                    // Required asterisk
+                    $mandatory = $col->getMandatorySuffix();
+                    HtmlDom::appendHtml($label, $mandatory);
                 }
                 $input = $input['field'];
                 

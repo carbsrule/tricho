@@ -627,15 +627,12 @@ abstract class Column implements QueryField, ColumnInterface {
     
     /**
      * Gets the mandatory suffix for this column, to append to an input label
+     * @return string The string will be empty if the column isn't mandatory
      * @author benno 2012-04-12
      */
-    function getMandatorySuffix () {
-        if ($this->isMandatory ()) {
-            if (defined ('IMAGE_MANDATORY') and IMAGE_MANDATORY != '') {
-                return ' <img src="'. ROOT_PATH_WEB. IMAGE_MANDATORY. '" alt="*" class="mandatory" title="required">';
-            } else {
-                return '*';
-            }
+    function getMandatorySuffix() {
+        if ($this->isMandatory()) {
+            return Runtime::get('mandatory_suffix');
         }
         return '';
     }

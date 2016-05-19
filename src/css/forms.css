@@ -1,2 +1,4 @@
 .year { width: 3em; }
 .hour_min { width: 4em; }
+span.mandatory span { display: none; }
+span.mandatory:before { content: "*"; }

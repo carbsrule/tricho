@@ -9,6 +9,8 @@ use Tricho\Runtime;
 $data = array(
     'site_name' => 'Unknown site',
     'xhtml' => false,
+    'mandatory_suffix' => ' <span class="mandatory" title="(required)">' .
+        '<span>(required)</span></span>',
     'per_page_min' => 5,
     'per_page_max' => 5000,
     'per_page_default' => 15,
