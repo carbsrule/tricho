@@ -40,18 +40,18 @@ $(document).ready(function() {
             var $container = $(this).closest('form').find('.item-edit');
             var id = rand_string(8);
             var html = '<input type="hidden" name="col" value=":name">';
-            html += '<p><strong>Properties for :name</strong></p>' +
+            html += '<p><strong></strong></p>' +
                 '<p class="label"><label for="' + id + '">Label</label></p>' +
-                '<p class="input"><input type="text" name="label" value=":label" id="' + id + '"></p>' +
+                '<p class="input"><input type="text" name="label" id="' + id + '"></p>' +
                 '<fieldset><legend>Applies to</legend>' +
                 '<p><label><input type="checkbox" name="apply[]" value="add">Add</label> ' +
                 '<label><input type="checkbox" name="apply[]" value="edit">Edit<br><span>Normal</span></label> ' +
                 '<label><input type="checkbox" name="apply[]" value="edit-view">Edit<br><span>View only</span></label></fieldset>' +
                 '<p><label><input type="checkbox" name="mandatory" value="1">Mandatory</label></p>' +
                 '<p><input type="button" value="Apply"></p>';
-            html = html.replace(/:name/g, esc(name));
-            html = html.replace(/:label/g, esc(label));
             $container.html(html);
+            $container.find('input[name="label"]').val(label);
+            $container.find('strong').text('Properties for ' + name);
             $container.find('input[type=checkbox]').each(function() {
                 if (applies.match(',' + $(this).val() + ',')) {
                     $(this).attr('checked', 'checked');
@@ -81,8 +81,8 @@ $(document).ready(function() {
                     mandatory = '1';
                 });
                 
-                $(div).find('input[name*=labels]').val(esc(label));
-                $(div).find('input[name*=apply]').val(esc(apply));
+                $(div).find('input[name*=labels]').val(label);
+                $(div).find('input[name*=apply]').val(apply);
                 $(div).find('input[name*=mandatory]').val(mandatory);
                 $div.html('<p>Applied :)</p>');
                 window.setTimeout(function() {
