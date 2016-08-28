@@ -187,7 +187,7 @@ abstract class TemporalColumn extends Column {
                 if ($y == 0 and $m == 2) $max_d = 28;
             }
             if ($d < 1 or $d > $max_d) {
-                if ($m != 0 or $this->day_required) {
+                if ($d != 0 or $this->day_required) {
                     throw new DataValidationException("Invalid day");
                 }
             }
