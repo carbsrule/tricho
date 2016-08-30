@@ -5,18 +5,19 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
-use Tricho\Runtime;
+use Tricho\DataUi\ColumnFormItem;
 use Tricho\DataUi\Form;
 use Tricho\DataUi\FormManager;
-use Tricho\DataUi\ColumnFormItem;
 use Tricho\DbConn\ConnManager;
-use Tricho\Meta\Table;
 use Tricho\Meta\Column;
 use Tricho\Meta\ColumnViewItem;
+use Tricho\Meta\FileColumn;
 use Tricho\Meta\IntColumn;
 use Tricho\Meta\LinkColumn;
 use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\SqlTypes;
+use Tricho\Meta\Table;
+use Tricho\Runtime;
 
 require_once '../../tricho.php';
 require_once 'setup_functions.php';
@@ -548,14 +549,20 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     
     // check that the default value is valid, given the column configuration
     $col->setDefault (null);
-    if (@$config['set_default'] and !($col instanceOf PasswordColumn)) {
-        try {
-            $dummy = null;
-            $values = $col->collateInput($config['sql_default'], $dummy);
-            $default = reset($values);
-            $col->setDefault($default);
-        } catch (DataValidationException $ex) {
-            $errors[] = 'Default value failed to validate: '. $ex->getMessage ();
+    if (@$config['set_default']) {
+        // Non-empty defaults make no sense for password or file columns
+        if ($col instanceof PasswordColumn or $col instanceof FileColumn) {
+            $col->setDefault('');
+        } else {
+            try {
+                $dummy = null;
+                $values = $col->collateInput($config['sql_default'], $dummy);
+                $default = reset($values);
+                $col->setDefault($default);
+            } catch (DataValidationException $ex) {
+                $err = 'Default value failed to validate: ' . $ex->getMessage();
+                $errors[] = $err;
+            }
         }
     }
     
