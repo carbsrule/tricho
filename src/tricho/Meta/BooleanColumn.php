@@ -7,14 +7,24 @@
 
 namespace Tricho\Meta;
 
+use DOMElement;
+use InvalidArgumentException;
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
+
 
 /**
  * Stores meta-data about a column that stores a boolean value (0 or 1)
  * @package meta_xml
  */
 class BooleanColumn extends Column {
+    /**
+     * Text choices to specify for radio buttons.
+     * Otherwise a checkbox will be used.
+     * The array indexes (0 and 1) are the values which will be saved
+     * e.g. ['No', 'Yes']
+     */
+    protected $choices = [];
     
     function __construct ($name, $table = null) {
         parent::__construct ($name, $table);
@@ -34,17 +44,20 @@ class BooleanColumn extends Column {
         if ($type == 'BIT') array_remove('UNSIGNED', $this->sql_attributes);
     }
     
+    function setChoices(array $choices) {
+        if (!in_array(count($choices), [0, 2])) {
+            throw new InvalidArgumentException('Must contain 0 or 2 elements');
+        }
+        if (count($choices) == 2) {
+            if (!isset($choices[0]) or !isset($choices[1])) {
+                throw new InvalidArgumentException('Must be a numerically-indexed array');
+            }
+        }
+        $this->choices = $choices;
+    }
     
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
-        
-        // TODO: support other representations, e.g. radio buttons 'Yes' and 'No'
-        $params = array(
-            'type' => 'checkbox',
-            'name' => $this->name,
-            'id' => $form->getFieldId(),
-            'value' => 1
-        );
         
         $default = $this->getDefault();
         
@@ -55,6 +68,58 @@ class BooleanColumn extends Column {
         
         if ($input_value === '' and $default != '') $input_value = $default;
         if ($input_value != '' and $input_value != '0') $input_value = '1';
+        
+        // Use radio buttons if text choices specified
+        if (count($this->choices) == 2) {
+            $sibling = $p->previousSibling;
+            while ($sibling and (!($sibling instanceof DOMElement) or $sibling->tagName != 'p')) {
+                $sibling = $sibling->previousSibling;
+            }
+            
+            if ($sibling) {
+                $labels = $sibling->getElementsByTagName('label');
+                if ($labels->length > 0) {
+                    HtmlDom::removeWrapper($labels->item(0));
+                }
+            }
+            
+            // Allow canonical order of 0,1 or irregular 1,0
+            $choices = $this->choices;
+            reset($choices);
+            list($val, $label_text) = each($choices);
+            
+            $id0 = $form->getFieldId();
+            $params = [
+                'type' => 'radio',
+                'name' => $this->name,
+                'value' => $val,
+                'id' => $id0,
+            ];
+            if ($input_value == $val) $params['checked'] = 'checked';
+            HtmlDom::appendNewChild($p, 'input', $params);
+            $label = HtmlDom::appendNewChild($p, 'label', ['for' => $id0]);
+            HtmlDom::appendNewText($label, $label_text);
+            
+            list($val, $label_text) = each($choices);
+            
+            $form->incrementFieldNum();
+            $id1 = $form->getFieldId();
+            $params['id'] = $id1;
+            $params['value'] = $val;
+            unset($params['checked']);
+            if ($input_value == $val) $params['checked'] = 'checked';
+            HtmlDom::appendNewChild($p, 'input', $params);
+            $label = HtmlDom::appendNewChild($p, 'label', ['for' => $id1]);
+            HtmlDom::appendNewText($label, $label_text);
+            return;
+        }
+        
+        $params = [
+            'type' => 'checkbox',
+            'name' => $this->name,
+            'id' => $form->getFieldId(),
+            'value' => 1
+        ];
         if ($input_value == '1') {
             $params['checked'] = 'checked';
         }
