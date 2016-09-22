@@ -284,6 +284,7 @@ abstract class TemporalColumn extends Column {
             );
             if ($input_value != '') {
                 $attrs['value'] = str_pad($y, 4, '0', STR_PAD_LEFT);
+                if ($attrs['value'] == '0000') $attrs['value'] = '';
             }
             HtmlDom::appendNewChild($p, 'input', $attrs);
             
