@@ -16,6 +16,7 @@ Runtime::set('live', false);
 Runtime::set('master_salt', 'dummy');
 Runtime::set('sql_slow_log', false);
 Runtime::set('sql_error_log', false);
+require 'runtime_defaults.php';
 
 require 'constants.php';
 require 'functions_base.php';
