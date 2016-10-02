@@ -278,6 +278,8 @@ abstract class DbConn implements DbConnValidator {
     function quote($datum) {
         if ($datum instanceof Table or $datum instanceof Column) {
             return $this->quote_ident($datum);
+        } else if ($datum === null) {
+            return 'NULL';
         }
         return $this->conn->quote($datum);
     }
