@@ -966,9 +966,11 @@ function array_value_replace ($input, $replacements) {
 function get_proto_host () {
     if (is_https ()) {
         $protocol = 'https://';
+        if (!isset($_SERVER['SERVER_PORT'])) $_SERVER['SERVER_PORT'] = 443;
         $port = ($_SERVER['SERVER_PORT'] == 443? '': ':'. $_SERVER['SERVER_PORT']);
     } else {
         $protocol = 'http://';
+        if (!isset($_SERVER['SERVER_PORT'])) $_SERVER['SERVER_PORT'] = 80;
         $port = ($_SERVER['SERVER_PORT'] == 80? '': ':'. $_SERVER['SERVER_PORT']);
     }
     return "{$protocol}{$_SERVER['SERVER_NAME']}{$port}";
