@@ -295,7 +295,7 @@ abstract class Column implements QueryField, ColumnInterface {
         
         // Parse and set default value
         $matches = array ();
-        preg_match ("/default +(NULL|-?[0-9]+(\.[0-9]+)?|'(\\\\'|[^\\'])+'){1}/i", $str, $matches);
+        preg_match ("/default +(NULL|-?[0-9]+(\.[0-9]+)?|'(\\\\'|[^\\'])*'){1}/i", $str, $matches);
         if (isset ($matches[1])) {
             $default_value = $matches[1];
             $str = trim(substr($str, strlen($default_value)));
