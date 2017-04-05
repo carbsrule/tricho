@@ -595,16 +595,39 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
     
     // try to get the old image, or throw an exception
     if ($debug) echo "Getting old image data... ";
-    if ($old_img = @imagecreatefromjpeg ($old_loc)) {
-        if ($debug) echo "JPEG<br>\n";
+
+    $type = mime_content_type($old_loc);
+
+    if (substr($type, 0, 6) !== 'image/') {
+        return false;
+    }
+
+    $type = strtolower(substr($type, 6));
+    if ($type == 'pjpeg') $type = 'jpeg';
+
+    $format = $type;
+
+    if ($debug) echo "type: {$type}<br>\n";
+
+    $old_img = false;
+    switch ($type) {
+    case 'jpeg':
+        $old_img = imagecreatefromjpeg($old_loc);
         $format = 'jpg';
-    } else if ($old_img = @imagecreatefrompng ($old_loc)) {
-        if ($debug) echo "PNG<br>\n";
-        $format = 'png';
-    } else if ($old_img = @imagecreatefromgif ($old_loc)) {
-        if ($debug) echo "GIF<br>\n";
-        $format = 'gif';
-    } else {
+        break;
+
+    case 'png':
+        $old_img = imagecreatefrompng($old_loc);
+        break;
+
+    case 'gif':
+        $old_img = imagecreatefromgif($old_loc);
+        break;
+
+    default:
+    }
+
+    if (!$old_img) {
         $gd_info = gd_info();
         $formats = array();
         if ($gd_info['PNG Support']) $formats[] = 'PNG';
