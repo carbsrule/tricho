@@ -2104,12 +2104,18 @@ function array_remove($needle, array &$haystack, $strict = false) {
 
 
 function url_append_param($url, $name, $value) {
+    @list($url, $post_hash) = explode('#', $url);
     if (strpos($url, '?') !== false) {
         $url .= '&';
     } else {
         $url .= '?';
     }
     $url .= urlencode($name) . '=' . urlencode($value);
+
+    if ($post_hash) {
+        $url .= '#' . $post_hash;
+    }
+
     return $url;
 }
 
