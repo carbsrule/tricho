@@ -38,6 +38,18 @@ class LinkColumn extends Column {
         $this->target = $target;
     }
     
+    /**
+     * Gets the table which the target column belongs to
+     *
+     * This is shorthand for ->getTarget()->getTable()
+     *
+     * @return Table|null
+     */
+    function getTargetTable()
+    {
+        return $this->target->getTable();
+    }
+
     
     function isParentLink() {
         return $this->is_parent;
