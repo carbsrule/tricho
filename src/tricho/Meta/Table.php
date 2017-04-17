@@ -2034,13 +2034,15 @@ class Table implements QueryTable {
             $tables = $this->database->getTables ();
             foreach ($tables as $table) {
                 $links = $table->getLinks ();
+
+                // TODO: rewrite this to work with <LinkColumn>s
                 foreach ($links as $link) {
                     // check to
-                    if ($link->getToColumn() === $rem_col) {
-                        $link->getFromColumn ()->setLink (null);
-                        $_SESSION['setup']['warn'][] = "Link from {$link->getFromColumn ()->getTable ()->getName ()}.{$link->getFromColumn ()->getName ()} has been severed due to link to column being removed";
+                    if ($link->getTarget() === $rem_col) {
+                        $link->setTarget(null);
+                        $_SESSION['setup']['warn'][] = "Link from {$link->getTable()->getName()}.{$link->getName()} has been severed due to link to column being removed";
                         
-                    } else {
+                    } else if (method_exists($link, 'getDescription')) {
                         // check desc
                         $desc = $link->getDescription ();
                         foreach ($desc as $index => $item) {
