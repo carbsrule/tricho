@@ -617,7 +617,7 @@ abstract class Column implements QueryField, ColumnInterface {
      * @deprecated just do instanceof LinkColumn
      */
     function hasLink () {
-        if (!($this instanceof LinkColumn) or $this->getLink () == null) {
+        if (!($this instanceof LinkColumn) or $this->getTarget() == null) {
             return false;
         } else {
             return true;
