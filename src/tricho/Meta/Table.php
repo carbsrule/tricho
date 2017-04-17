@@ -1447,13 +1447,13 @@ class Table implements QueryTable {
     
     /**
      * Returns all links that are made from columns on this table
-     * @return array of {@link Link} objects.
+     * @return array of {@link LinkColumn} objects.
      */
     function getLinks () {
         $links = array ();
         foreach ($this->columns as $column) {
-            if ($column->hasLink ()) {
-                $links[] = $column->getLink ();
+            if ($column instanceof LinkColumn) {
+                $links[] = $column;
             }
         }
         return $links;
@@ -1787,8 +1787,8 @@ class Table implements QueryTable {
     function getParent ($table_name) {
         $links = $this->getLinks ();
         foreach ($links as $link) {
-            if ($link->isParent ()) {
-                $linked_table = $link->getToTable ();
+            if ($link->isParentLink()) {
+                $linked_table = $link->getTargetTable();
                 if ($linked_table->getName () == $table_name) return $linked_table;
             }
         }
