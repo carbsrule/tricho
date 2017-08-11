@@ -486,7 +486,9 @@ class ImageColumn extends FileColumn {
             if ($original_value instanceof UploadedFile) {
                 return array ($this->name => $original_value);
             }
-            return array ();
+            if (!$this->isNullAllowed()) {
+                return [$this->name => ''];
+            }
         }
         return array ();
     }
