@@ -170,7 +170,7 @@ function email_error ($info) {
     
     // If the error was produced by a call to execq, the error is really where execq
     // was called, not the code inside execq
-    if ($backtrace[0]['function'] == 'execq') {
+    if (@$backtrace[0]['function'] == 'execq') {
         $line = $backtrace[0]['line'];
         $file = $backtrace[0]['file'];
         array_shift ($backtrace);
@@ -180,7 +180,7 @@ function email_error ($info) {
     $backtrace = create_backtrace_string ($backtrace);
     
     // Scripts run in a shell-type environment
-    if ($_SERVER['SERVER_NAME'] == '') {
+    if (PHP_SAPI == 'cli') {
         
         $uname = posix_uname ();
         $message .= "This error occurred on {$uname['nodename']}, on line {$line} of\n{$file}";
@@ -194,7 +194,7 @@ function email_error ($info) {
         // Determine the full url of the script that called the file
         $proto_host = get_proto_host ();
         $full_url = $proto_host. $_SERVER['SCRIPT_NAME'].
-            ($_SERVER['QUERY_STRING'] != ''? '?'. $_SERVER['QUERY_STRING']: '');
+            (@$_SERVER['QUERY_STRING'] != ''? '?'. $_SERVER['QUERY_STRING']: '');
         
         // Output the message
         $message .= "This error occurred on line {$line} of";
@@ -202,7 +202,7 @@ function email_error ($info) {
             $message .= ' '. str_replace (ROOT_PATH_FILE, ROOT_PATH_WEB, $file). ', called by';
         }
         $message .= "\n{$full_url}";
-        if (substr ($_SERVER['REQUEST_URI'], 0, strlen ($_SERVER['SCRIPT_NAME'])) != $_SERVER['SCRIPT_NAME']) {
+        if (substr(@$_SERVER['REQUEST_URI'], 0, strlen ($_SERVER['SCRIPT_NAME'])) != $_SERVER['SCRIPT_NAME']) {
             $message .= "\nwhich was accessed via:\n". $proto_host. $_SERVER['REQUEST_URI'];
         }
         
