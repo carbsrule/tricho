@@ -613,15 +613,18 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
     switch ($type) {
     case 'jpeg':
         $old_img = imagecreatefromjpeg($old_loc);
+        $num_colours = 0;
         $format = 'jpg';
         break;
 
     case 'png':
         $old_img = imagecreatefrompng($old_loc);
+        if ($old_img) $num_colours = imagecolorstotal($old_img);
         break;
 
     case 'gif':
         $old_img = imagecreatefromgif($old_loc);
+        if ($old_img) $num_colours = imagecolorstotal($old_img);
         break;
 
     default:
@@ -787,7 +790,18 @@ function make_sized_image ($old_loc, $new_loc, $box_width = 0, $box_height = 0, 
         if ($format == 'jpg') {
             if (@imagejpeg ($new_img, $new_loc, $jpeg_quality)) $result = true;
         } else if ($format == 'png') {
-            @imagetruecolortopalette ($new_img, false, 256);
+            if ($num_colours > 0 and $num_colours <= 256) {
+                if ($debug) {
+                    if ($num_colours == 1) {
+                        echo "Indexing 1 colour<br>\n";
+                    } else {
+                        echo "Indexing {$num_colours} colours<br>\n";
+                    }
+                }
+                @imagetruecolortopalette($new_img, false, $num_colours);
+            } else if ($debug) {
+                echo "Retaining true colour<br>\n";
+            }
             if (@imagepng ($new_img, $new_loc)) $result = true;
         } else if ($format == 'gif') {
             @imagetruecolortopalette ($new_img, false, 256);
