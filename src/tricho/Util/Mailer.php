@@ -56,7 +56,7 @@ class Mailer {
      */
     public function __construct() {
         $this->params = array(
-            'WEB_ROOT' => 'http://' . $_SERVER['SERVER_NAME'] . ROOT_PATH_WEB,
+            'WEB_ROOT' => get_proto_host() . ROOT_PATH_WEB,
             'SITE_NAME' => Runtime::get('site_name')
         );
         
