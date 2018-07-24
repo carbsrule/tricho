@@ -90,8 +90,7 @@ class TinymceColumn extends HtmlColumn {
         $js .= "    mode: 'exact',\n";
         $js .= "    elements: '{$this->getPostSafeName()}',\n";
         $js .= "    forced_root_block: 'p',\n";
-        $js .= "    document_base_url: 'http://" . $_SERVER['SERVER_NAME'] .
-            ROOT_PATH_WEB . "',\n";
+        $js .= "    document_base_url: '" . get_proto_host() . ROOT_PATH_WEB . "',\n";
         $js .= "    plugins: '" .
             (defined('TINYMCE_PLUGINS')? TINYMCE_PLUGINS: '') . "',\n";
         $js .= "    content_css: '" . ROOT_PATH_WEB . "tinymce/content.css',\n";

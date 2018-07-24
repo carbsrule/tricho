@@ -19,7 +19,7 @@ function init_tinymce ($tinymce_fields) {
             echo "    mode: 'exact',\n";
             echo "    elements: '{$tinymce_field->getName ()}',\n";
             echo "    forced_root_block: 'p',\n";
-            echo "    document_base_url: 'http://", $_SERVER['SERVER_NAME']. ROOT_PATH_WEB, "',\n";
+            echo "    document_base_url: '", get_proto_host(), ROOT_PATH_WEB, "',\n";
             echo "    plugins: '", (defined ('TINYMCE_PLUGINS')? TINYMCE_PLUGINS: ''), "',\n";
             echo "    content_css: '", ROOT_PATH_WEB, "tinymce/content.css',\n";
             echo "    spellchecker_languages: '+English=en',\n";
