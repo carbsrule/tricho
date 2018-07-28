@@ -211,7 +211,9 @@ function table_create_list_columns ($columns, $curr_col = 0) {
         
         $sql_defn = $col['sqltype'];
         if ($col['sql_size'] != '') $sql_defn .= '('. $col['sql_size']. ')';
-        if (count ($col['sql_attribs']) > 0) $sql_defn .= ' '. implode (' ', $col['sql_attribs']);
+        if (count(@$col['sql_attribs']) > 0) {
+            $sql_defn .= ' '. implode (' ', $col['sql_attribs']);
+        }
         
         echo "<tr><td>$id</td>\n";
         echo "<td class=\"mandatory\">\n";

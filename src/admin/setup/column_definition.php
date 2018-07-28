@@ -107,7 +107,7 @@ function column_def_form ($context, $action, $form_action_url, array $config, ar
     );
     
     // ensure the in_array calls for sql attributes don't fail
-    if ($config['sql_attribs'] == null) {
+    if (!isset($config['sql_attribs'])) {
         $config['sql_attribs'] = array ();
     }
     
