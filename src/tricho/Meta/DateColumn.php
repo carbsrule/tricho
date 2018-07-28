@@ -27,33 +27,6 @@ class DateColumn extends TemporalColumn {
     }
     
     
-    /**
-     * Sets the mandatory status for a date.
-     * A false value is ignored; while a true value will set the 'required'
-     * attribute for each part (D, M, Y) to be true.
-     * @param bool $bool
-     */
-    function setMandatory($bool) {
-        $this->mandatory = false;
-        if (!$bool) return;
-        
-        $this->year_required = true;
-        $this->month_required = true;
-        $this->day_required = true;
-    }
-    
-    /**
-     * Determines if this field is mandatory.
-     * @return bool True if all parts (D, M, Y) are required
-     */
-    function isMandatory() {
-        if (!$this->year_required) return false;
-        if (!$this->month_required) return false;
-        if (!$this->day_required) return false;
-        return true;
-    }
-    
-    
     function toXMLNode(DOMDocument $doc) {
         $node = parent::toXMLNode($doc);
         

@@ -93,129 +93,215 @@ abstract class TemporalColumn extends Column {
     }
     
     function collateInput ($input, &$original_value) {
-        $y = $m = $d = $hr = $min = $sec = 0;
+        // Convert string (e.g. from database source) to expected array
         if (is_string($input)) {
-            $input = trim($input);
+            $str = trim($input);
+            $input = [];
             if ($this->has_date and $this->has_time) {
-                @list($date, $time) = explode(' ', $input);
+                @list($date, $time) = explode(' ', $str);
             } else if ($this->has_date) {
-                $date = $input;
+                $date = $str;
             } else {
-                $time = $input;
+                $time = $str;
             }
             if ($this->has_date) {
-                @list($y, $m, $d) = @explode('-', $date);
+                $parts = @explode('-', $date);
+                $input['y'] = @$parts[0];
+                $input['m'] = @$parts[1];
+                $input['d'] = @$parts[2];
             }
             if ($this->has_time) {
-                @list($hr, $min, $sec) = @explode(':', $time);
+                $parts = @explode(':', $time);
                 $ap = 'AM';
-                $int_hr = (int) $hr;
-                if ($int_hr >= 12) {
+                $hr = (int) @$parts[0];
+                if ($hr >= 12) {
                     $ap = 'PM';
-                    if ($int_hr > 12) $hr -= 12;
-                } else if ($int_hr == 0) {
+                    if ($hr > 12) $hr -= 12;
+                } else if ($hr == 0) {
                     $hr = 12;
                 }
+                $min = (int) @$parts[1];
+                $input['t'] = implode(':', [$hr, $min]);
             }
-        } else {
-            $y = @$input['y'];
-            $m = @$input['m'];
-            $d = @$input['d'];
-            $ap = @$input['ap'];
-            @list($hr, $min, $sec) = explode(':', @$input['t']);
         }
+
+        // Do actual validation/collation
+        if ($this->has_date and $this->has_time) {
+            $original_date = '';
+            $original_time = '';
+            $errors = [];
+            try {
+                $date = $this->collateDate($input, $original_date);
+            } catch (ValidationException $ex) {
+                $errors[] = $ex->getMessage();
+            }
+            try {
+                $time = $this->collateTime($input, $original_time);
+            } catch (ValidationException $ex) {
+                $errors[] = $ex->getMessage();
+            }
+
+            if ($original_date === null and $original_time === null) {
+                $original_value = null;
+            } else {
+                $original_value = "{$original_date} {$original_time}";
+            }
+            if (count($errors) > 0) {
+                throw new ValidationException(implode('; ', $errors));
+            }
+
+            if ($date === null and $time === null) {
+                $value = null;
+            } else {
+                if ($date === null) $date = '0000-00-00';
+                if ($time === null) $time = '00:00:00';
+
+                if ($this->sqltype == 'INT') {
+                    // UN*X timestamp
+                    @list($y, $m, $d) = explode('-', $time);
+                    @list($hr, $min, $sec) = explode(':', $time);
+                    $value = mktime($hr, $min, $sec, $m, $d, $y);
+                } else {
+                    $value = "{$date} {$time}";
+                }
+            }
+        } else if ($this->has_date) {
+            $value = $this->collateDate($input, $original_value);
+        } else {
+            $value = $this->collateTime($input, $original_value);
+        }
+        return [$this->name => $value];
+    }
+
+
+    /**
+     * Collate a date field into either YYYY-MM-DD or NULL
+     * @param array $input
+     * @param string $original_value
+     * @return string|null
+     */
+    protected function collateDate(array $input, &$original_value)
+    {
+        $y = @$input['y'];
+        $m = @$input['m'];
+        $d = @$input['d'];
+
+        if ($y == '' and $m == '' and $d == '') {
+            $original_value = null;
+
+            if ($this->isMandatory()) {
+                throw new DataValidationException('Required field');
+            }
+            if ($this->isNullAllowed()) {
+                $value = null;
+            } else {
+                $value = '0000-00-00';
+            }
+            return $value;
+        }
+
         $y = self::non_neg($y);
         $m = self::non_neg($m);
         $d = self::non_neg($d);
-        $hr = self::non_neg($hr);
-        $min = self::non_neg($min);
-        $sec = self::non_neg($sec);
-        if ($this->has_date) {
-            $date = str_pad($y, 4, '0', STR_PAD_LEFT) . '-' .
-                str_pad($m, 2, '0', STR_PAD_LEFT) . '-' .
-                str_pad($d, 2, '0', STR_PAD_LEFT);
-        }
-        if ($this->has_time) {
-            if ($ap == 'PM') {
-                if ($hr < 12) $hr += 12;
-            } else if ($ap == 'AM') {
-                if ($hr == 12) $hr = 0;
+
+        $original_value = "{$y}-{$m}-{$d}";
+
+        $min_year = $this->min_year;
+        $max_year = $this->max_year;
+        $mods = ['+', '-'];
+        if (in_array($min_year[0], $mods)) $min_year += (int) date('Y');
+        if (in_array($max_year[0], $mods)) $max_year += (int) date('Y');
+        $min_year = (int) $min_year;
+        $max_year = (int) $max_year;
+
+        if ($y < $min_year or $y > $max_year) {
+            if ($this->year_required or $y != 0) {
+                $err = "Out of allowed year range";
+                $err .= " ({$min_year} to {$max_year})";
+                throw new DataValidationException($err);
             }
-            $time = str_pad($hr, 2, '0', STR_PAD_LEFT) . ':' .
-                str_pad($min, 2, '0', STR_PAD_LEFT) . ':' .
-                str_pad($sec, 2, '0', STR_PAD_LEFT);
         }
-        
-        if ($this->has_date and $this->has_time) {
-            $value = "{$date} {$time}";
-        } else if ($this->has_date) {
-            $value = $date;
+        if ($m < 1 or $m > 12) {
+            if ($m != 0 or $this->month_required) {
+                throw new DataValidationException("Invalid month");
+            }
+        }
+
+        if ($m == 0) {
+            $max_d = 31;
         } else {
-            $value = $time;
+            $month_check = gmmktime(12, 0, 0, $m, 1, $y);
+            $max_d = (int) gmdate('t', $month_check);
+
+            // MySQL doesn't allow 0000-02-29
+            if ($y == 0 and $m == 2) $max_d = 28;
         }
-        $original_value = $value;
-        
-        if ($this->has_date) {
-            $min_year = $this->min_year;
-            $max_year = $this->max_year;
-            $mods = array('+', '-');
-            if (in_array($min_year[0], $mods)) $min_year += (int) date('Y');
-            if (in_array($max_year[0], $mods)) $max_year += (int) date('Y');
-            $min_year = (int) $min_year;
-            $max_year = (int) $max_year;
-            
-            if ($y < $min_year or $y > $max_year) {
-                if ($this->mandatory or (int) $y != 0) {
-                    $err = "Out of allowed year range";
-                    $err .= " ({$min_year} to {$max_year})";
-                    throw new DataValidationException($err);
-                }
-            }
-            if ($m < 1 or $m > 12) {
-                if ($m != 0 or $this->month_required) {
-                    throw new DataValidationException("Invalid month");
-                }
-            }
-            
-            if ($m == 0) {
-                $max_d = 31;
-            } else {
-                $month_check = gmmktime(12, 0, 0, $m, 1, $y);
-                $max_d = (int) gmdate('t', $month_check);
-                
-                // MySQL doesn't allow 0000-02-29
-                if ($y == 0 and $m == 2) $max_d = 28;
-            }
-            if ($d < 1 or $d > $max_d) {
-                if ($d != 0 or $this->day_required) {
-                    throw new DataValidationException("Invalid day");
-                }
+        if ($d < 1 or $d > $max_d) {
+            if ($d != 0 or $this->day_required) {
+                throw new DataValidationException("Invalid day");
             }
         }
-        if ($this->has_time) {
-            if ($ap != 'AM' and $ap != 'PM') {
-                throw new DataValidationException('AM/PM not selected');
-            }
-            if ($hr < 0 or $hr > 23) {
-                throw new DataValidationException("Invalid hour");
-            }
-            if ($min < 0 or $min > 59) {
-                throw new DataValidationException("Invalid minute");
-            }
-            if ($sec < 0 or $sec > 59) {
-                throw new DataValidationException("Invalid second");
-            }
-        }
-        
-        // Un*x timestamp (only valid for DatetimeColumn)
-        if ($this->sqltype == 'INT') {
-            $value = mktime($hr, $min, $sec, $m, $d, $y);
-        }
-        
-        return array($this->name => $value);
+
+        return str_pad($y, 4, '0', STR_PAD_LEFT) . '-' .
+            str_pad($m, 2, '0', STR_PAD_LEFT) . '-' .
+            str_pad($d, 2, '0', STR_PAD_LEFT);
     }
-    
-    
+
+
+    /**
+     * Collate a time field into either hh:mm:ss or NULL
+     * @param array $input
+     * @param string $original_value
+     * @return string|null
+     */
+    protected function collateTime(array $input, &$original_value)
+    {
+        $hr_min = (string) $input['t'];
+        $ap = @$input['ap'];
+
+        $original_value = $hr_min;
+        if ($hr_min == '') {
+            $original_value = null;
+            if ($this->isNullAllowed()) {
+                return null;
+            } else if ($this->isMandatory()) {
+                throw new DataValidationException('Time required');
+            }
+            $hr_min = '00:00:00';
+        }
+
+        @list($hr, $min, $sec) = explode(':', $hr_min);
+
+        $hr = (int) $hr;
+        $min = (int) $min;
+        $sec = (int) $sec;
+
+        if ($ap != 'AM' and $ap != 'PM') {
+            throw new DataValidationException('AM/PM not selected');
+        }
+        if ($hr < 0 or $hr > 23) {
+            throw new DataValidationException('Invalid hour');
+        }
+        if ($min < 0 or $min > 59) {
+            throw new DataValidationException('Invalid minute');
+        }
+        if ($sec < 0 or $sec > 59) {
+            throw new DataValidationException('Invalid second');
+        }
+
+        if ($ap == 'PM' and $hr != 12) {
+            $hr += 12;
+        }
+
+        $time = str_pad($hr, 2, '0', STR_PAD_LEFT) . ':' .
+            str_pad($min, 2, '0', STR_PAD_LEFT) . ':' .
+            str_pad($sec, 2, '0', STR_PAD_LEFT);
+
+        $original_value = $time;
+        return $time;
+    }
+
+
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         static $months = array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
             5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep',
