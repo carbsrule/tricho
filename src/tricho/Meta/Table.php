@@ -14,19 +14,15 @@ use LogicException;
 use QueryException;
 
 use Tricho\Runtime;
-use Tricho\DataUi\Form;
 use Tricho\Meta;
 use Tricho\Meta\FileColumn;
 use Tricho\Query\AliasedTable;
-use Tricho\Query\DateTimeQueryColumn;
-use Tricho\Query\LogicConditionNode;
-use Tricho\Query\LogicTree;
-use Tricho\Query\QueryJoin;
+use Tricho\Query\IdentifierQuery;
 use Tricho\Query\QueryFieldLiteral;
 use Tricho\Query\QueryTable;
 use Tricho\Query\RawQuery;
-use Tricho\Query\SelectQuery;
 use Tricho\Util\HtmlDom;
+
 
 /**
  * Stores meta-data about a database table
@@ -2315,178 +2311,28 @@ class Table implements QueryTable {
      * 
      * @param array $primary_key Array of column_name => value for the primary
      *        key value
-     * @author Josh 2007-07-17
-     * @author Benno added support for multiple links to the same table, date
-     *         formatting
-     * @author Josh 2009-03-12, fixed a bug when there are no columns in the
-     *         identifier.
      * @return string The identifier string
      */
-    function buildIdentifier ($primary_key) {
-        // empty identifier
+    function buildIdentifier($primary_key)
+    {
         if (count($this->row_identifier) == 0) {
             return '';
         }
-        
-        $handler = new SelectQuery ($this);
-        
-        if (defined ('UPPER_CASE_AM_PM') and UPPER_CASE_AM_PM === true) {
-            $lc_am_pm = false;
-        } else {
-            $lc_am_pm = true;
+
+        $q = new IdentifierQuery($this);
+        $where = $q->getWhere();
+        $base_table = $q->getBaseTable();
+        foreach ($primary_key as $col_name => $raw_val) {
+            $col = $base_table->get($col_name);
+            $val = new QueryFieldLiteral($raw_val);
+            $where->addNewCondition($col, LOGIC_CONDITION_EQ, $val);
         }
-        
-        // determine what we need
-        $joined_tables = array ();
-        foreach ($this->row_identifier as $item) {
-            if ($item instanceof Column) {
-                
-                // dates get proper formatting
-                if ($item instanceof DateColumn) {
-                    $format = '%d/%m/%Y';
-                    $col = new DateTimeQueryColumn ($base_table, $item->getName ());
-                    $col->setDateFormat ($format);
-                
-                // links get the appropriate JOINs
-                } else if ($item instanceof LinkColumn) {
-                    
-                    $to_col = $item->getLink ()->getToColumn ();
-                    
-                    // create the on clause for the join to the linked table
-                    $join_table_name = $to_col->getTable ()->getName ();
-                    $join_table = new QueryTable ($join_table_name);
-                    
-                    $logic = new LogicTree ();
-                    $cond = new LogicConditionNode (
-                        new QueryColumn ($base_table, $item->getName ()),
-                        LOGIC_CONDITION_EQ,
-                        new QueryColumn ($join_table, $to_col->getName ())
-                    );
-                    $logic->addCondition ($cond);
-                    
-                    // create the join
-                    
-                    // auto-generate alias for linked table
-                    $alias_num = 1;
-                    $existing_joins = $handler->getAllJoins ();
-                    
-                    if (count($existing_joins) > 0) {
-                        foreach ($existing_joins as $join) {
-                            
-                            // find all numeric aliases, and use max(alias number) + 1 as alias number for new join
-                            // also record any existing joins that don't have aliases, so they can have aliases applied
-                            if ($join->getTable ()->getName () == $join_table_name) {
-                                $existing_alias = $join->getTable ()->getAlias ();
-                                if ($existing_alias != '') {
-                                    
-                                    $regex_matches = array ();
-                                    preg_match (
-                                        '/^'. preg_quote ($join_table_name). '([0-9]*)/',
-                                        $existing_alias,
-                                        $regex_matches
-                                    );
-                                    if ($alias_num <= $regex_matches[1]) {
-                                        $alias_num = (int) $regex_matches[1] + 1;
-                                    } else {
-                                        echo "!{$alias_num} <= {$regex_matches[1]}<br>\n";
-                                    }
-                                    
-                                } else {
-                                    $join->getTable ()->setAlias ($join_table_name. $alias_num++);
-                                }
-                            }
-                        }
-                    }
-                    
-                    $join_table_alias = $join_table_name. $alias_num;
-                    $join_table->setAlias ($join_table_alias);
-                    
-                    $join = new QueryJoin ($join_table, $logic);
-                    $handler->addJoin ($join);
-                    $joined_tables[] = $to_col->getTable ()->getName ();
-                    
-                    // get the query for this column, and change the alias to be useful
-                    $link_query = $item->getChooserQuery ($join_table_alias);
-                    $col = $link_query->getSelectFieldByAlias ('val');
-                    $col->setAlias ($item->getName ());
-                    
-                    // add all the joins from the chooser query
-                    $joins = $link_query->getAllJoins ();
-                    foreach ($joins as $join) {
-                        $handler->addJoin ($join);
-                        $joined_tables[] = $join->getTable ()->getName ();
-                    }
-                
-                // binary columns are processed as 'Y', 'N', or 'unknown'
-                } else if ($item instanceof BooleanColumn) {
-                    
-                    $col = new QueryFieldLiteral (
-                        "IF(`{$item->getName ()}` <=> 1, 'Y', IF(`{$item->getName ()}` <=> 0, 'N', 'unknown')) ".
-                            "AS `{$item->getName ()}`",
-                        false
-                    );
-                    
-                // regular columns
-                } else {
-                    
-                    $col = $item;
-                }
-                $handler->addSelectField ($col);
-            }
-        }
-        
-        
-        // There may be a case where the identifier does not have any columns
-        // If thats the case, don't do anything more with this query handler - just skip straight to
-        // the code that actually creates the identifier.
-        if (count ($handler->getSelectFields()) > 0) {
-            
-            // build where clause
-            $logic_tree = $handler->getWhere ();
-            foreach ($primary_key as $name => $value) {
-                
-                if (preg_match ('/^[0-9]+$/', cast_to_string ($value))) {
-                    $escape_literal = false;
-                } else {
-                    $escape_literal = true;
-                }
-                
-                $cond = new LogicConditionNode (
-                    $this->get($name),
-                    LOGIC_CONDITION_EQ,
-                    new QueryFieldLiteral ($value, $escape_literal)
-                );
-                
-                $logic_tree->addCondition ($cond, LOGIC_TREE_AND);
-            }
-            
-            $handler->setLimit (1);
-            
-            // final query build
-            $q = cast_to_string ($handler);
-            if (@$_SESSION['setup']['view_q']) {
-                echo "<pre>[id] q: {$q}</pre>";
-            }
-            
-            // query execute
-            $res = execq($q);
-            $row = fetch_assoc($res);
-        }
-        
-        
-        // build output
-        $output = '';
-        foreach ($this->row_identifier as $item) {
-            if ($item instanceof Column) {
-                $output .= $row[$item->getName ()];
-            } else {
-                $output .= cast_to_string ($item);
-            }
-        }
-        
-        return $output;
+        $res = execq($q);
+        $row = fetch_row($res);
+        return $row[0];
     }
-    
+
+
     /**
      * Add an index (eg the primary key) for this table.
      *
