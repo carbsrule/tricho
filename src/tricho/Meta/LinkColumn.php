@@ -14,11 +14,12 @@ use DataValidationException;
 use Tricho\DataUi\Form;
 use Tricho\Util\HtmlDom;
 use Tricho\Query\AliasedColumn;
+use Tricho\Query\IdentifierQuery;
 use Tricho\Query\LogicConditionNode;
 use Tricho\Query\OrderColumn;
 use Tricho\Query\QueryFieldLiteral;
-use Tricho\Query\QueryFunction;
 use Tricho\Query\SelectQuery;
+
 
 /**
  * Stores meta-data about a column that uses a text or textarea input field
@@ -150,36 +151,23 @@ class LinkColumn extends Column {
         $this->target = $col;
         $this->sql_collation = $col->sql_collation;
     }
-    
-    
-    function getSelectQuery() {
+
+
+    function getSelectQuery()
+    {
         $target_table = $this->target->getTable();
-        $q = new SelectQuery($target_table);
+
+        $q = new IdentifierQuery($target_table);
         $id_col = new AliasedColumn($target_table, $this->target, 'ID');
         $q->addSelectField($id_col);
-        
-        $func = false;
-        $ident = $target_table->getRowIdentifier();
-        if (count($ident) > 0) {
-            $func = new QueryFunction('CONCAT');
-            $func->setAlias('Value');
-            foreach ($ident as $part) {
-                if ($part instanceof Column) {
-                    $null_func = new QueryFunction('IFNULL', array($part, '?'));
-                    $func->addParam($null_func);
-                } else {
-                    $func->addParam(new QueryFieldLiteral($part));
-                }
-            }
-        }
-        if ($func) {
-            $q->addSelectField($func);
-            $q->addOrderBy(new OrderColumn($func));
-        }
+
+        $order_column = new OrderColumn($q->getSelectFieldByAlias('Value'));
+        $q->addOrderBy($order_column);
+
         return $q;
     }
-    
-    
+
+
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
         

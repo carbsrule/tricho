@@ -21,6 +21,7 @@ class IdentifierQuery extends SelectQuery
         parent::__construct($table);
 
         $this->ident = new QueryFunction('CONCAT', []);
+        $this->ident->setAlias('Value');
         $this->addTable($table);
         $this->addSelectField($this->ident);
     }
