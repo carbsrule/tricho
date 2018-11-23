@@ -88,8 +88,8 @@ class EnumColumn extends Column {
         $max = count($config['choices']) + 3;
         if ($max < 5) $max = 5;
         reset($config['choices']);
+        $choice = current($config['choices']);
         for ($i = 0; $i < $max; ++$i) {
-            list($junk, $choice) = each($config['choices']);
             $value = $choice['value'];
             $label = $choice['label'];
             $fields .= "<p>";
@@ -103,6 +103,8 @@ class EnumColumn extends Column {
             $fields .= " name=\"{$class}_choices[{$i}][label]\"";
             $fields .= ' value="' . hsc($label) . '">';
             $fields .= "</p>\n";
+
+            $choice = next($config['choices']);
         }
         return $fields;
     }

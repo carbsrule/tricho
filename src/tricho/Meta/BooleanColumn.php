@@ -86,7 +86,8 @@ class BooleanColumn extends Column {
             // Allow canonical order of 0,1 or irregular 1,0
             $choices = $this->choices;
             reset($choices);
-            list($val, $label_text) = each($choices);
+            $label_text = current($choices);
+            $val = key($choices);
             
             $id0 = $form->getFieldId();
             $params = [
@@ -100,7 +101,8 @@ class BooleanColumn extends Column {
             $label = HtmlDom::appendNewChild($p, 'label', ['for' => $id0]);
             HtmlDom::appendNewText($label, $label_text);
             
-            list($val, $label_text) = each($choices);
+            $label_text = next($choices);
+            $val = key($choices);
             
             $form->incrementFieldNum();
             $id1 = $form->getFieldId();

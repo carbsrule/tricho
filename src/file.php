@@ -41,8 +41,12 @@ if ($column == null) {
         $i = 0;
         reset($prim_key_cols);
         reset($file_prim_key_vals);
-        while (list($pk_field_id, $pk_field) = each($prim_key_cols)) {
-            list($var_name, $var_val) = each($file_prim_key_vals);
+        foreach ($prim_key_cols as $pk_field_id => $pk_field) {
+            $var_name = key($file_prim_key_vals);
+            $var_val = current($file_prim_key_vals);
+
+            next($file_prim_key_vals);
+
             if ($i++ > 0) $q .= ' AND ';
             
             $junk = '';

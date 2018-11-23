@@ -45,14 +45,12 @@ if ($_SERVER['QUERY_STRING'] != '') {
 
 // Get the primary key
 $primary_key_cols = $table->getIndex ('PRIMARY KEY');
-$primary_key_values = explode (',', $_GET['id']);
+$primary_key_values = array_reverse(explode(',', $_GET['id']));
 $prim_key_clauses = array ();
 
 if (count($primary_key_cols) == count($primary_key_values)) {
-    reset($primary_key_cols);
-    reset($primary_key_values);
-    while (list($col_id, $col) = each($primary_key_cols)) {
-        list($val_id, $val) = each($primary_key_values);
+    foreach($primary_key_cols as $col_id => $col) {
+        $val = array_pop($primary_key_values);
         
         $old_val = 0;
         try {
