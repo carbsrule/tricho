@@ -933,12 +933,12 @@ class MainTable {
             // commas
             $viewing_records_start = number_format($viewing_records_start);
             $viewing_records_end = number_format($viewing_records_end);
-            $record_count = number_format($record_count);
+            $record_count_formatted = number_format($record_count);
             
             // number per page
             $return_string .= '<form action="main_number_action.php" method="post" class="rs_pagesize">';
             
-            $return_string .= "<span class=\"rs_viewing\">Viewing {$viewing_records_start} - {$viewing_records_end} of {$record_count}</span>";
+            $return_string .= "<span class=\"rs_viewing\">Viewing {$viewing_records_start} - {$viewing_records_end} of {$record_count_formatted}</span>";
             
             $size = strlen (MAIN_VIEW_PER_PAGE_MAX);
             $return_string .= "<input type=\"text\" size=\"{$size}\" maxlength=\"{$size}\" name=\"num\" value=\"{$records_per_page}\">";
