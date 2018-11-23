@@ -108,8 +108,19 @@ class HtmlColumn extends InputColumn {
         $text = HtmlDom::appendNewChild($p, 'textarea', $params);
         HtmlDom::appendNewText($text, $input_value);
     }
-    
-    
+
+
+    function attachValue(Form $form, $value, array $pk) {
+        $doc = $form->getDoc();
+        $form_el = $doc->getElementsByTagName('form')->item(0);
+
+        $fragment = $doc->createDocumentFragment();
+        $fragment->appendXML($value);
+
+        $form_el->appendChild($fragment);
+    }
+
+
     function collateInput($input, &$original_value) {
         $html = '<html><head><meta http-equiv="Content-Type" ' .
             'content="text/html; charset=UTF-8"></head><body>' . $input .

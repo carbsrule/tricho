@@ -129,8 +129,30 @@ class BooleanColumn extends Column {
         // TODO: add onchange event
         HtmlDom::appendNewChild($p, 'input', $params);
     }
-    
-    
+
+
+    /**
+     * Adds a display-only value to a Form (for a non-editable field)
+     *
+     * @param Form $form The form on which to display the value
+     * @param string $value The value to be displayed
+     * @param array $pk The primary key of the row which contains the value
+     * @return void
+     */
+    function attachValue(Form $form, $value, array $pk) {
+        $doc = $form->getDoc();
+        $form_el = $doc->getElementsByTagName('form')->item(0);
+        $p = $doc->createElement('p');
+        $form_el->appendChild($p);
+
+        if (array_key_exists($value, $this->choices)) {
+            HtmlDom::appendNewText($p, $this->choices[$value]);
+        } else {
+            HtmlDom::appendNewText($p, $value);
+        }
+    }
+
+
     function collateInput($input, &$original_value) {
         $value = (int) $input;
         if ($value != 1) $value = 0;

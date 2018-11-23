@@ -229,10 +229,10 @@ class LinkColumn extends Column {
         }
         
         $res = execq($q);
-        $row = fetch_row($res);
+        $row = fetch_assoc($res);
         
         $p = HtmlDom::appendNewChild($form_el, 'p');
-        HtmlDom::appendNewText($p, $row[1]);
+        HtmlDom::appendNewText($p, $row['Value']);
     }
     
     

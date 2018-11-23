@@ -163,8 +163,18 @@ class EnumColumn extends Column {
     function displayValue ($input_value = '') {
         return hsc($this->choices[$input_value]);
     }
-    
-    
+
+
+    function attachValue(Form $form, $value, array $pk)
+    {
+        $doc = $form->getDoc();
+        $form_el = $doc->getElementsByTagName('form')->item(0);
+        $p = $doc->createElement('p');
+        $form_el->appendChild($p);
+        HtmlDom::appendNewText($p, $this->choices[$value]);
+    }
+
+
     function collateInput($input, &$original_value) {
         if (isset($this->choices[$input]) or $input == '') {
             $original_value = $input;
