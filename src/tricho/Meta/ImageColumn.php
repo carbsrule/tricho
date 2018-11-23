@@ -305,7 +305,7 @@ class ImageColumn extends FileColumn {
         $fields .= "<span class=\"fake-td left-col\">Types allowed</span>";
         $fields .= "<span class=\"fake-td\">";
         $types = array('PNG', 'JPEG', 'GIF');
-        if (count(@$config['types_allowed']) > 0) {
+        if (@count($config['types_allowed']) > 0) {
             $allowed_types = $config['types_allowed'];
         } else {
             $allowed_types = $types;
