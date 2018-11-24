@@ -110,14 +110,21 @@ class HtmlColumn extends InputColumn {
     }
 
 
+    /**
+     * @todo Create temp DOMDocument to load in plain HTML? Otherwise any tags
+     *       which don't have closing tags and don't have an XML self-closing
+     *       slash will break the appendXML
+     */
     function attachValue(Form $form, $value, array $pk) {
+        $value = str_replace('<br>', '<br/>', $value);
+
         $doc = $form->getDoc();
         $form_el = $doc->getElementsByTagName('form')->item(0);
 
         $fragment = $doc->createDocumentFragment();
         $fragment->appendXML($value);
 
-        $form_el->appendChild($fragment);
+        @$form_el->appendChild($fragment);
     }
 
 
