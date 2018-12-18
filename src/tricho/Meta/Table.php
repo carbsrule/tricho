@@ -470,7 +470,8 @@ class Table implements QueryTable {
             foreach ($order_item_nodes as $item_node) {
                 $col = $table->get ($item_node->getAttribute ('name'));
                 if ($col) {
-                    $table->addToOrder ('view', $col, $item_node->getAttribute ('DIR'));
+                    $dir = $item_node->getAttribute('dir');
+                    $table->addToOrder('view', $col, $dir);
                 }
             }
         }
