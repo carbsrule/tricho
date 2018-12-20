@@ -504,7 +504,7 @@ function date_change(field) {
     var days = ['Sun', 'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur'];
     var weekday = days[date.getDay()];
     if (weekday == undefined || d <= 0 || m <= 0 || y <= 0) weekday = '';
-    if (days_per_month(m, y) < d) weekday = '';
+    if (weekday && days_per_month(m, y) < d) weekday = '';
     if (weekday) weekday = '(' + weekday + 'day)';
     $p.find('.weekday').html(weekday);
 }
