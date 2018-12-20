@@ -376,7 +376,7 @@ abstract class TemporalColumn extends Column {
             
             $weekday = '';
             if ($y > 0 and $m > 0 and $d > 0) {
-                $weekday = '(' . date('l', time(12, 0, 0, $m, $d, $y)) . ')';
+                $weekday = '(' . date('l', mktime(12, 0, 0, $m, $d, $y)) . ')';
             }
             HtmlDom::appendNewText($p, ' ');
             $span = HtmlDom::appendNewChild($p, 'span', ['class' => 'weekday']);
