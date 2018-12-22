@@ -96,7 +96,9 @@ class BooleanColumn extends Column {
                 'value' => $val,
                 'id' => $id0,
             ];
-            if ($input_value == $val) $params['checked'] = 'checked';
+            if ($input_value !== '' and $input_value == $val) {
+                $params['checked'] = 'checked';
+            }
             HtmlDom::appendNewChild($p, 'input', $params);
             $label = HtmlDom::appendNewChild($p, 'label', ['for' => $id0]);
             HtmlDom::appendNewText($label, $label_text);
@@ -109,7 +111,9 @@ class BooleanColumn extends Column {
             $params['id'] = $id1;
             $params['value'] = $val;
             unset($params['checked']);
-            if ($input_value == $val) $params['checked'] = 'checked';
+            if ($input_value !== '' and $input_value == $val) {
+                $params['checked'] = 'checked';
+            }
             HtmlDom::appendNewChild($p, 'input', $params);
             $label = HtmlDom::appendNewChild($p, 'label', ['for' => $id1]);
             HtmlDom::appendNewText($label, $label_text);
