@@ -900,7 +900,6 @@ function get_unmatched_params($input) {
     $matches = array();
     $result = preg_match_all('/{{([A-Za-z0-9\_\-]+)(\|(.*?))?}}/', $input, $matches, PREG_PATTERN_ORDER);
     
-    if ($result == 0) return null;
+    if ($result == 0) return [];
     return array_unique($matches[1]);
 }
-?>
