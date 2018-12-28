@@ -81,8 +81,8 @@ class AutofillColumn extends LinkColumn {
         $q = $this->getSelectQuery();
         $q->getWhere()->addNewCondition($this->target, '=', $input_value);
         $res = execq($q);
-        $row = fetch_row($res);
-        $name = @$row[1];
+        $row = fetch_assoc($res);
+        $name = @$row['Value'];
         
         $params = [
             'id' => $form->getFieldId() . '_lookup',
