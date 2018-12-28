@@ -168,6 +168,7 @@ class ReturnVal {
     }
     
     function concat ($obj) {
+        $quote = false;
         if ($this->quote or $obj->quote) {
             $quote = true;
         }
