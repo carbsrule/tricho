@@ -158,8 +158,21 @@ class BooleanColumn extends Column {
 
 
     function collateInput($input, &$original_value) {
-        $value = (int) $input;
-        if ($value != 1) $value = 0;
+        if (count($this->choices) == 2) {
+            if ($input !== null) {
+                if (!isset($this->choices[$input])) {
+                    throw new \DataValidationException('Invalid value');
+                }
+                $value = (int) $input;
+            } else {
+                $value = $input;
+            }
+        } else {
+            $value = (int) $input;
+            if ($value != 1) {
+                $value = 0;
+            }
+        }
         $original_value = $value;
         return array($this->name => $value);
     }
