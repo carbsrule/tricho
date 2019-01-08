@@ -84,7 +84,10 @@ if (@is_array ($_POST['field']) and @is_array ($_POST['condition']) and @is_arra
                     $value = $value->getVal ();
                     break;
                 default:
-                    $value = $_POST['val'][$id][0];
+                    $value = $_POST['val'][$id];
+                    if (is_array($value)) {
+                        $value = $value[0];
+                    }
             }
             
             // if value is null, make into a IS NULL;
