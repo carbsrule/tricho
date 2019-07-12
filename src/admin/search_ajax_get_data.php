@@ -35,7 +35,7 @@ $handler = $fromColumn->getSelectQuery();
 $q = cast_to_string($handler);
 
 // output if requested
-if ($_SESSION['setup']['view_q']) {
+if (!empty($_SESSION['setup']['view_q'])) {
     $optionNode = $domDocument->createElement ('query');
     $optionNode->nodeValue = $q;
     $selectNode->appendChild ($optionNode);
