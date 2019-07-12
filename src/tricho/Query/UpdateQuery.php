@@ -81,11 +81,10 @@ class UpdateQuery extends Query {
             if (!is_array($this->pk) or count($this->pk) != count($pk_fields)) {
                 throw new Exception('PK mismatch');
             }
+            $pk_vals = array_combine($pk_fields, $this->pk);
             $field_num = 0;
-            reset($this->pk);
-            foreach ($pk_fields as $field) {
+            foreach ($pk_vals as $field => $value) {
                 if (++$field_num != 1) $q .= ' AND ';
-                list($junk, $value) = each($this->pk);
                 $q .= $conn->quote_ident($field) . ' = ' . $conn->quote($value);
             }
         }
