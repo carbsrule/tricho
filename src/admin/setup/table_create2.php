@@ -38,7 +38,8 @@ if (count($pk_cols) == 0) {
     // if there is only one column, make it the PK
     $auto_worked = false;
     if (count($columns) == 1) {
-        $pk_cols[] = $columns[0]['name'];
+        $first_col = reset($columns);
+        $pk_cols[] = $first_col['name'];
         $auto_worked = true;
     }
     
