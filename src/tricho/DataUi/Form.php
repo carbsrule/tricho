@@ -784,7 +784,9 @@ class Form {
                 
                 if ($add_error) $errors[$col->getName()] = $error_msg;
             }
-            $source_data[$col->getName()] = $input;
+            if ($input !== null) {
+                $source_data[$col->getName()] = $input;
+            }
         }
         
         if ($this->modifier) {

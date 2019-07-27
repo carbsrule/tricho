@@ -425,7 +425,7 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
     }
     
     // get sql definition from params
-    $is_link = false;
+    $is_link = $is_virtual = false;
     $sql_type = $config['sqltype'];
     if ($config['class'] == 'Tricho\\Meta\\LinkColumn') {
         $is_link = true;
@@ -434,8 +434,11 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
         if ($reflection->isSubclassOf('Tricho\\Meta\\LinkColumn')) {
             $is_link = true;
         }
+        if ($reflection->isSubclassOf('Tricho\\Meta\\VirtualColumn')) {
+            $is_virtual = true;
+        }
     }
-    if (!$is_link) {
+    if (!$is_link && !$is_virtual) {
         if ($sql_type == '') {
             $errors[] = "You must specify an SQL type";
         } else if (!SqlTypes::isValid($sql_type)) {
@@ -603,6 +606,11 @@ function column_config_to_meta (Table $table, $action, $form_url, array $config)
 function column_def_add (Table $table, Column $col, $form_url, $config) {
     settype ($position_after, 'int');
     
+    if ($col instanceof \Tricho\Meta\VirtualColumn) {
+        $table->addColumn($col, $config['insert_after']);
+        return null;
+    }
+
     $sql_defn = $col->getSqlDefn ();
     if ($col instanceof IntColumn and $col->isAutoIncrement ()) {
         $auto_increment = true;

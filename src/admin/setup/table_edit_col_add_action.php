@@ -59,7 +59,9 @@ unset ($session['add_column'][$_POST['t']]);
 try {
     $db->dumpXML('', null);
     $log_message = "Added column ". $table->getName (). '.'. $col->getName ();
-    log_action($log_message, $q);
+    if ($q) {
+        log_action($log_message, $q);
+    }
 } catch (FileNotWriteableException $ex) {
     $_SESSION['setup']['err'] = 'Failed to save XML';
 }
