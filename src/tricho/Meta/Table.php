@@ -679,6 +679,9 @@ class Table implements QueryTable {
         $columns = $this->getColumns ();
         $col_defns = array ();
         foreach ($columns as $col) {
+            if ($col instanceof VirtualColumn) {
+                continue;
+            }
             $column_collation = @$col_collations[$col->getName ()];
             if ($column_collation == $table_collation) $column_collation = '';
             $defn = '`' . $col->getName() . '` ' . $col->getSqlDefn();
