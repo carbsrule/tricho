@@ -41,7 +41,10 @@ class TextColumn extends StringColumn {
     
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
-        $params = array('name' => $this->getPostSafeName());
+        $params = [
+            'id' => $form->getFieldId(),
+            'name' => $this->getPostSafeName(),
+        ];
         $maxlength = (int) $this->getMaxLength();
         if ($maxlength > 0) $params['maxlength'] = $maxlength;
         $textarea = HtmlDom::appendNewChild($p, 'textarea', $params);
