@@ -27,7 +27,7 @@ use Tricho\Query\SelectQuery;
  */
 class LinkColumn extends Column {
     protected $target;
-    protected $type;
+    protected $type = 'select';
     protected $is_parent = false;
     
     function getTarget() {
@@ -99,10 +99,15 @@ class LinkColumn extends Column {
         $param_nodes = $node->getElementsByTagName('param');
         foreach ($param_nodes as $param) {
             $name = $param->getAttribute('name');
-            if ($name != 'target') continue;
             $value = $param->getAttribute('value');
-            $this->target = $value;
-            break;
+            switch ($name) {
+            case 'target':
+                $this->target = $value;
+                break;
+            case 'type':
+                $this->type = $type;
+                break;
+            }
         }
     }
     
@@ -174,6 +179,46 @@ class LinkColumn extends Column {
         $q = $this->getSelectQuery();
         $res = execq($q);
         
+        if (@$this->display_as == 'radio') {
+            $this->attachRadios($res, $p, $form, $input_value, $primary_key);
+        } else {
+            $this->attachSelect($res, $p, $form, $input_value, $primary_key);
+        }
+    }
+
+
+    function attachRadios($res, $p, $form, $input_value, $primary_key)
+    {
+        $id = $form->getFieldId();
+
+        while ($row = fetch_assoc($res)) {
+            if (count($row) > 1) {
+                $label_text = $row['Value'];
+            } else {
+                $label_text = $row['ID'];
+            }
+
+            $field_id = $id . '_' . preg_replace('/[^a-z0-9]/', '', strtolower($value));
+            $params = ['for' => $field_id];
+            $label_el = HtmlDom::appendNewChild($p, 'label', $params);
+
+            $params = [
+                'id' => $field_id,
+                'name' => $this->getPostSafeName(),
+                'value' => $row['ID'],
+            ];
+            if ($params['value'] == $input_value) {
+                $params['checked'] = 'checked';
+            }
+            $input = HtmlDom::appendNewChild($label_el, 'input', $params);
+
+            HtmlDom::appendNewText($label_el, $label_text);
+        }
+    }
+
+
+    function attachSelect($res, $p, $form, $input_value, $primary_key)
+    {
         $params = array(
             'name' => $this->getPostSafeName(),
             'id' => $form->getFieldId()
