@@ -26,6 +26,7 @@ use Tricho\Query\SelectQuery;
  */
 class EnumColumn extends Column {
     protected $choices;
+    protected $input_type = 'select';
     
     
     function __construct($name, $table = null) {
@@ -58,6 +59,10 @@ class EnumColumn extends Column {
         foreach ($this->choices as $choice) {
             HtmlDom::appendNewChild($node, 'param', ['value' => $choice]);
         }
+        HtmlDom::appendNewChild($node, 'param', [
+            'name' => 'input_type',
+            'value' => $this->input_type,
+        ]);
         return $node;
     }
     
@@ -74,6 +79,10 @@ class EnumColumn extends Column {
         $labels = [];
         $params = $node->getElementsByTagName('param');
         foreach ($params as $param) {
+            if ($param->getAttribute('name') == 'input_type') {
+                $this->input_type = $param->getAttribute('value');
+                continue;
+            }
             $labels[] = $param->getAttribute('value');
         }
         $this->choices = array_combine($values, $labels);
@@ -106,6 +115,23 @@ class EnumColumn extends Column {
 
             $choice = next($config['choices']);
         }
+
+        if ($config['input_type'] == '') {
+            $config['input_type'] = 'select';
+        }
+        $fields .= '<p>Input type:</p>';
+        $fields .= '<p>';
+        $types = ['select' => 'Select list', 'radio' => 'Radio buttons'];
+        foreach ($types as $type => $name) {
+            $fields .= '<label><input type="radio" name="input_type" value="';
+            $fields .= hsc($type) . '"';
+            if ($config['input_type'] == $type) {
+                $fields .= ' checked="checked"';
+            }
+            $fields .= '>' . hsc($name) . '</label>';
+        }
+        $fields .= '</p>';
+
         return $fields;
     }
     
@@ -116,6 +142,7 @@ class EnumColumn extends Column {
         foreach ($this->choices as $value => $label) {
             $config['choices'][] = ['value' => $value, 'label' => $label];
         }
+        $config['input_type'] = $this->input_type;
         return $config;
     }
     
@@ -131,6 +158,8 @@ class EnumColumn extends Column {
             return;
         }
         
+        $this->input_type = $config['input_type'];
+
         $this->sqltype .= '(';
         $choice_num = 0;
         foreach (array_keys($this->choices) as $choice) {
@@ -139,12 +168,37 @@ class EnumColumn extends Column {
         }
         $this->sqltype .= ')';
     }
-    
-    
-    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
-        $p = self::initInput($form);
-        
-        $params = ['name' => $this->getPostSafeName()];
+
+
+    function attachRadios($p, $form, $input_value, $primary_key)
+    {
+        $id = $form->getFieldId();
+
+        foreach ($this->choices as $choice => $choice_label) {
+            $field_id = $id . '_' . preg_replace('/[^a-z0-9]/', '', strtolower($choice));
+            $params = ['for' => $field_id];
+            $label = HtmlDom::appendNewChild($p, 'label', $params);
+
+            $params = [
+                'id' => $field_id,
+                'type' => 'radio',
+                'name' => $this->getPostSafeName(),
+                'value' => $choice,
+            ];
+            if ($choice == $input_value) {
+                $params['checked'] = 'checked';
+            }
+            $input = HtmlDom::appendNewChild($label, 'input', $params);
+
+            HtmlDom::appendNewText($label, $choice_label);
+        }
+    }
+
+
+    function attachSelect($p, $form, $input_value, $primary_key)
+    {
+        $id = $form->getFieldId();
+        $params = ['name' => $this->getPostSafeName(), 'id' => $id];
         $select = HtmlDom::appendNewChild($p, 'select', $params);
         $params = array('value' => '');
         $option = HtmlDom::appendNewChild($select, 'option', $params);
@@ -156,6 +210,17 @@ class EnumColumn extends Column {
             if ($choice == $input_value) $params['selected'] = 'selected';
             $option = HtmlDom::appendNewChild($select, 'option', $params);
             HtmlDom::appendNewText($option, $choice_label);
+        }
+    }
+
+
+    function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
+        $p = self::initInput($form);
+
+        if ($this->input_type == 'radio') {
+            $this->attachRadios($p, $form, $input_value, $primary_key);
+        } else {
+            $this->attachSelect($p, $form, $input_value, $primary_key);
         }
     }
     
