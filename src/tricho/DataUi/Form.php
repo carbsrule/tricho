@@ -367,7 +367,10 @@ class Form {
         }
             
         
-        if ($this->modifier) {
+        // TODO: find a way around checking the URI
+        // Certain form modifiers create additional fields on the fly
+        // (in postLoad), which is definitely NOT desired setup behaviour
+        if ($this->modifier && strpos(@$_SERVER['REQUEST_URI'], 'admin/setup/') === false) {
             $this->modifier->postLoad($this);
         }
     }
