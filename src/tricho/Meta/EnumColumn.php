@@ -116,7 +116,7 @@ class EnumColumn extends Column {
             $choice = next($config['choices']);
         }
 
-        if ($config['input_type'] == '') {
+        if (empty($config['input_type'])) {
             $config['input_type'] = 'select';
         }
         $fields .= '<p>Input type:</p>';
