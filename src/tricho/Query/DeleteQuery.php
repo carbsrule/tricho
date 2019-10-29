@@ -11,6 +11,7 @@ use Exception;
 use InvalidArgumentException;
 
 use Tricho\DbConn\ConnManager;
+use Tricho\Meta\Table;
 
 class DeleteQuery extends Query {
     protected $table;
