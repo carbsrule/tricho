@@ -17,6 +17,7 @@ use Tricho\Meta\EnumColumn;
 use Tricho\Meta\LinkColumn;
 use Tricho\Meta\NumericColumn;
 use Tricho\Meta\PasswordColumn;
+use Tricho\Meta\SetColumn;
 use Tricho\Meta\TemporalColumn;
 use Tricho\Meta\TimeColumn;
 use Tricho\Meta\FunctionViewItem;
@@ -303,7 +304,29 @@ class MainTable {
             return;
         }
 
-        if ($column instanceof EnumColumn) {
+        if ($column instanceof SetColumn) {
+            $commaWrap = new QueryFunction('CONCAT', [',', $column, ',']);
+            foreach ($column->getChoices() as $choice => $label) {
+                if (!empty($label) && $choice != $label) {
+                    $commaWrap = new QueryFunction(
+                        'REPLACE',
+                        [$commaWrap, ',' . $choice . ',', ',' . $label  . ',']
+                    );
+                }
+            }
+
+            $trimVal = "BOTH ',' FROM " . $commaWrap->identify('select');
+            $trimLiteral = new QueryFieldLiteral($trimVal, false);
+            $trimFunc = new QueryFunction('TRIM', [$trimLiteral]);
+
+            $padCommas = new QueryFunction(
+                'REPLACE',
+                [$trimFunc, ',', ', ']
+            );
+            $padCommas->setAlias($column->getName());
+            $padCommas->setSource($column);
+            $this->addField($padCommas, $is_view_item, false, $search, $order, $order_dir);
+        } else if ($column instanceof EnumColumn) {
             $func = new QueryCase('CASE', $column->getChoices());
             $func->setAlias($column->getName());
             $func->setSource($column);
