@@ -68,6 +68,9 @@ class Installer {
                 $session['values'][$key] = $val;
             }
         }
+        if (!isset($session['errors'])) {
+            $session['errors'] = [];
+        }
         return $form->render($session['values'], $session['errors']);
     }
     
