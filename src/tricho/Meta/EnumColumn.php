@@ -241,7 +241,12 @@ class EnumColumn extends Column {
         $form_el = $doc->getElementsByTagName('form')->item(0);
         $p = $doc->createElement('p');
         $form_el->appendChild($p);
-        HtmlDom::appendNewText($p, $this->choices[$value]);
+        if (!empty($this->choices[$value])) {
+            $display = $this->choices[$value];
+        } else {
+            $display = $value;
+        }
+        HtmlDom::appendNewText($p, $display);
     }
 
 
