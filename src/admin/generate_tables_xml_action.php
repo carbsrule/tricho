@@ -79,7 +79,8 @@ while ($table = fetch_row($tables)) {
             $pattern = '/^([a-z]+)\s*(\((\S*)\))?(\s*([a-z]+))?/i';
             preg_match($pattern, $column['Type'], $matches);
             
-            switch (strtolower($matches[1])) {
+            $type = strtolower($matches[1]);
+            switch ($type) {
             case 'bit':
                 $class = 'BooleanColumn';
                 break;
@@ -128,6 +129,8 @@ while ($table = fetch_row($tables)) {
                 $class = 'CharColumn';
                 break;
                 
+            case 'enum':
+            case 'set':
             case 'date':
             case 'datetime':
             case 'time':
@@ -168,18 +171,11 @@ while ($table = fetch_row($tables)) {
                 $column_obj->setMandatory (true);
             }
             
-            // Pretend ENUMs are VARCHAR columns
-            if (strcasecmp ($matches[1], 'ENUM') == 0) {
-                $enum = $column;
-                $enum['arr'] = enum_to_array (substr ($column['Type'], 5, -1));
-                $matches[1] = 'VARCHAR';
-                $longest = 0;
-                foreach ($enum['arr'] as $enum_value) {
-                    $longest = max ($longest, strlen ($enum_value));
-                }
-                $matches[3] = $longest;
-                $temp_warn[] = "Column ". $table_obj->getName (). '.'. $column_obj->getName().
-                    " is an ENUM column, which is not fully supported";
+            // handle choices for ENUM/SET columns
+            if (in_array($type, ['enum', 'set'])) {
+                $choices = enum_to_array(substr($column['Type'], strlen($type), -1));
+                $choices = array_combine($choices, $choices);
+                $column_obj->setChoices($choices);
                 
             // Pretend TIMESTAMPs are DATETIME columns
             } else if (strcasecmp ($matches[1], 'TIMESTAMP') == 0) {

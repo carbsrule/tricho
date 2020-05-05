@@ -51,7 +51,7 @@ class SqlTypes
             'CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT',
             'BINARY', 'VARBINARY', 'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB',
             'DATE', 'DATETIME', 'TIME',
-            'ENUM'
+            'ENUM', 'SET',
         ];
     }
     

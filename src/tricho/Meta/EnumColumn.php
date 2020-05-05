@@ -25,7 +25,7 @@ use Tricho\Query\SelectQuery;
  * @package meta_xml
  */
 class EnumColumn extends Column {
-    protected $choices;
+    protected $choices = [];
     protected $input_type = 'select';
     
     
@@ -53,6 +53,11 @@ class EnumColumn extends Column {
         return $this->choices;
     }
     
+
+    function setChoices(array $choices) {
+        $this->choices = $choices;
+    }
+
     
     function toXMLNode(DOMDocument $doc) {
         $node = parent::toXMLNode($doc);
@@ -73,7 +78,7 @@ class EnumColumn extends Column {
         if ($par_pos < 4) throw new Exception('Invalid ENUM definition');
         $this->sqltype = substr($sql_defn, 0, $par_pos + 1);
         
-        $enum_choices = substr($this->sqltype, 5, -1);
+        $enum_choices = substr($this->sqltype, strlen(static::getDefaultSqlType()), -1);
         $values = enum_to_array($enum_choices);
         
         $labels = [];
