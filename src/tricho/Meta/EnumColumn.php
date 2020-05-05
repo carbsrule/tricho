@@ -27,23 +27,23 @@ use Tricho\Query\SelectQuery;
 class EnumColumn extends Column {
     protected $choices = [];
     protected $input_type = 'select';
-    
-    
+
+
     function __construct($name, $table = null) {
         parent::__construct($name, $table = null);
         $this->mandatory = true;
     }
-    
-    
+
+
     static function getAllowedSqlTypes () {
         return array('ENUM');
     }
-    
+
     static function getDefaultSqlType () {
         return 'ENUM';
     }
-    
-    
+
+
     /**
      * Gets the choices allowed in the ENUM
      * @return array The keys are the data to be stored in the database, and
@@ -52,13 +52,13 @@ class EnumColumn extends Column {
     function getChoices() {
         return $this->choices;
     }
-    
+
 
     function setChoices(array $choices) {
         $this->choices = $choices;
     }
 
-    
+
     function toXMLNode(DOMDocument $doc) {
         $node = parent::toXMLNode($doc);
         foreach ($this->choices as $choice) {
@@ -70,17 +70,17 @@ class EnumColumn extends Column {
         ]);
         return $node;
     }
-    
+
     function applyXMLNode(DOMElement $node) {
         parent::applyXMLNode($node);
         $sql_defn = $node->getAttribute('sql_defn');
         $par_pos = strrpos($sql_defn, ')');
         if ($par_pos < 4) throw new Exception('Invalid ENUM definition');
         $this->sqltype = substr($sql_defn, 0, $par_pos + 1);
-        
+
         $enum_choices = substr($this->sqltype, strlen(static::getDefaultSqlType()), -1);
         $values = enum_to_array($enum_choices);
-        
+
         $labels = [];
         $params = $node->getElementsByTagName('param');
         foreach ($params as $param) {
@@ -92,11 +92,11 @@ class EnumColumn extends Column {
         }
         $this->choices = array_combine($values, $labels);
     }
-    
-    
+
+
     static function getConfigFormFields(array $config, $class) {
         $db = Database::parseXML();
-        
+
         $fields = "<p>Choices</p>\n";
         if (!isset($config['choices'])) $config['choices'] = [];
         $max = count($config['choices']) + 3;
@@ -111,7 +111,7 @@ class EnumColumn extends Column {
             $fields .= "<input id=\"enum_value_{$i}\" type=\"text\"";
             $fields .= " name=\"{$class}_choices[{$i}][value]\"";
             $fields .= ' value="' . hsc($value) . '">';
-            
+
             $fields .= " &nbsp; <label for=\"enum_label_{$i}\">Label</label> ";
             $fields .= "<input id=\"enum_label_{$i}\" type=\"text\"";
             $fields .= " name=\"{$class}_choices[{$i}][label]\"";
@@ -139,8 +139,8 @@ class EnumColumn extends Column {
 
         return $fields;
     }
-    
-    
+
+
     function getConfigArray() {
         $config = parent::getConfigArray();
         $config['choices'] = [];
@@ -150,8 +150,8 @@ class EnumColumn extends Column {
         $config['input_type'] = $this->input_type;
         return $config;
     }
-    
-    
+
+
     function applyConfig(array $config, array &$errors) {
         $this->choices = [];
         foreach ($config['choices'] as $i => $choice) {
@@ -162,7 +162,7 @@ class EnumColumn extends Column {
             $errors[] = 'Must specify choices';
             return;
         }
-        
+
         $this->input_type = $config['input_type'];
 
         $this->sqltype .= '(';
@@ -208,7 +208,7 @@ class EnumColumn extends Column {
         $params = array('value' => '');
         $option = HtmlDom::appendNewChild($select, 'option', $params);
         HtmlDom::appendNewText($option, '- Select below -');
-        
+
         foreach ($this->choices as $choice => $choice_label) {
             $params = array('value' => $choice);
             if ($choice_label == '') $choice_label = $choice;
@@ -228,8 +228,8 @@ class EnumColumn extends Column {
             $this->attachSelect($p, $form, $input_value, $primary_key);
         }
     }
-    
-    
+
+
     function displayValue ($input_value = '') {
         return hsc($this->choices[$input_value]);
     }
@@ -252,15 +252,15 @@ class EnumColumn extends Column {
         }
         throw new DataValidationException('Nonexistent value');
     }
-    
-    
+
+
     function isInputEmpty(array $input) {
         $value = (string) reset($input);
         if ($value == '' and !isset( $this->choices[''])) return true;
         return false;
     }
-    
-    
+
+
     // ENUMs are always mandatory; the DB value has to be one of the choices
     function setMandatory($bool) {
         $this->mandatory = true;
