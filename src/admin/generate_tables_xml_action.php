@@ -135,7 +135,9 @@ while ($table = fetch_row($tables)) {
                 break;
                 
             default:
-                throw new Exception('Unable to determine column class');
+                throw new Exception(
+                    'Unable to determine column class for ' . $column['Type']
+                );
             }
             
             // determine an appropriate class for each
