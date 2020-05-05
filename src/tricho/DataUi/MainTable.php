@@ -327,7 +327,8 @@ class MainTable {
             $padCommas->setSource($column);
             $this->addField($padCommas, $is_view_item, false, $search, $order, $order_dir);
         } else if ($column instanceof EnumColumn) {
-            $func = new QueryCase('CASE', $column->getChoices());
+            $mappings = array_filter($column->getChoices());
+            $func = new QueryCase('CASE', $mappings, $column);
             $func->setAlias($column->getName());
             $func->setSource($column);
             $this->addField($func, $is_view_item, false, $search, $order, $order_dir);
