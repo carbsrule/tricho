@@ -187,7 +187,7 @@ while ($table = fetch_row($tables)) {
             }
             
             // if an unsupported column type is found, ignore this table
-            $sql_type = $matches[1];
+            $sql_type = strtoupper($matches[1]);
             if (!SqlTypes::isValid($sql_type)) { 
                 $temp_errs[] = "Could not import table {$table_name}: column ({$column['Field']}) is ".
                     "of unsupported type ". strtoupper ($column['Type']);
