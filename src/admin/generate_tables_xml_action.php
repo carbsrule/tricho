@@ -141,6 +141,7 @@ while ($table = fetch_row($tables)) {
             }
             
             // determine an appropriate class for each
+            $class = '\\Tricho\\Meta\\' . $class;
             $column_obj = new $class($column['Field']);
             if (substr($class, 0, 4) == 'Date') {
                 $temp_warn[] = "{$table_name}: The column <i>{$column['Field']}</i> contains a date and needs a year range set; using default of 1970 - 2037";
