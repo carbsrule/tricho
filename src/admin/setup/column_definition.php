@@ -25,12 +25,15 @@ require_once 'setup_functions.php';
 // Force autoloading of all Column classes
 $class_files = glob(ROOT_PATH_FILE . 'tricho/Meta/*Column.php');
 $ext_base = ROOT_PATH_FILE . 'tricho/ext/';
-$exts = (array) @scandir($ext_base);
-foreach ($exts as $ext) {
-    if ($ext[0] == '.') continue;
-    $ext_dir = $ext_base . $ext;
-    if (!is_dir($ext_dir)) continue;
-    $class_files = array_merge($class_files, glob("{$ext_dir}/*Column.php"));
+$exts = @scandir($ext_base);
+if (is_array($exts)) {
+    foreach ($exts as $ext) {
+        if ($ext[0] == '.') continue;
+        $ext_dir = $ext_base . $ext;
+        if (!is_dir($ext_dir)) continue;
+        $ext_cols = glob("{$ext_dir}/*Column.php");
+        $class_files = array_merge($class_files, $ext_cols);
+    }
 }
 
 foreach ($class_files as $file) {
