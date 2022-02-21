@@ -104,8 +104,8 @@ class EnumColumn extends Column {
         reset($config['choices']);
         $choice = current($config['choices']);
         for ($i = 0; $i < $max; ++$i) {
-            $value = $choice['value'];
-            $label = $choice['label'];
+            $value = @$choice['value'];
+            $label = @$choice['label'];
             $fields .= "<p>";
             $fields .= "<label for=\"enum_value_{$i}\">Value</label> ";
             $fields .= "<input id=\"enum_value_{$i}\" type=\"text\"";

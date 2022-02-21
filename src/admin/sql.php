@@ -64,11 +64,11 @@ if ($_POST['max_fails'] <= 0) $_POST['max_fails'] = 100;
 $parser = new SqlParser();
 $queries = array();
 $file = @$_FILES['sql_file'];
-if (is_uploaded_file($file['tmp_name'])) {
+if (!empty($file['tmp_name']) && is_uploaded_file($file['tmp_name'])) {
     $file_contents = file_get_contents($file['tmp_name']);
     $queries = $parser->parse($file_contents);
-} else if ($file['error'] != UPLOAD_ERR_NO_FILE
-        and $file['error'] != UPLOAD_ERR_OK) {
+} else if (@$file['error'] != UPLOAD_ERR_NO_FILE
+        and @$file['error'] != UPLOAD_ERR_OK) {
     report_error("File upload failed");
 }
 $queries = $parser->parse(@$_POST['query'], $queries);

@@ -1881,7 +1881,7 @@ function clean_rich_text_input (
         case 'title':
         case 'link':
         case 'script':
-            continue;
+            continue 2;
         }
 
         if ($first_body_child = $body_node->firstChild) {
