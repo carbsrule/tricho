@@ -1445,6 +1445,23 @@ class Table implements QueryTable {
     }
 
     /**
+     * gets all column that link from the current table to a specified table
+     *
+     * @param Table $table the table to find a link to
+     * @return mixed a {@link Column} if a link is found, or null otherwise
+     */
+    function getLinksToTable(Table $table) {
+        $links = [];
+        foreach ($this->columns as $id => $col) {
+            if (!($col instanceof LinkColumn)) continue;
+            if ($col->getTargetTable() === $table) {
+                $links[] = $col;
+            }
+        }
+        return $links;
+    }
+
+    /**
      * Returns all links that are made from columns on this table
      * @return array of {@link LinkColumn} objects.
      */
