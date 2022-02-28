@@ -79,6 +79,12 @@ class LinkColumn extends Column {
         $target = $target_table . '.' . $this->target->getName();
         $param->setAttribute('name', 'target');
         $param->setAttribute('value', $target);
+
+        if ($this->is_parent) {
+            $param = HtmlDom::appendNewChild($node, 'param');
+            $param->setAttribute('name', 'parent');
+            $param->setAttribute('value', 'y');
+        }
         return $node;
     }
 
@@ -87,6 +93,7 @@ class LinkColumn extends Column {
         $config = parent::getConfigArray ();
         $config['target'] = $this->target->getTable()->getName() . '.' .
             $this->target->getName();
+        $config['is_parent'] = (int)$this->is_parent;
         return $config;
     }
 
@@ -98,16 +105,18 @@ class LinkColumn extends Column {
         parent::applyXMLNode($node);
         $param_nodes = $node->getElementsByTagName('param');
         foreach ($param_nodes as $param) {
-            $name = $param->getAttribute('name');
-            $value = $param->getAttribute('value');
-            switch ($name) {
-            case 'target':
-                $this->target = $value;
-                break;
-            case 'type':
-                $this->type = $type;
-                break;
-            }
+            $name = $param->getAttribute ('name');
+            $value = $param->getAttribute ('value');
+            $params[$name] = $value;
+        }
+        if (!empty($params['target'])) {
+            $this->target = $params['target'];
+        }
+        if (!empty($params['type'])) {
+            $this->type = $params['type'];
+        }
+        if (@$params['parent'] == 'y') {
+            $this->is_parent = true;
         }
     }
 
@@ -132,6 +141,22 @@ class LinkColumn extends Column {
                 "{$target}</option>\n";
         }
         $fields .= "</select></p>\n";
+
+        $fields .= "<p>Parent: ";
+        $fields .= "<label for=\"{$class}_parent_y\">";
+        $fields .= "<input type=\"radio\" id=\"{$class}_parent_y\" name=\"is_parent\"";
+        if ($config['is_parent'] == 1) {
+            $fields .= ' checked';
+        }
+        $fields .= ' value="1">Yes</label>';
+        $fields .= "<label for=\"{$class}_parent_n\">";
+        $fields .= "<input type=\"radio\" id=\"{$class}_parent_n\" name=\"is_parent\"";
+        if ($config['is_parent'] == 0) {
+            $fields .= 'checked';
+        }
+        $fields .= ' value="0">No</label>';
+        $fields .= "</p>\n";
+
         return $fields;
     }
 
@@ -154,6 +179,9 @@ class LinkColumn extends Column {
             return;
         }
         $this->target = $col;
+        if ($config['is_parent']) {
+            $this->is_parent = true;
+        }
         $this->sql_collation = $col->sql_collation;
     }
 
