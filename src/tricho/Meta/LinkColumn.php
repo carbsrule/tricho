@@ -212,6 +212,11 @@ class LinkColumn extends Column {
         } else {
             $this->attachSelect($res, $p, $form, $input_value, $primary_key);
         }
+
+        if (@$_SESSION['setup']['view_q'] && !empty($q)) {
+            $pre = HtmlDom::appendNewChild($p, 'pre');
+            HtmlDom::appendNewText($pre, "Q:\n{$q}");
+        }
     }
 
 
@@ -265,11 +270,6 @@ class LinkColumn extends Column {
             if ($row['ID'] == $input_value) $params['selected'] = 'selected';
             $option = HtmlDom::appendNewChild($select, 'option', $params);
             HtmlDom::appendNewText($option, $value);
-        }
-
-        if (@$_SESSION['setup']['view_q']) {
-            $pre = HtmlDom::appendNewChild($p, 'pre');
-            HtmlDom::appendNewText($pre, "Q:\n{$q}");
         }
     }
 
