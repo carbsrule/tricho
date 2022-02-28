@@ -171,7 +171,6 @@ if ($table->isJoiner () and $parent_id != null) {
         // changed by benno: the where clause doesn't need to reference the linked table, only the base
         $query = $main->getSelectQuery ();
         $link_col = $table->getLinkToTable ($parent_table);
-        $query_col = new QueryColumn ($query->getBaseTable (), $link_col->getName ());
 
         // Use integer value where possible for parent joins
         if (preg_match ('/^-?[0-9]+$/', $parent_id)) {
@@ -183,7 +182,7 @@ if ($table->isJoiner () and $parent_id != null) {
 
         // condition for parent join
         $cond = new LogicConditionNode (
-            $query_col,
+            $link_col,
             LOGIC_CONDITION_EQ,
             $parent_literal
         );
