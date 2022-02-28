@@ -41,7 +41,7 @@ function show_children (Table $from_table, $this_identifier = '') {
     echo '<ul class="main_edit_tabs">';
     echo "<li class=\"on\" id=\"subtab_{$this_table_id}\">";
     list ($urls, $seps) = $from_table->getPageUrls ();
-    echo "<a href=\"{$urls['main_edit']}{$seps['main_edit']}t={$from_table->getName ()}&id={$_GET['id']}&p={$_GET['p']}\">{$from_table->getNameSingle ()}";
+    echo "<a href=\"{$urls['edit']}{$seps['edit']}t={$from_table->getName ()}&id={$_GET['id']}&p={$_GET['p']}\">{$from_table->getNameSingle ()}";
     if ($this_identifier != '') echo ": {$this_identifier}";
     echo "</a></li>";
 
@@ -79,7 +79,7 @@ function show_children (Table $from_table, $this_identifier = '') {
         $child_table_id = string_to_id ($child_table->getName ());
         list ($urls, $seps) = $child_table->getPageUrls ();
         echo "<li id=\"subtab_{$this_table_id}_{$child_table_id}\">",
-            "<a href=\"{$urls['main']}{$seps['main']}t={$child_table->getName ()}&p={$parent}\">{$child_eng_name}{$count}</a></li>";
+            "<a href=\"{$urls['browse']}{$seps['browse']}t={$child_table->getName ()}&p={$parent}\">{$child_eng_name}{$count}</a></li>";
     }
     echo '</ul>';
 }
@@ -183,7 +183,6 @@ function show_parent_siblings (Table $self, $parents) {
             if (($self === $child) || ($vals[$child->getName ()] != null)) {
                 echo "<li class=\"on\" id=\"subtabs_{$parent_table_id}_{$child_table_id}\">",
                     "<a href=\"{$urls['browse']}{$seps['browse']}t={$child->getName ()}&p={$p}\">{$child_eng_name}{$count}</a></li>";
-
             } else {
                 echo "<li id=\"subtabs_{$parent_table_id}_{$child_table_id}\">",
                     "<a href=\"{$urls['browse']}{$seps['browse']}t={$child->getName ()}&p={$p}\">{$child_eng_name}{$count}</a></li>";
