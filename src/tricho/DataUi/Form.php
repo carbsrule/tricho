@@ -27,6 +27,7 @@ use Tricho\Meta\EmailColumn;
 use Tricho\Meta\FileColumn;
 use Tricho\Meta\PasswordColumn;
 use Tricho\Meta\UploadedFile;
+use Tricho\Meta\VirtualColumn;
 use Tricho\Util\HtmlDom;
 use Tricho\Query\InsertQuery;
 use Tricho\Query\UpdateQuery;
@@ -734,7 +735,7 @@ class Form {
 
                 if ($col->isMandatory() and $col->isInputEmpty($value)) {
                     $errors[$col->getName()] = 'Required field';
-                } else {
+                } else if (!($col instanceof VirtualColumn)) {
                     $db_data = array_merge($db_data, $value);
                 }
             } catch (DataValidationException $ex) {
