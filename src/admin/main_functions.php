@@ -48,7 +48,7 @@ function show_children (Table $from_table, $this_identifier = '') {
     // show the children
     foreach ($child_links as $child_link) {
         // get the link info and an alt eng name if so be it
-        $child_table = $child_link->getFromColumn ()->getTable ();
+        $child_table = $child_link->getTable();
         $child_eng_name = $child_table->getEngName ();
         if ($child_link->getAltEngName () != null) {
             $child_eng_name = $child_link->getAltEngName ();
@@ -67,9 +67,11 @@ function show_children (Table $from_table, $this_identifier = '') {
 
             $q = "SELECT COUNT(*) AS C
                 FROM `{$child_table->getName ()}`
-                WHERE `{$child_link->getFromColumn ()->getName ()}` = {$id_safe}";
+                WHERE `{$child_link->getName()}` = {$id_safe}";
             $res = execq($q);
-            if ($_SESSION['setup']['view_q']) echo "<small>[cnt] Q: {$q}</small>";
+            if (@$_SESSION['setup']['view_q']) {
+                echo "<small>[cnt] Q: ", hsc($q), "</small>";
+            }
             $row = fetch_assoc($res);
             $count = " ({$row['C']})";
         }
@@ -148,16 +150,13 @@ function show_parent_siblings (Table $self, $parents) {
             // see if there's an alternate name specified for the link
             $child_eng_name = $child->getEngName ();
             $link_col = $child->getLinkToTable ($table);
-            if ($link_col != null) {
-                $link = $link_col->getLink ();
-                if ($link->getAltEngName () != null) {
-                    $child_eng_name = $link->getAltEngName ();
-                }
+            if ($link_col != null && $link_col->getAltEngName()) {
+                $child_eng_name = $link_col->getAltEngName();
             }
 
             // get a tab record count if we are meant to
             $count = '';
-            if ($link->showTabCount ()) {
+            if ($link_col->showTabCount ()) {
 
                 // try and use integer value if possible
                 $clean_int = preg_replace ('/[^0-9]/', '', $pk_val);
@@ -169,9 +168,11 @@ function show_parent_siblings (Table $self, $parents) {
 
                 $q = "SELECT COUNT(*) AS C
                     FROM `{$child->getName()}`
-                    WHERE `{$link->getFromColumn ()->getName ()}` = {$id_safe}";
+                    WHERE `{$link_col->getName()}` = {$id_safe}";
                 $res = execq($q);
-                if ($_SESSION['setup']['view_q']) echo "<small>[cnt] Q: {$q}</small>";
+                if (@$_SESSION['setup']['view_q']) {
+                    echo "<small>[cnt] Q: ", hsc($q), "</small>";
+                }
                 $row = fetch_assoc($res);
                 $count = " ({$row['C']})";
             }

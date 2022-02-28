@@ -98,7 +98,7 @@ if ($db->getShowSectionHeadings ()) {
     $heading_text = $table->getEngName ();
     if (count($ancestors) > 0) {
         $col = $table->getLinkToTable ($parent_table);
-        $alt_name = $col->getLink()->getAltEngName ();
+        $alt_name = $col->getAltEngName();
         if ($alt_name) $heading_text = $alt_name;
     }
 
