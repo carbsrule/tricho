@@ -606,7 +606,7 @@ abstract class Column implements QueryField, ColumnInterface {
      */
     function linksTo ($table) {
         if (!($table instanceof Table)) return false;
-        if ($this instanceof LinkColumn and $this->getLink ()->getToTable () === $table) return true;
+        if ($this instanceof LinkColumn and $this->getTargetTable () === $table) return true;
         return false;
     }
 

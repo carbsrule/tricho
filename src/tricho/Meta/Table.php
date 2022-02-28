@@ -909,8 +909,7 @@ class Table implements QueryTable {
         foreach ($tables as $toTable) {
             $column = $toTable->getLinkToTable($this);
             if ($column != null) {
-                $link = $column->getLink();
-                if ($link->isParent()) {
+                if ($column->isParentLink()) {
                     $children[] = $toTable;
                 }
             }
@@ -2213,18 +2212,18 @@ class Table implements QueryTable {
                     if ($debug) echo "    deleting child records from {$column->getName ()}\n";
                     // Determine the column index of the link to column.
                     foreach ($this->columns as $index => $column) {
-                        if ($column === $link->getToColumn ()) {
+                        if ($column === $link->getTarget()) {
                             break;
                         }
                     }
 
                     // Get some table info so we can determine the records to delete.
-                    $table = $link->getFromColumn ()->getTable ();
+                    $table = $link->getTable();
                     $table_pks = $table->getPKnames ();
 
                     // Build a query that tells us the pks of the records to delete.
                     $q = 'SELECT `'. implode ('`, `', $table_pks). '` FROM `'. $table->getName (). '` WHERE `';
-                    $q .= $link->getFromColumn ()->getName (). '` = '. $pks[$index];
+                    $q .= $link->getName(). '` = '. $pks[$index];
 
                     // Determine the columns to delete.
                     $delete_pks = array ();
