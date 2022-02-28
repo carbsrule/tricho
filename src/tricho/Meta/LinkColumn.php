@@ -65,6 +65,16 @@ class LinkColumn extends Column {
         return 'LINK';
     }
 
+    function showTabCount()
+    {
+        return true;
+    }
+
+    function getAltEngName()
+    {
+        return null;
+    }
+
 
     /**
      * Creates a DOMElement that represents this column (for use in tables.xml)
