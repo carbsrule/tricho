@@ -29,16 +29,16 @@ class LinkColumn extends Column {
     protected $target;
     protected $type = 'select';
     protected $is_parent = false;
-    
+
     function getTarget() {
         return $this->target;
     }
-    
+
     function setTarget($target) {
         if (!($target instanceof Column)) $target = (string) $target;
         $this->target = $target;
     }
-    
+
     /**
      * Gets the table which the target column belongs to
      *
@@ -51,21 +51,21 @@ class LinkColumn extends Column {
         return $this->target->getTable();
     }
 
-    
+
     function isParentLink() {
         return $this->is_parent;
     }
-    
-    
+
+
     static function getAllowedSqlTypes () {
         return array('LINK');
     }
-    
+
     static function getDefaultSqlType () {
         return 'LINK';
     }
-    
-    
+
+
     /**
      * Creates a DOMElement that represents this column (for use in tables.xml)
      * @param DOMDocument $doc The document to which this node will belong
@@ -81,16 +81,16 @@ class LinkColumn extends Column {
         $param->setAttribute('value', $target);
         return $node;
     }
-    
-    
+
+
     function getConfigArray () {
         $config = parent::getConfigArray ();
         $config['target'] = $this->target->getTable()->getName() . '.' .
             $this->target->getName();
         return $config;
     }
-    
-    
+
+
     /**
      * @author benno 2012-10-27
      */
@@ -110,13 +110,13 @@ class LinkColumn extends Column {
             }
         }
     }
-    
+
     static function getConfigFormFields(array $config, $class) {
         $db = Database::parseXML();
-        
+
         $fields = "<p>Target <select name=\"{$class}_target\">\n";
         $fields .= "<option value=\"\">- Select below -</option>\n";
-        
+
         $tables = $db->getTables();
         foreach ($tables as $table) {
             $pks = $table->getPKnames();
@@ -134,14 +134,14 @@ class LinkColumn extends Column {
         $fields .= "</select></p>\n";
         return $fields;
     }
-    
-    
+
+
     /**
      * @author benno, 2013-02-28
      */
     function applyConfig(array $config, array &$errors) {
         $db = Database::parseXML();
-        
+
         @list($table, $col) = explode('.', $config['target']);
         $table = $db->get($table);
         if ($table == null) {
@@ -175,10 +175,10 @@ class LinkColumn extends Column {
 
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
-        
+
         $q = $this->getSelectQuery();
         $res = execq($q);
-        
+
         if (@$this->display_as == 'radio') {
             $this->attachRadios($res, $p, $form, $input_value, $primary_key);
         } else {
@@ -238,14 +238,14 @@ class LinkColumn extends Column {
             $option = HtmlDom::appendNewChild($select, 'option', $params);
             HtmlDom::appendNewText($option, $value);
         }
-        
+
         if (@$_SESSION['setup']['view_q']) {
             $pre = HtmlDom::appendNewChild($p, 'pre');
             HtmlDom::appendNewText($pre, "Q:\n{$q}");
         }
     }
-    
-    
+
+
     function displayValue ($input_value = '') {
         $q = $this->getSelectQuery();
         $val = new QueryFieldLiteral($input_value);
@@ -260,27 +260,27 @@ class LinkColumn extends Column {
         $row = fetch_row($res);
         return $pre . hsc($row[1]);
     }
-    
-    
+
+
     function attachValue(Form $form, $value, array $pk) {
         $doc = $form->getDoc();
         $form_el = $doc->getElementsByTagName('form')->item(0);
-        
+
         $q = $this->getSelectQuery();
         $q->getWhere()->addNewCondition($this->target, '=', $value);
         if (@$_SESSION['setup']['view_q']) {
             $pre = HtmlDom::appendNewChild($form_el, 'pre');
             HtmlDom::appendNewText($pre, "Q: {$q}");
         }
-        
+
         $res = execq($q);
         $row = fetch_assoc($res);
-        
+
         $p = HtmlDom::appendNewChild($form_el, 'p');
         HtmlDom::appendNewText($p, $row['Value']);
     }
-    
-    
+
+
     /**
      * @author benno, 2013-12-18
      */
@@ -291,7 +291,7 @@ class LinkColumn extends Column {
         if ($this->target->isInputEmpty($values)) {
             return array($this->name => $value);
         }
-        
+
         $col = $this->target;
         $table = $this->target->getTable();
         $q = new SelectQuery($table);
@@ -307,8 +307,8 @@ class LinkColumn extends Column {
         }
         return array($this->name => $value);
     }
-    
-    
+
+
     function getInfo() {
         return '&#8658; ' . $this->target->getFullName();
     }

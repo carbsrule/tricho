@@ -25,7 +25,7 @@ interface ColumnInterface {
      * @return array Each element is an uppercase string, e.g. 'INT'
      */
     static function getAllowedSqlTypes();
-    
+
     /**
      * Gets the default SQL type for this type of column
      * @return string
@@ -50,8 +50,8 @@ abstract class Column implements QueryField, ColumnInterface {
     protected $comment;
     protected $params;
     protected $default = null;
-    
-    
+
+
     /**
      * @param string $name The name of this column (in the database)
      * @param mixed $table The Table to which this column belongs, or null
@@ -64,8 +64,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $this->table = $table;
         $this->params = array ();
     }
-    
-    
+
+
     /**
      * Creates a DOMElement that represents this column (for use in tables.xml)
      * @param DOMDocument $doc The document to which this node will belong
@@ -79,7 +79,7 @@ abstract class Column implements QueryField, ColumnInterface {
         $node->setAttribute ('class', get_class ($this));
         $node->setAttribute ('sql_defn', Meta::getSqlDefn($this));
         $node->setAttribute ('mandatory', Meta::toYesNo($this->mandatory));
-        
+
         if ($this->comment != '') {
             $comment_node = HtmlDom::appendNewChild ($node, 'comment');
             $comment = trim ($this->comment);
@@ -89,8 +89,8 @@ abstract class Column implements QueryField, ColumnInterface {
         }
         return $node;
     }
-    
-    
+
+
     /**
      * Creates a Column meta object from a corresponding XML node.
      * @param DOMElement $node The column node
@@ -108,8 +108,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $col->applyXMLNode ($node);
         return $col;
     }
-    
-    
+
+
     /**
      * Applies generic settings from an XML node to an extant Column meta object
      * @param DOMElement $node The column node
@@ -124,11 +124,11 @@ abstract class Column implements QueryField, ColumnInterface {
         $this->setSqlType ($sql_type);
         $this->setSqlSize ($size);
         $this->setSqlAttributes ($sql_attribs);
-        
+
         if ($this instanceof FileColumn) {
             $this->setMask ($attribs['mask']);
         }
-        
+
         $comment_node = HtmlDom::getChildByTagName ($node, 'comment');
         if ($comment_node) {
             foreach ($comment_node->childNodes as $child) {
@@ -139,20 +139,20 @@ abstract class Column implements QueryField, ColumnInterface {
                 }
             }
         }
-        
+
         if ($attribs['class'] != '') return;
-        
+
         // Process options for old column definitions
         if ($attribs['option'] != '') {
             // Support for Kevin Roth RTE has been removed. Old fields to become TinyMCE
             if ($attribs['option'] == 'richtext3') $attribs['option'] = 'richtext';
             $this->setOption (strtolower ($attribs['option']));
         }
-        
+
         return $col;
     }
-    
-    
+
+
     /**
      * Gets an array of the configuration options for this column's definition
      * @return array
@@ -166,87 +166,87 @@ abstract class Column implements QueryField, ColumnInterface {
             'sql_size' => $this->sql_size,
             'sql_attribs' => array ()
         );
-        
+
         // break up the sql attributes into an array
         $config['sql_attribs'] = $this->sql_attributes;
         $config['sql_default'] = $this->default;
         $config['collation'] = $this->sql_collation;
-        
+
         // If a column is mandatory, then it has to be NOT NULL
         if ($this->mandatory and !in_array ('NOT NULL', $config['sql_attribs'])) {
             $config['sql_attribs'][] = 'NOT NULL';
         }
-        
+
         $config['mandatory'] = $this->mandatory;
-        
+
         // work out which views the column is in
         $config['list_view'] = (int) $this->table->isColumnInView('list', $this, false);
-        
+
         $form = FormManager::load("admin.{$this->getTable()->getName()}");
         if ($form == null) $form = new Form();
-        
+
         $config['add_view'] = $form->getColumnItem($this, 'add') != null;
         $config['edit_view_show'] = $form->getColumnItem($this, 'edit-view') != null;
         $config['edit_view_edit'] = $form->getColumnItem($this, 'edit') != null;
         $config['export_view'] = $this->table->isColumnInView('export', $this, false);
-        
+
         $config['comments'] = $this->comment;
-        
+
         return $config;
     }
-    
-    
+
+
     /**
      * Used by {@link print_human} to create a human-readable string that
      * expresses this object's properties.
-     * 
+     *
      * @param int $indent_tab The indent tab to start on
      * @param bool $indent_self If true, the output of this item will be
      *        indented. If not, only its children will be indented.
      */
     function __printHuman ($indent_tab = 0, $indent_self = true) {
-        
+
         if (defined ('PRINT_HUMAN_INDENT_WIDTH')) {
             $indent_width = PRINT_HUMAN_INDENT_WIDTH;
         } else {
             $indent_width = 2;
         }
-        
+
         $indent = str_repeat (' ', $indent_width * $indent_tab);
-        
+
         if ($indent_self) {
             echo $indent;
         }
-        
+
         echo $this->name, "\n";
-        
+
     }
-    
-    
+
+
     /**
      * Sets the name of this column
-     * 
+     *
      * @param string $new_name The name to apply
      */
     function setName ($new_name) {
         $this->name = (string) $new_name;
     }
-    
-    
+
+
     /**
      * Sets the plain english name to use to describe this column
-     * 
+     *
      * @param string $new_name The english name to apply
      */
     function setEngName ($new_name) {
         $this->engname = (string) $new_name;
     }
-    
-    
+
+
     /**
      * Sets the SQL type of this column.
      * Examples of SQL type are: INT; VARCHAR; DECIMAL.
-     * 
+     *
      * @param string $type The SQL type to use. {@See SqlTypes}
      */
     function setSqlType($type) {
@@ -257,28 +257,28 @@ abstract class Column implements QueryField, ColumnInterface {
         $this->sqltype = $type;
         return true;
     }
-    
-    
+
+
     /**
      * Sets the SQL size of this column.
      *
      * Examples of SQL size are: 6 (eg for an INT or VARCHAR type); 7, 3 (e.g.
      * for a DECIMAL type).
-     * 
+     *
      * @param string $str The SQL size to use.
      */
     function setSqlSize ($str) {
         $this->sql_size = (string) $str;
     }
-    
-    
+
+
     /**
      * Sets the SQL attributes of this column.
      *
      * Examples of SQL attributes are: UNSIGNED; AUTO_INCREMENT; NOT NULL.
      * These can be combined by adding a space between each - do not use a
      * comma.
-     * 
+     *
      * @param string $str The SQL attributes to use.
      */
     function setSqlAttributes ($str) {
@@ -292,7 +292,7 @@ abstract class Column implements QueryField, ColumnInterface {
             }
         }
         $this->sql_attributes = $sql_attributes;
-        
+
         // Parse and set default value
         $matches = array ();
         preg_match ("/default +(NULL|-?[0-9]+(\.[0-9]+)?|'(\\\\'|[^\\'])*'){1}/i", $str, $matches);
@@ -306,15 +306,15 @@ abstract class Column implements QueryField, ColumnInterface {
             }
             $this->default = $default_value;
         }
-        
+
         $matches = array();
         preg_match("/collate\s+([a-z0-9\_]+)/i", $str, $matches);
         if (isset($matches[1])) {
             $this->sql_collation = $matches[1];
         }
     }
-    
-    
+
+
     /**
      * Gets the collation for this column.
      * Will be an empty string for non-string columns
@@ -323,8 +323,8 @@ abstract class Column implements QueryField, ColumnInterface {
     function getCollation() {
         return $this->sql_collation;
     }
-    
-    
+
+
     /**
      * Sets the collation for this (string) column.
      * Only use this if the column is going to have a different collation from
@@ -336,15 +336,15 @@ abstract class Column implements QueryField, ColumnInterface {
             $this->sql_collation = '';
             return;
         }
-        
+
         if (!in_array($this->sqltype, SqlTypes::getTextual())) {
             $err = "Wrong kind of column ({$this->sqltype}) for a collation";
             throw new InvalidArgumentException($err);
         }
         $this->sql_collation = $collation;
     }
-    
-    
+
+
     /**
      * Defines a comments for this column
      *
@@ -353,12 +353,12 @@ abstract class Column implements QueryField, ColumnInterface {
     function setComment ($str) {
         $this->comment = (string) $str;
     }
-    
+
     /**
      * Sets whether this column is mandatory or not
-     * 
+     *
      * Mandatory columns require the user to enter some data.
-     * 
+     *
      * @param bool $bool Whether the column should be mandatory or not.
      */
     function setMandatory ($bool) {
@@ -368,39 +368,39 @@ abstract class Column implements QueryField, ColumnInterface {
             $this->mandatory = false;
         }
     }
-    
-    
+
+
     /**
      * Stores a back-reference from this column to the table to which it
      * belongs.
-     * 
+     *
      * @param Table $table The table under which this column resides.
      */
     function setTable (Table $table) {
         $this->table = $table;
     }
-    
-    
+
+
     /**
      * Gets the database name of this column
-     * 
+     *
      * @return string The database name of this column.
      */
     function getName () {
         return $this->name;
     }
-    
-    
+
+
     /**
      * Gets the plain english name of this column
-     * 
+     *
      * @return string The plain english name of this column.
      */
     function getEngName () {
         return $this->engname;
     }
-    
-    
+
+
     /**
      * Gets the full name (table.column)
      * @return string
@@ -410,8 +410,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $name .= '.' . $this->name;
         return $name;
     }
-    
-    
+
+
     /**
      * @author benno, 2013-01-08
      */
@@ -425,51 +425,51 @@ abstract class Column implements QueryField, ColumnInterface {
         }
         return false;
     }
-    
-    
+
+
     /**
      * Gets the SQL type of this column
      * e.g. INT or VARCHAR, etc.
-     * 
+     *
      * @return string The SQL type of this column.
      */
     function getSqlType () {
         return $this->sqltype;
     }
-    
-    
+
+
     /**
      * Gets the SQL size of this column
      * e.g. 11 (for an INT type); 6, 2 (for a DECIMAL type).
-     * 
+     *
      * @return string The SQL size of this column.
      */
     function getSqlSize () {
         return $this->sql_size;
     }
-    
-    
+
+
     /**
      * Gets the SQL attributes of this column
      * e.g. AUTO_INCREMENT.
-     * 
+     *
      * @return array The SQL attributes of this column.
      */
     function getSqlAttributes () {
         return $this->sql_attributes;
     }
-    
-    
+
+
     /**
      * Gets whether or not this column is mandatory.
-     * 
+     *
      * @return bool
      */
     function isMandatory () {
         return $this->mandatory;
     }
-    
-    
+
+
     /**
      * Gets whether or not this column has the 'NOT NULL' sql attribute set
      *
@@ -483,8 +483,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return true;
         }
     }
-    
-    
+
+
     /**
      * Gets whether or not this column is of a numeric SQL type
      * @return bool
@@ -492,8 +492,8 @@ abstract class Column implements QueryField, ColumnInterface {
     function isNumeric() {
         return in_array($this->sqltype, SqlTypes::getNumeric());
     }
-    
-    
+
+
     /**
      * Gets whether or not this column has the AUTO_INCREMENT sql attribute set
      *
@@ -509,8 +509,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return false;
         }
     }
-    
-    
+
+
     /**
      * Gets whether or not this column has the UNSIGNED sql attribute set
      *
@@ -525,8 +525,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return false;
         }
     }
-    
-    
+
+
     /**
      * Gets the default value for a column if it has one
      *
@@ -536,7 +536,7 @@ abstract class Column implements QueryField, ColumnInterface {
     function getDefault () {
         return $this->default;
     }
-    
+
     /**
      * Sets the default value for this column.
      * This function does no checking, so collateInput should be called on the
@@ -548,25 +548,25 @@ abstract class Column implements QueryField, ColumnInterface {
     function setDefault ($value) {
         $this->default = $value;
     }
-    
-    
+
+
     /**
      * Get the comment defined for this column
-     * 
+     *
      * @return string Comment about this column, stored by and for the database
      * programmer
      */
     function getComment () {
         return $this->comment;
     }
-    
-    
+
+
     /**
      * Get the SQL definition for this column.
-     * 
+     *
      * This includes the type, size and attributes combined in the normal SQL
      * manner, e.g. INT(10) UNSIGNED AUTO_INCREMENT
-     * 
+     *
      * @return string The SQL definition.
      */
     function getSqlDefn() {
@@ -587,19 +587,19 @@ abstract class Column implements QueryField, ColumnInterface {
         }
         return $sql;
     }
-    
+
     /**
      * Get the table to which this column belongs.
-     * 
+     *
      * @return mixed The Table, or null.
      */
     function getTable () {
         return $this->table;
     }
-    
+
     /**
      * Determine if this column is linked to the specified table
-     * 
+     *
      * @param Table $table The table to be checked
      * @return bool True if this column is linked to the table
      * @deprecated is this used? If not, don't keep it
@@ -609,8 +609,8 @@ abstract class Column implements QueryField, ColumnInterface {
         if ($this instanceof LinkColumn and $this->getLink ()->getToTable () === $table) return true;
         return false;
     }
-    
-    
+
+
     /**
      * Does this column have a link?
      * @return bool True if this column has a link, false otherwise
@@ -623,8 +623,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return true;
         }
     }
-    
-    
+
+
     /**
      * Gets the mandatory suffix for this column, to append to an input label
      * @return string The string will be empty if the column isn't mandatory
@@ -636,8 +636,8 @@ abstract class Column implements QueryField, ColumnInterface {
         }
         return '';
     }
-    
-    
+
+
     /**
      * Gets a label for this column, to use on add/edit forms
      * @author benno 2011-08-30
@@ -645,7 +645,7 @@ abstract class Column implements QueryField, ColumnInterface {
     function getInputLabel () {
         $label = hsc ($this->engname). $this->getMandatorySuffix ();
         $help_columns = Runtime::get_help_text();
-        
+
         $db = $this->table->getDatabase();
         if (@$_SESSION['setup']['view_h'] and $db->getHelpTable () != null) {
             $label .= ' <a href="help_edit.php?t='. hsc ($this->getTable ()->getName ());
@@ -654,15 +654,15 @@ abstract class Column implements QueryField, ColumnInterface {
             $label .= ' <a href="help.php?t='. hsc ($this->getTable ()->getName ());
             $label .= '&amp;c='. hsc ($this->getName ()). '" target="_blank" onclick="return popup_a(this);" class="help">[?]</a>';
         }
-        
+
         $quick_help = trim(@$help_columns[$this->getName()]['QuickHelp']);
         if ($quick_help != '') {
             $label .= "<div class=\"quick_help\">". hsc ($quick_help). "</div>";
         }
         return $label;
     }
-    
-    
+
+
     /**
      * Common code to run at the start of each subclass' attachInputField
      * method. This sets up a DOMDocument with a <<form>> element if necessary,
@@ -684,8 +684,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $p = HtmlDom::appendNewChild($form_el, 'p', array('class' => 'input'));
         return $p;
     }
-    
-    
+
+
     /**
      * Attaches one or more input fields appropriate for this column to the
      * Form to which it belongs.
@@ -693,7 +693,7 @@ abstract class Column implements QueryField, ColumnInterface {
      * The DOMNodes generated may be for a plain text input field, a text area,
      * a JavaScript Rich Text Editor field, a file input field, etc. The type
      * of field is determined by the class of the column, and its SQL type.
-     * 
+     *
      * @param Form $form The form in which this element will be displayed
      * @param string $input_value The preset value for the input field, if
      *        applicable
@@ -715,7 +715,7 @@ abstract class Column implements QueryField, ColumnInterface {
      * @return void
      */
     abstract function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array());
-    
+
     function getInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array ()) {
         $this->attachInputField($form, $input_value, $primary_key, $field_params);
         $form_doc = $form->getDoc();
@@ -731,11 +731,11 @@ abstract class Column implements QueryField, ColumnInterface {
             }
         }
     }
-    
-    
+
+
     /**
      * Gets the text used to display the value stored in a non-editable column.
-     * 
+     *
      * @param string $input_value the value to be displayed
      * @return string The HTML text to be used to display the value.
      * @todo code something that will make the link query have a where clause
@@ -744,11 +744,11 @@ abstract class Column implements QueryField, ColumnInterface {
     function displayValue ($input_value = '') {
         return hsc($input_value, ENT_COMPAT, '', false);
     }
-    
-    
+
+
     /**
      * Adds a display-only value to a Form (for a non-editable field)
-     * 
+     *
      * @param Form $form The form on which to display the value
      * @param string $value The value to be displayed
      * @param array $pk The primary key of the row which contains the value
@@ -761,16 +761,16 @@ abstract class Column implements QueryField, ColumnInterface {
         $form_el->appendChild($p);
         HtmlDom::appendNewText($p, $value);
     }
-    
-    
+
+
     /**
      * Returns an debugger-friendly version of this object
      */
     function __toString () {
         return 'Column:'. $this->table->getName (). '.'. $this->name;
     }
-    
-    
+
+
     /**
      * Gets the HTML for the configuration settings for a column of this class.
      * n.b. this method should be overridden by each Column class
@@ -783,8 +783,8 @@ abstract class Column implements QueryField, ColumnInterface {
     static function getConfigFormFields (array $config, $class) {
         return '';
     }
-    
-    
+
+
     /**
      * Gets the configuration input fields for a JS onchange method
      * @return string
@@ -797,8 +797,8 @@ abstract class Column implements QueryField, ColumnInterface {
                 hsc ($config['onchange']). "\"></span>\n".
             "    </p>\n";
     }
-    
-    
+
+
     /**
      * Calls collateInput or collateMultiInputs using the relevant source
      * data from $_POST or $_FILES
@@ -811,7 +811,7 @@ abstract class Column implements QueryField, ColumnInterface {
         } else {
             $source = $_POST;
         }
-        
+
         if (method_exists($this, 'collateMultiInputs')) {
             return $this->collateMultiInputs($source, $original_value);
         } else {
@@ -819,8 +819,8 @@ abstract class Column implements QueryField, ColumnInterface {
             return $this->collateInput($input, $original_value);
         }
     }
-    
-    
+
+
     /**
      * Gets the data posted from a form
      * @param mixed $data Data submission, e.g. $_POST['AwesomeField']
@@ -837,8 +837,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $original_value = $value;
         return array ($this->name => $value);
     }
-    
-    
+
+
     /**
      * Checks to see if collated input (from collateInput()) is empty or not
      * @param array $input Collated input (result of collateInput)
@@ -849,8 +849,8 @@ abstract class Column implements QueryField, ColumnInterface {
         $value = (string) reset ($input);
         if ($value == '') return true;
     }
-    
-    
+
+
     /**
      * Gets the friendly name used for this column - i.e. the key that exists
      * in the $_POST array if the column name is used as a field name on a web
@@ -861,8 +861,8 @@ abstract class Column implements QueryField, ColumnInterface {
     function getPostSafeName () {
         return str_replace (' ', '_', $this->name);
     }
-    
-    
+
+
     /**
      * Applies config options in setup from a column creation/edit form
      * @param array $config The data posted from the form
@@ -873,13 +873,13 @@ abstract class Column implements QueryField, ColumnInterface {
     function applyConfig(array $config, array &$errors) {
         // to be extended in subclasses
     }
-    
-    
+
+
     function getTextFilterArray () {
         throw new Exception ('This is only applicable to the StringColumn class and its subclasses');
     }
-    
-    
+
+
     /**
      * Identify this column in a specific context
      *
@@ -892,8 +892,8 @@ abstract class Column implements QueryField, ColumnInterface {
         if ($context == 'row') return $this->name;
         return '`'. $this->table->getName(). '`.`'. $this->name. '`';
     }
-    
-    
+
+
     /**
      * Gets the appropriate TH for use on a main list, perhaps with colspan
      * @return string e.g. <th>Awesome column</th>
@@ -901,11 +901,11 @@ abstract class Column implements QueryField, ColumnInterface {
      function getTH() {
          return '<th>' . hsc($this->getEngName()) . '</th>';
      }
-    
-    
+
+
     /**
      * gets the appropriate TD for use on a main list, perhaps with colspan
-     * 
+     *
      * @param string $data the data for this cell
      * @param string $pk the primary key identifier for the row
      * @return string
@@ -913,8 +913,8 @@ abstract class Column implements QueryField, ColumnInterface {
      function getTD($data, $pk) {
          return '<td>' . hsc($data) . '</td>';
      }
-     
-     
+
+
      /**
       * Gets an array of backlinks to this column from other tables
       * in the database
@@ -933,8 +933,8 @@ abstract class Column implements QueryField, ColumnInterface {
          }
          return $backlinks;
      }
-     
-     
+
+
      /**
       * Gets info relevant to this column type to display in the column list
       * in the setup area

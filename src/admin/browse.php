@@ -61,26 +61,26 @@ $ancestors = array();
 $parent_table = null;
 if (trim(@$_GET['p']) != '') {
     $ancestors = explode(',', $_GET['p']);
-    
+
     $parent_name = false;
     $parent_id = null;
     $parent_num = 0;
     foreach ($ancestors as $ancestor) {
         list ($ancestor_name, $ancestor_pk) = explode ('.', $ancestor);
-        
+
         $ancestor_table = $db->getTable ($ancestor_name);
         if ($ancestor_table == null) {
             report_error ("Invalid ancestor {$ancestor_name}");
             die ();
         }
-        
+
         if ($parent_num++ == 0) {
             $parent_id = $ancestor_pk;
             $parent_name = $ancestor_name;
             $parent_table = $ancestor_table;
         }
     }
-    
+
     if ($db->getShowPrimaryHeadings ()) {
         if (count($ancestors) > 0) {
             echo "<h2>{$ancestor_table->getEngName ()}</h2>";
@@ -88,7 +88,7 @@ if (trim(@$_GET['p']) != '') {
             echo "<h2>{$table->getEngName ()}</h2>";
         }
     }
-    
+
     show_parent_siblings ($table, $ancestors);
 }
 
@@ -101,7 +101,7 @@ if ($db->getShowSectionHeadings ()) {
         $alt_name = $col->getLink()->getAltEngName ();
         if ($alt_name) $heading_text = $alt_name;
     }
-    
+
     if ($db->getShowPrimaryHeadings () and count($ancestors) > 0) {
         echo "<h3>{$heading_text}</h3>";
     } else {
@@ -117,26 +117,26 @@ check_session_response (ADMIN_KEY);
 ##
 ##    Handle joiner table view
 if ($table->isJoiner () and $parent_id != null) {
-    
+
     // comments
     if ($parent_table != null) {
         $filename = 'advice/' . strtolower ($_GET['t']) . '.' . strtolower ($parent_name) . '.edit.php';
         @include $filename;
     }
-    
+
     // shove this off into a separate file for now
     $caller = 'main.php';
     require_once 'main_joiner.php';
-    
-    
-    
+
+
+
 ##
 ##    Handle rows table view
 } else if ($table->getDisplayStyle () == TABLE_DISPLAY_STYLE_ROWS) {
-    
+
     // comments
     $advice_file = 'advice/'. strtolower ($_GET['t']). '.main.php';
-    
+
     if ($parent_table != null) {
         $filename = 'advice/'. strtolower ($_GET['t']). '.'. strtolower ($parent_name). '.main.php';
         if (file_exists($filename)) {
@@ -147,16 +147,16 @@ if ($table->isJoiner () and $parent_id != null) {
     } else if (file_exists($advice_file)) {
         require $advice_file;
     }
-    
+
     // import our columns
     $main = new MainTable ($table);
-    
+
     // add the ancestors to the filter hate list
     foreach ($ancestors as $ancestor) {
         list($ancestor) = explode('.', $ancestor);
         $main->addFilterSkipTable($ancestor);
     }
-    
+
     // determine if there are any records at all in this table
     // this currently does the whole table. one day we may narrow it to only this tab if we are on a tab
     $q = "SELECT Count(*) as Count FROM `{$_GET['t']}`";
@@ -165,14 +165,14 @@ if ($table->isJoiner () and $parent_id != null) {
     if ($row['Count'] < 3 and @count($_SESSION[ADMIN_KEY]['search_params']) == 0) {
         $main->clearSearchCols ();
     }
-    
+
     // parent table support
     if (count($ancestors) > 0) {
         // changed by benno: the where clause doesn't need to reference the linked table, only the base
         $query = $main->getSelectQuery ();
         $link_col = $table->getLinkToTable ($parent_table);
         $query_col = new QueryColumn ($query->getBaseTable (), $link_col->getName ());
-        
+
         // Use integer value where possible for parent joins
         if (preg_match ('/^-?[0-9]+$/', $parent_id)) {
             $escape_literal = false;
@@ -180,32 +180,32 @@ if ($table->isJoiner () and $parent_id != null) {
             $escape_literal = true;
         }
         $parent_literal = new QueryFieldLiteral ($parent_id, $escape_literal);
-        
+
         // condition for parent join
         $cond = new LogicConditionNode (
             $query_col,
             LOGIC_CONDITION_EQ,
             $parent_literal
         );
-        
+
         // modify the query handler
         $where = $query->getWhere ();
         $where->addCondition ($cond, LOGIC_TREE_AND);
     }
-    
+
     // apply the filters
     if (@count($_SESSION[ADMIN_KEY]['search_params'][$table->getName ()]) > 0) {
         $main->applyFilters ($_SESSION[ADMIN_KEY]['search_params'][$table->getName ()]);
     }
-    
+
     // show the table to the user
     echo $main->getHtml (null, $num_per_page, $table->showSearch ());
-    
-    
+
+
 ##
 ##    Handle tree table view
 } else if ($table->getDisplayStyle () == TABLE_DISPLAY_STYLE_TREE) {
-    
+
     // comments
     if ($parent_table != null) {
         $filename = 'advice/'. strtolower ($_GET['t']). '.' . strtolower ($parent_name). '.main.php';
@@ -217,11 +217,11 @@ if ($table->isJoiner () and $parent_id != null) {
     } else {
         @include "advice/" . strtolower($_GET['t']) . ".main.php";
     }
-    
+
     // show partition if it exists
     $partition = $table->getPartition ();
     if ($partition != null) {
-        
+
         // if the partition field is one of the parents, don't show it.
         if (count($ancestors) > 0) {
             $link = $partition->getLink ();
@@ -234,7 +234,7 @@ if ($table->isJoiner () and $parent_id != null) {
                 }
             }
         }
-        
+
         // show the partition field
         if ($partition != null) {
             echo "<div id=\"filter\">
@@ -250,31 +250,31 @@ if ($table->isJoiner () and $parent_id != null) {
             </div>\n";
         }
     }
-    
+
     list ($urls, $seps) = $table->getPageUrls ();
-    
+
     echo "<form method=\"post\" name=\"rows_", $table->getName (), "\" action=\"{$urls['main_action']}\">\n";
     echo "<input type=\"hidden\" name=\"_t\" value=\"", $table->getName (), "\">\n";
-    
+
     if ($_GET['p'] != '') {
         echo "<input type=\"hidden\" name=\"_p\" value=\"", htmlspecialchars ($_GET['p']), "\">\n";
     }
-    
+
     $button_text = $table->getAltButtons ();
     if ($button_text['main_add'] == '') {
         $button_text['main_add'] = 'Add new '. strtolower ($table->getNameSingle ());
     }
     if ($button_text['main_delete'] == '') $button_text['main_delete'] = 'Delete selected';
     if ($table->getAllowed ('add')) {
-        
+
         echo "<p><input type=\"button\" name=\"add\" value=\"{$button_text['main_add']}\"",
             " onclick=\"window.location = '{$urls['main_add']}{$seps['main_add']}t=",
             urlencode ($table->getName ());
-        
+
         if ($_GET['p'] != '') {
             echo "&p={$_GET['p']}";
         }
-        
+
         echo "';\"></p>\n";
     }
     // show me the tree
@@ -308,7 +308,7 @@ if ($table->isJoiner () and $parent_id != null) {
         }
         $order_list_item_num++;
     }
-    
+
     // get first field that links back to this table
     $link_col = '';
     $columns = $table->getColumns ();
@@ -320,9 +320,9 @@ if ($table->isJoiner () and $parent_id != null) {
             break;
         }
     }
-    
+
     $q = "SELECT ". implode (', ', $cols). " FROM `". $table->getName (). '`';
-    
+
     if ($partition !== null) {
         $partn_link = $partition->getLink ();
         $partn_col = $partn_link->getToColumn ();
@@ -348,14 +348,14 @@ if ($table->isJoiner () and $parent_id != null) {
             }
         }
     }
-    
+
     if (($_SESSION[ADMIN_KEY]['partition'][$table->getName ()] != '') and isset ($partition)) {
         $q .= "\nWHERE `". $table->getName (). "`.`". $partition->getName (). '` = '.
             sql_enclose ($_SESSION[ADMIN_KEY]['partition'][$table->getName ()]);
         $q .= " OR `". $table->getName (). "`.`{$link_col}` != 0";
         $has_where = true;
     }
-    
+
     // parent table support
     // this is the non-SelectQuery version of a function above
     if (count($ancestors) > 0) {
@@ -364,28 +364,28 @@ if ($table->isJoiner () and $parent_id != null) {
         } else {
             $q .= ' WHERE ';
         }
-        
+
         $link_column = $table->getLinkToTable ($parent_table);
-        
-        
+
+
         // Use integer value where possible for parent joins
         if (!preg_match ('/^[0-9]+$/', $parent_id)) {
             $parent_id = sql_enclose($parent_id);
         }
-        
+
         $q .= '`'. $_GET['t']. '`.`'. $link_column->getName (). '` = '. $parent_id;
     }
-    
+
     if (count($order_list) > 0) {
         $q .= "\nORDER BY ". implode (', ', $order_list);
     }
     if ($_SESSION['setup']['view_q']) echo "Q: {$q}<br>\n";
-    
+
     echo "<div id=\"tree_{$table->getName ()}\" class=\"tree_display\"></div>\n\n";
-    
+
     $res = execq($q);
     if ($res->rowCount() > 0) {
-        
+
         echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
         echo "var tree_display = new treeDisplay ('{$table->getName ()}');\n";
         if ($has_ordernum) {
@@ -396,21 +396,21 @@ if ($table->isJoiner () and $parent_id != null) {
         echo "var down_image = '" . ROOT_PATH_WEB . IMAGE_ARROW_DOWN . "';\n";
         echo "var plus_image = '" . ROOT_PATH_WEB . IMAGE_TREE_PLUS . "';\n";
         echo "var minus_image = '" . ROOT_PATH_WEB . IMAGE_TREE_MINUS . "';\n";
-        
+
         $nodes = array ();
         $remnant_nodes = array ();
         $root_num = 0;
         $element_num = 0;
-        
+
         $max_chars = $table->getTreeNodeChars ();
-        
+
         while ($row = fetch_assoc($res)) {
-            
+
             // apply node name truncation if specified
             if ($max_chars > 0 and strlen ($row[$view_col]) > $max_chars) {
                  $row[$view_col] = substr ($row[$view_col], 0, $max_chars - 3). '...';
             }
-            
+
             echo "node{$element_num} = new treeNode (tree_display, '", addslashes ($row[$pk_name]), "', '",
                 addslashes ($row[$view_col]), "'";
             if ($row[$link_col] == 0 and !$table->getTopNodesEnabled ()) {
@@ -440,7 +440,7 @@ if ($table->isJoiner () and $parent_id != null) {
                 }
             }
         }
-        
+
         // echo "updateTreeDisplay ('select', 'document.forms.test.id');\n";
         if ($_GET['_open'] != '' and cast_to_string ($nodes[$_GET['_open']]) != '') {
             echo "node{$nodes[$_GET['_open']]}.makeOpen ();\n";
@@ -451,7 +451,7 @@ if ($table->isJoiner () and $parent_id != null) {
         }
         echo "&id=');\n";
         echo "</script>\n";
-        
+
         if ($table->getAllowed ('del')) {
             if ($table->getConfirmDel ()) {
                 echo "<input type=\"hidden\" name=\"rem\" value=\"\">\n";
@@ -464,7 +464,7 @@ if ($table->isJoiner () and $parent_id != null) {
     } else {
         echo "<p>No ", strtolower ($table->getEngName ()), " available</p>\n";
     }
-    
+
     echo "</form>\n";
 }
 ?>
