@@ -54,10 +54,10 @@ if (trim(@$_GET['p']) != '') {
 
 if ($db->getShowPrimaryHeadings ()) {
     if (count($parents) > 0) {
-        
+
         list ($ancestor_name) = explode ('.', $parents[count($parents) - 1]);
         $ancestor_table = $db->getTable ($ancestor_name);
-        
+
         echo "<h2>{$ancestor_table->getEngName ()}</h2>";
     } else {
         echo "<h2>{$table->getEngName ()}</h2>";
@@ -127,4 +127,3 @@ echo $doc->saveXML($doc->documentElement);
 echo "</div>\n";
 
 require "foot.php";
-?>

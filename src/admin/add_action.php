@@ -30,13 +30,13 @@ class StaticAddModifier extends FormModifier {
         // text state, e.g. SET Password = SHA('my_password'). In addition,
         // only end data are logged, not function calls.
         $db = Database::parseXML();
-        
+
         $table = $form->getTable();
         $cols = $table->getColumns();
         $pk_col_names = $table->getPKnames();
         $pk_values = (array) $insert_id;
         $pk = array_combine($pk_col_names, $pk_values);
-        
+
         $q = new SelectQuery($table);
         foreach ($cols as $col) {
             $q->addSelectField($col);
@@ -45,18 +45,18 @@ class StaticAddModifier extends FormModifier {
             $col = $table->get($col_name);
             $q->getWhere()->addNewCondition($col, '=', $value, LOGIC_TREE_AND);
         }
-        
+
         $res = execq($q);
         $log_error = false;
         $rows = (int) @$res->rowCount();
         if ($rows == 1) {
             if ($row = @fetch_assoc($res)) {
-                
+
                 $q = 'INSERT INTO `'. $table->getName (). '` SET ';
                 $field_num = 0;
                 foreach ($row as $field => $value) {
                     if (++$field_num > 1) $q .= ', ';
-                    
+
                     // if it is known that a field is numeric, don't use string values in the logged update query
                     if ($value !== null) {
                         $col_ref = $table->get ($field);
@@ -66,7 +66,7 @@ class StaticAddModifier extends FormModifier {
                     }
                     $q .= "`{$field}` = ". sql_enclose ($value, false);
                 }
-                
+
                 log_action("Added row in static table " . $table->getName(), $q);
             } else {
                 $log_error = "failed to fetch row";
@@ -96,4 +96,3 @@ $form->setSuccessURL($success_url);
 $form->load("admin.{$table->getName()}");
 $form->setType('add');
 $form->process();
-

@@ -194,5 +194,3 @@ function show_parent_siblings (Table $self, $parents) {
 
     }
 }
-
-?>

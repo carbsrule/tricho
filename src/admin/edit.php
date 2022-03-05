@@ -51,7 +51,7 @@ $prim_key_clauses = array ();
 if (count($primary_key_cols) == count($primary_key_values)) {
     foreach($primary_key_cols as $col_id => $col) {
         $val = array_pop($primary_key_values);
-        
+
         $old_val = 0;
         try {
             $val = $col->collateInput($val, $old_val);
@@ -61,7 +61,7 @@ if (count($primary_key_cols) == count($primary_key_values)) {
             require 'foot.php';
             exit(1);
         }
-        
+
         $prim_key_clauses[] = '`'. $table->getName (). "`.`{$col->getName ()}` = " . sql_enclose ($val);
         $primary_keys[$col->getName ()] = $val;
     }
@@ -90,10 +90,10 @@ if (trim(@$_GET['p']) != '') {
 
 if ($db->getShowPrimaryHeadings ()) {
     if (count($parents) > 0) {
-        
+
         list ($ancestor_name) = explode ('.', $parents[count($parents) - 1]);
         $ancestor_table = $db->getTable ($ancestor_name);
-        
+
         echo "<h2>{$ancestor_table->getEngName ()}</h2>";
     } else {
         echo "<h2>{$table->getEngName ()}</h2>";
@@ -107,7 +107,7 @@ show_children ($table, $identifier);
 if ($db->getShowSectionHeadings()) {
     $act = 'Editing';
     if (! $table->getAllowed ('edit')) $act = 'Viewing';
-    
+
     $lc = strtolower ($table->getNameSingle());
     if ($identifier != '') $identifier = ': ' . $identifier;
     if (count($parents) > 0 or $db->getShowPrimaryHeadings ()) {
@@ -158,12 +158,12 @@ $res = execq($q);
 
 if (@$res->rowCount() == 1) {
     check_session_response (ADMIN_KEY);
-    
+
     // Init form
     $id = empty($_GET['f'])? '': $_GET['f'];
     $form = new Form($id);
     if ($id == '') $id = $form->getID();
-    
+
     // Layer session data over row data
     $row = fetch_assoc($res);
     if (isset($_SESSION[ADMIN_KEY]['forms'][$id])) {
@@ -171,7 +171,7 @@ if (@$res->rowCount() == 1) {
             $row[$key] = $value;
         }
     }
-    
+
     // Display form
     $form->setFormURL('edit.php?t=' . $table->getName());
     $form->setActionURL('edit_action.php');
@@ -182,18 +182,18 @@ if (@$res->rowCount() == 1) {
     }
     $session = &$_SESSION[ADMIN_KEY]['forms'][$id];
     $doc = $form->generateDoc($row, $session['errors'], [$_GET['id']]);
-    
+
     $form_el = $doc->getElementsByTagName('form')->item(0);
     $params = ['type' => 'hidden', 'name' => '_t', 'value' => $table->getName()];
     HtmlDom::appendNewChild($form_el, 'input', $params);
-    
+
     $params['name'] = '_id';
     $params['value'] = $_GET['id'];
     HtmlDom::appendNewChild($form_el, 'input', $params);
-    
+
     echo $doc->saveXML($doc->documentElement);
-    
-    
+
+
 } else {
     check_session_response (ADMIN_KEY);
     report_error ('Invalid key provided');
@@ -201,4 +201,3 @@ if (@$res->rowCount() == 1) {
 
 echo "</div>\n";
 require "foot.php";
-?>
