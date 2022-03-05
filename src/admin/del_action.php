@@ -46,7 +46,7 @@ if (@$_POST['_p']) {
 
         $col = $table->getLinkToTable ($parent_table);
 
-        $alt_name = $col->getLink ()->getAltEngName ();
+        $alt_name = $col->getAltEngName();
         if ($alt_name) $table_eng_name = $alt_name;
 
         // Ready for the future
