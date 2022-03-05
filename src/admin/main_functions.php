@@ -5,6 +5,7 @@
  * See COPYRIGHT.txt and LICENCE.txt in the tricho directory for more details.
  */
 
+use Tricho\Meta\Database;
 use Tricho\Meta\Table;
 
 /**
@@ -193,4 +194,30 @@ function show_parent_siblings (Table $self, $parents) {
         echo '</ul>';
 
     }
+}
+
+/**
+ * Gets the ancestor tables and IDs from an ancestor string
+ * @param string ancestors e.g. brands.7,models.6,variants.89
+ * @return array [['table' => Table|null, 'id' => string], ...]
+ */
+function parse_ancestors($ancestors_str) {
+    $db = Database::parseXML();
+    $result = [];
+    $ancestors = explode(',', $ancestors_str);
+    foreach ($ancestors as $ancestor) {
+        $parts = array_filter(explode('.', $ancestor, 2));
+        if (count($parts) != 2) {
+            return $result;
+        }
+        $table = $db->get($parts[0]);
+        if (!$table) {
+            return $result;
+        }
+        $result[] = [
+            'table' => $table,
+            'id' => $parts[1],
+        ];
+    }
+    return $result;
 }

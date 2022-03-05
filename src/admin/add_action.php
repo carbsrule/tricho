@@ -22,6 +22,8 @@ if (!$table->checkAuth ()) {
     redirect ('./');
 }
 
+require_once 'main_functions.php';
+
 // TODO: move to separate class in db_interface
 class StaticAddModifier extends FormModifier {
     function postProcess(Form $form, array $data, $insert_id, array $codes) {
@@ -82,8 +84,21 @@ class StaticAddModifier extends FormModifier {
     }
 }
 
+$parent = null;
+$ancestors = [];
+$ancestors_str = @trim($_POST['_p']);
+if ($ancestors_str) {
+    $ancestors = parse_ancestors($ancestors_str);
+    if (count($ancestors) > 0) {
+        $parent = $ancestors[0];
+    }
+}
+
 list($urls, $seps) = $table->getPageUrls(['add', 'browse']);
 $form_url = $urls['add'] . $seps['add'] . 't=' . $table->getName();
+if ($ancestors_str) {
+    $form_url .= '&p=' . urlencode($ancestors_str);
+}
 if (empty($_POST['_f'])) redirect($form_url);
 $id = $_POST['_f'];
 $form = new Form($id);
@@ -92,7 +107,20 @@ $form = new Form($id);
 if ($table->isStatic()) $form->setModifier(new StaticAddModifier());
 $form->setFormURL($form_url);
 $success_url = $urls['browse'] . $seps['browse'] . 't=' . $table->getName();
+if ($ancestors_str) {
+    $success_url .= '&p=' . urlencode($ancestors_str);
+}
 $form->setSuccessURL($success_url);
 $form->load("admin.{$table->getName()}");
+
+// Set parent data
+if ($parent) {
+    $link_col = $form->getTable()->getLinkToParentTable($parent['table']);
+    $link_item = $form->getColumnItem($link_col);
+    if ($link_item) {
+        $_POST[$link_col->getPostSafeName()] = $parent['id'];
+    }
+}
+
 $form->setType('add');
 $form->process();

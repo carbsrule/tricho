@@ -84,16 +84,15 @@ $parent_table = null;
 if (trim(@$_GET['p']) != '') {
     $parents = explode (',', $_GET['p']);
     if (count ($parents) > 0) {
-        list ($parent_table) = explode ('.', $parents[0]);
+        list($parent_table, $parent_id) = explode('.', $parents[0]);
+        $parent_id = trim($parent_id);
     }
 }
 
 if ($db->getShowPrimaryHeadings ()) {
     if (count($parents) > 0) {
-
         list ($ancestor_name) = explode ('.', $parents[count($parents) - 1]);
         $ancestor_table = $db->getTable ($ancestor_name);
-
         echo "<h2>{$ancestor_table->getEngName ()}</h2>";
     } else {
         echo "<h2>{$table->getEngName ()}</h2>";
@@ -190,6 +189,16 @@ if (@$res->rowCount() == 1) {
     $params['name'] = '_id';
     $params['value'] = $_GET['id'];
     HtmlDom::appendNewChild($form_el, 'input', $params);
+
+    // Parent ID if accessed via parent
+    if ($ancestors = trim(@$_GET['p'])) {
+        $params = [
+            'type' => 'hidden',
+            'name' => '_p',
+            'value' => $ancestors,
+        ];
+        HtmlDom::appendNewChild($form_el, 'input', $params);
+    }
 
     echo $doc->saveXML($doc->documentElement);
 

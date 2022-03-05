@@ -45,19 +45,19 @@ echo "<div id=\"main_data\">\n";
 // tabs
 $parents = array();
 $parent_table = null;
+$parent_id = null;
 if (trim(@$_GET['p']) != '') {
     $parents = explode (',', $_GET['p']);
     if (count ($parents) > 0) {
-        list ($parent_table) = explode ('.', $parents[0]);
+        list($parent_table, $parent_id) = explode('.', $parents[0]);
+        $parent_id = trim($parent_id);
     }
 }
 
 if ($db->getShowPrimaryHeadings ()) {
     if (count($parents) > 0) {
-
         list ($ancestor_name) = explode ('.', $parents[count($parents) - 1]);
         $ancestor_table = $db->getTable ($ancestor_name);
-
         echo "<h2>{$ancestor_table->getEngName ()}</h2>";
     } else {
         echo "<h2>{$table->getEngName ()}</h2>";
@@ -116,11 +116,35 @@ if (!isset($_SESSION[ADMIN_KEY]['forms'][$id])) {
     $_SESSION[ADMIN_KEY]['forms'][$id] = ['values' => [], 'errors' => []];
 }
 $session = &$_SESSION[ADMIN_KEY]['forms'][$id];
+
+// Remove field pointing to parent table
+$parent_link = null;
+$parent_item = null;
+if ($parent_id) {
+    $parent_link = $table->getLinkToParentTable($db->get($parent_table));
+}
+if ($parent_link) {
+    $parent_item = $form->getColumnItem($parent_link, 'add');
+    if ($parent_item) {
+        $form->removeItem($parent_item);
+    }
+}
+
 $doc = $form->generateDoc($session['values'], $session['errors']);
 
 $form_el = $doc->getElementsByTagName('form')->item(0);
 $params = ['type' => 'hidden', 'name' => '_t', 'value' => $table->getName()];
 HtmlDom::appendNewChild($form_el, 'input', $params);
+
+// Parent ID if accessed via parent
+if ($ancestors = trim(@$_GET['p'])) {
+    $params = [
+        'type' => 'hidden',
+        'name' => '_p',
+        'value' => $ancestors,
+    ];
+    HtmlDom::appendNewChild($form_el, 'input', $params);
+}
 
 echo $doc->saveXML($doc->documentElement);
 
