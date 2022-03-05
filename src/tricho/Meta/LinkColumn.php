@@ -155,13 +155,13 @@ class LinkColumn extends Column {
         $fields .= "<p>Parent: ";
         $fields .= "<label for=\"{$class}_parent_y\">";
         $fields .= "<input type=\"radio\" id=\"{$class}_parent_y\" name=\"is_parent\"";
-        if ($config['is_parent'] == 1) {
+        if (@$config['is_parent'] == 1) {
             $fields .= ' checked';
         }
         $fields .= ' value="1">Yes</label>';
         $fields .= "<label for=\"{$class}_parent_n\">";
         $fields .= "<input type=\"radio\" id=\"{$class}_parent_n\" name=\"is_parent\"";
-        if ($config['is_parent'] == 0) {
+        if (@$config['is_parent'] == 0) {
             $fields .= 'checked';
         }
         $fields .= ' value="0">No</label>';
