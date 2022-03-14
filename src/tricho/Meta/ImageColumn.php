@@ -24,7 +24,7 @@ use Tricho\Util\HtmlDom;
  */
 class ImageColumn extends FileColumn {
     private $variants = array();
-    
+
     /**
      * Creates a DOMElement that represents this column (for use in tables.xml)
      * @param DOMDocument $doc The document to which this node will belong
@@ -45,8 +45,8 @@ class ImageColumn extends FileColumn {
         }
         return $node;
     }
-    
-    
+
+
     /**
      * @author benno 2012-10-27
      */
@@ -73,8 +73,8 @@ class ImageColumn extends FileColumn {
             $this->addVariant($name, $data);
         }
     }
-    
-    
+
+
     /**
      * Adds capacity for a sized variant of each image
      * @author benno 2012-10-27
@@ -89,13 +89,13 @@ class ImageColumn extends FileColumn {
                     throw new Exception ("Unknown processing method");
                 }
                 break;
-            
+
             case 'max_size':
                 if (!preg_match('/^[0-9]+x[0-9]+$/', $val)) {
                     throw new Exception ("Invalid max size");
                 }
                 break;
-            
+
             case 'min_size':
                 if (!preg_match('/^(max|width|height|either|[0-9]+x[0-9]+)$/', $val)) {
                     throw new Exception ("Invalid min size: " . (string) $val);
@@ -104,13 +104,13 @@ class ImageColumn extends FileColumn {
         }
         $this->variants[$name] = $data;
     }
-    
-    
+
+
     function getVariants() {
         return $this->variants;
     }
-    
-    
+
+
     /**
      * Gets the (key of the) smallest variant
      * @author benno 2012-12-05
@@ -137,14 +137,14 @@ class ImageColumn extends FileColumn {
             }
             return $smallest_key;
     }
-    
-    
+
+
     function displayValue($input_value = '') {
         // N.B. using $_GET here is a bad idea, need to get row ID
         $file = $this->getTable()->getMask() . '.' . $this->getMask () . '.' .
             $_GET['id'];
         $file_loc = ROOT_PATH_FILE . $this->storage_location . '/' . $file;
-        
+
         // Use second-smallest variant if there are at least 3 variants,
         // or the smallest variant otherwise
         // N.B. It is assumed that variants are ordered largest to smallest
@@ -161,7 +161,7 @@ class ImageColumn extends FileColumn {
         $large_variant = reset($keys);
         $large_file = $file . '.' . $large_variant;
         $large_loc = $file_loc . '.' . $large_variant;
-        
+
         if (@is_file($small_loc)) {
             $out_text = '<img src="' . ROOT_PATH_WEB . 'file.php?f=' .
                 $small_file . '">';
@@ -175,8 +175,8 @@ class ImageColumn extends FileColumn {
         }
         return $out_text;
     }
-    
-    
+
+
     function getConfigArray () {
         $config = parent::getConfigArray ();
         $config['storeloc'] = $this->storage_location;
@@ -186,8 +186,8 @@ class ImageColumn extends FileColumn {
         $config['variants'] = $this->variants;
         return $config;
     }
-    
-    
+
+
     static function renderVariantForm($id, $name, $variant) {
         $id = (int) $id;
         $num = $id + 1;
@@ -198,7 +198,7 @@ class ImageColumn extends FileColumn {
         $render .= "<span class=\"fake-td right-col\">" .
         "<input type=\"text\" name=\"image_{$vid}[name]\" value=\"" . hsc($name) .
             "\"></span></p>\n";
-        
+
         @list($width, $height) = explode('x', $variant['max_size']);
         $width = (int) $width;
         $height = (int) $height;
@@ -210,7 +210,7 @@ class ImageColumn extends FileColumn {
             "<input type=\"text\" name=\"image_{$vid}[max_width]\" value=\"" . hsc($width) .
             "\" size=\"3\"> &times; <input type=\"text\" name=\"image_{$vid}[max_height]\" value=\"" . hsc($height) .
             "\" size=\"3\"></span></p>\n";
-        
+
         $handling_options = array(
             'resize' => 'Proportional resize',
             'exact' => 'Exact size',
@@ -228,7 +228,7 @@ class ImageColumn extends FileColumn {
             $render .= '>' . hsc($val) . "</option>\n";
         }
         $render .= "</select></span></p>\n";
-        
+
         if ($num == 1) {
             $class = 'fake-tr';
             if (@$variant['process'] == 'exact') {
@@ -242,7 +242,7 @@ class ImageColumn extends FileColumn {
                 " name=\"image_{$vid}[min_size]\" value=\"max\"";
             if (@$variant['min_size'] == 'max') $render .= ' checked="checked"';
             $render .= ">Same as max size</label><br>\n";
-            
+
             $checked = array();
             if (@$variant['min_size'] == 'either') {
                 $checked['width'] = true;
@@ -269,7 +269,7 @@ class ImageColumn extends FileColumn {
             if (@$checked['height']) $render .= ' checked="checked"';
             $render .= " onclick=\"document.getElementById('min_match{$num}').checked = true;\">" .
                 "height</label><br>\n";
-            
+
             if (preg_match('/^[0-9]+x[0-9]+$/', @$variant['min_size'])) {
                 $checked = ' checked="checked"';
                 @list($width, $height) = explode('x', $variant['min_size']);
@@ -293,14 +293,14 @@ class ImageColumn extends FileColumn {
                 " onchange=\"document.getElementById('min_dim{$num}').checked = true;\"><br>";
             $render .= "</span></p>\n";
         }
-        
+
         return $render;
     }
-    
-    
+
+
     static function getConfigFormFields(array $config, $class) {
         $fields = self::getFileConfigFormFields ($config, $class);
-        
+
         $fields .= "<p class=\"fake-tr\">\n";
         $fields .= "<span class=\"fake-td left-col\">Types allowed</span>";
         $fields .= "<span class=\"fake-td\">";
@@ -318,7 +318,7 @@ class ImageColumn extends FileColumn {
             if (in_array($ltype, $allowed_types)) $fields .= ' checked="checked"';
             $fields .= ">{$type}</label>";
         }
-        
+
         $variant_id = 0;
         $config['variants'] = (array) @$config['variants'];
         foreach ($config['variants'] as $name => $variant) {
@@ -326,11 +326,11 @@ class ImageColumn extends FileColumn {
             ++$variant_id;
         }
         $fields .= self::renderVariantForm($variant_id, '', array());
-        
+
         return $fields;
     }
-    
-    
+
+
     /**
      * @author benno, 2012-11-14
      */
@@ -366,21 +366,21 @@ class ImageColumn extends FileColumn {
             $this->addVariant($name, $variant);
         }
     }
-    
-    
+
+
     function attachInputField(Form $form, $input_value = '', $primary_key = null, $field_params = array()) {
         $p = self::initInput($form);
-        
+
         $form_el = $form->getDoc()->getElementsByTagName('form')->item(0);
         $form_el->setAttribute('enctype', 'multipart/form-data');
-        
+
         $params = array(
             'type' => 'hidden',
             'name' => 'MAX_FILE_SIZE',
             'value' => $this->getMaxFileSize()
         );
         HtmlDom::appendNewChild($p, 'input', $params);
-        
+
         $params = array(
             'type' => 'file',
             'name' => $this->name,
@@ -390,7 +390,7 @@ class ImageColumn extends FileColumn {
             $params['onchange'] = $field_params['change_event'];
         }
         HtmlDom::appendNewChild($p, 'input', $params);
-        
+
         // display the current file if there is one
         if ($input_value instanceof UploadedFile) {
             $text = 'Unsaved file: ' . $input_value->getName();
@@ -404,7 +404,7 @@ class ImageColumn extends FileColumn {
             $vkeys = array_keys($this->variants);
             $file_name .= '.' . reset($vkeys);
             $file_path .= $file_name;
-            
+
             if (file_exists($file_path)) {
                 HtmlDom::appendNewText($p, 'Current file: ');
                 $params = array(
@@ -422,15 +422,15 @@ class ImageColumn extends FileColumn {
             HtmlDom::appendNewText($p, 'No file');
         }
     }
-    
-    
+
+
     /**
      * @author benno, 2012-11-26
      */
     function collateInput ($input, &$original_value) {
         $safe_name = $this->getPostSafeName ();
         $this->validateUpload($input);
-        
+
         // TODO: use UploadFailedException
         $err = @$input['error'];
         if ($err === UPLOAD_ERR_OK) {
@@ -452,9 +452,9 @@ class ImageColumn extends FileColumn {
             }
             $file = new UploadedImage($input);
             $size = $file->getSize();
-            
+
             $variant = reset($this->variants);
-            
+
             // check exact size
             if ($variant['process'] == 'exact') {
                 $size_match = true;
@@ -466,7 +466,7 @@ class ImageColumn extends FileColumn {
                 if (!$size_match) {
                     throw new DataValidationException('Dimensions do not match');
                 }
-            
+
             // check min size
             } else {
                 $size_match = true;
@@ -479,7 +479,7 @@ class ImageColumn extends FileColumn {
                     throw new DataValidationException('Dimensions are too small');
                 }
             }
-            
+
             $original_value = $file;
             return array ($this->name => $file);
         } else if ($err === UPLOAD_ERR_NO_FILE) {
@@ -492,8 +492,8 @@ class ImageColumn extends FileColumn {
         }
         return array ();
     }
-    
-    
+
+
     /**
      * Saves an uploaded file to be attached to this column
      * @author benno, 2012-11-27
@@ -507,27 +507,27 @@ class ImageColumn extends FileColumn {
             $err = '$file must be an UploadedImage';
             throw new InvalidArgumentException($err);
         }
-        
+
         $path = ROOT_PATH_FILE . $this->storage_location;
         if (substr($path, - 1) != '/') $path .= '/';
-        
+
         if (is_array($pk)) $pk = implode(',', $pk);
         $file_name_base = $path . $this->getFullMask() . '.' . $pk . '.';
         $temp_file = $file_name_base . '_temp';
         file_put_contents($temp_file, $file->getData());
-        
+
         foreach ($this->variants as $name => $variant) {
             $file_name = $file_name_base . $name;
             $this->saveVariant($variant, $temp_file, $file_name);
         }
         unlink($temp_file);
     }
-    
-    
+
+
     function saveVariant($variant, $original_path, $variant_path) {
         $jpeg_quality = 90;
         if (defined('DEFAULT_JPEG_QUALITY')) $jpeg_quality = DEFAULT_JPEG_QUALITY;
-        
+
         if ($variant['process'] == 'exact') {
             copy($original_path, $variant_path);
         } else if (in_array($variant['process'], array('resize', 'crop'))) {
@@ -549,8 +549,8 @@ class ImageColumn extends FileColumn {
         }
         apply_file_security($variant_path);
     }
-    
-    
+
+
     function getInfo() {
         $variant = reset($this->variants);
         @list($w, $h) = explode('x', $variant['max_size']);
