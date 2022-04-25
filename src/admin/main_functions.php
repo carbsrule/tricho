@@ -183,7 +183,7 @@ function show_parent_siblings (Table $self, $parents) {
 
             // display this link
             list ($urls, $seps) = $child->getPageUrls ();
-            if (($self === $child) || ($vals[$child->getName ()] != null)) {
+            if (($self === $child) || (@$vals[$child->getName()] !== null)) {
                 echo "<li class=\"on\" id=\"subtabs_{$parent_table_id}_{$child_table_id}\">",
                     "<a href=\"{$urls['browse']}{$seps['browse']}t={$child->getName ()}&p={$p}\">{$child_eng_name}{$count}</a></li>";
             } else {
