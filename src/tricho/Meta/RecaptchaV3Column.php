@@ -24,9 +24,11 @@ class RecaptchaV3Column extends VirtualColumn
         $p = self::initInput($form);
 
         $prev = $p->previousSibling;
-        $prev_class = $prev->getAttribute('class');
-        if (strpos($prev->getAttribute('class'), 'error') === false) {
-            $prev->setAttribute('class', $prev_class . ' no-display');
+        if ($prev instanceof \DOMElement) {
+            $prev_class = $prev->getAttribute('class');
+            if (strpos($prev->getAttribute('class'), 'error') === false) {
+                $prev->setAttribute('class', $prev_class . ' no-display');
+            }
         }
 
         try {
