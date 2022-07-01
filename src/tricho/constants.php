@@ -11,7 +11,7 @@
 
 /**
  * Version
- * 
+ *
  * X._._ Major version: Major change in system architecture, or rewrite from scratch.<br>
  * _.X._ Minor version: Feature changes or additions. Upgrades may require tuning, but generally shouldn't.<br>
  * _._.X Bug fixes, spelling errors, setup or tool features, etc. Should almost always be directly upgradeable.
@@ -230,23 +230,23 @@ $recognised_SQL_types = array (
         'BIGINT',
         'BIT'
     ),
-    
+
     'Decimal types' => array (
         'DECIMAL',
         'FLOAT',
         'DOUBLE'
     ),
-    
+
     'Text types' => array (
         'CHAR',
         'VARCHAR',
-        
+
         'TEXT',
         'TINYTEXT',
         'MEDIUMTEXT',
         'LONGTEXT'
     ),
-    
+
     'Binary types' => array (
         'BINARY',
         'VARBINARY',
@@ -255,7 +255,7 @@ $recognised_SQL_types = array (
         'MEDIUMBLOB',
         'LONGBLOB'
     ),
-    
+
     'Date and time types' => array (
         'DATE',
         'DATETIME',

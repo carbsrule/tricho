@@ -11,9 +11,9 @@ use Tricho\Meta\Table;
  * returns true if a table name is valid
  */
 function table_name_valid ($s) {
-    
+
     if (trim ($s) == '') return false;
-    
+
     $len = strlen ($s);
     for ($x = 0; $x < $len; $x++) {
         switch ($s[$x]) {
@@ -24,7 +24,7 @@ function table_name_valid ($s) {
                 return false;
         }
     }
-    
+
     return true;
 }
 
@@ -36,10 +36,10 @@ function get_mysql_version () {
     $q = "SELECT VERSION()";
     $res = execq($q);
     $version = $res->fetchColumn(0);
-    
+
     list ($major, $minor, $rev) = explode ('.', $version);
     list ($rev, $tag) = explode ('-', $rev);
-    
+
     return array ($major, $minor, $rev);
 }
 
@@ -49,15 +49,15 @@ function get_mysql_version () {
  */
 function mysql_version_at_least ($major, $minor, $rev) {
     list ($our_major, $our_minor, $our_rev) = get_mysql_version ();
-    
+
     if ($our_major > $major) {
         return true;
-        
+
     } else if ($our_major == $major) {
         // major is equal, check minor
         if ($our_minor > $minor) {
             return true;
-            
+
         } else if ($our_minor == $minor) {
             // minor is equal, check rev
             if ($our_rev >= $rev) {
@@ -65,7 +65,7 @@ function mysql_version_at_least ($major, $minor, $rev) {
             }
         }
     }
-    
+
     return false;
 }
 
@@ -74,9 +74,9 @@ function mysql_version_at_least ($major, $minor, $rev) {
  * Gets the available character sets and collations that match the allowed charsets in SQL_CHARSETS.
  * This involves fetching the list of supported collations from the MySQL server.
  * Charsets and collations are both listed in preferential order.
- * 
+ *
  * @author benno 2010-01
- * 
+ *
  * @return array each element has the charset name as the key, and an array of
  *     the available collations as the value, e.g.:
  *     array (
@@ -84,12 +84,12 @@ function mysql_version_at_least ($major, $minor, $rev) {
  *     )
  */
 function get_available_collation_mappings () {
-    
+
     static $allowed_charsets = array ();
     if (count ($allowed_charsets) == 0) {
         $allowed_charsets = preg_split ('/,\s*/', SQL_CHARSETS);
     }
-    
+
     static $preferred_mappings = array (
         'utf8' => array (
             'utf8_unicode_ci',
@@ -102,7 +102,7 @@ function get_available_collation_mappings () {
             'latin1_bin'
         )
     );
-    
+
     $available_mappings = array ();
     $res = execq("SHOW COLLATION");
     while ($row = $res->fetch()) {
@@ -110,7 +110,7 @@ function get_available_collation_mappings () {
             $available_mappings[$row['Charset']][] = $row['Collation'];
         }
     }
-    
+
     // Put preferred collations first
     $sorted_collations = array ();
     foreach ($preferred_mappings as $charset => $preferred_collations) {
@@ -124,14 +124,14 @@ function get_available_collation_mappings () {
             }
         }
     }
-    
+
     // Put all other collations after, in alphabetical order
     asort ($available_mappings);
     foreach ($available_mappings as $charset => $collations) {
         asort ($collations);
         $sorted_collations[$charset] = array_merge ((array) $sorted_collations[$charset], $collations);
     }
-    
+
     return $sorted_collations;
 }
 
@@ -139,30 +139,30 @@ function get_available_collation_mappings () {
 /**
  * Gets the available MySQL table engines, in preferential order.
  * This involves fetching the list of supported engines from the MySQL server.
- * 
+ *
  * @author benno 2010-01
- * 
+ *
  * @return array each element is an engine name, e.g. MyISAM
  */
 function get_available_engines () {
-    
+
     static $allowed_engines = array ();
     if (count ($allowed_engines) == 0) {
         $allowed_engines = preg_split ('/,\s*/', SQL_ENGINES);
     }
-    
+
     $available_engines = array ();
     $res = execq("SHOW ENGINES");
     $ignore = array('NO', 'DISABLED');
     while ($row = $res->fetch()) {
         if (!in_array ($row['Support'], $ignore)) $available_engines[] = $row['Engine'];
     }
-    
+
     $sorted_engines = array ();
     foreach ($allowed_engines as $engine) {
         if (in_array ($engine, $available_engines)) $sorted_engines[] = $engine;
     }
-    
+
     return $sorted_engines;
 }
 
@@ -208,13 +208,13 @@ function table_create_list_columns ($columns, $curr_col = 0) {
         "<th>&nbsp;</th>",
         "</tr>\n";
     foreach ($columns as $id => $col) {
-        
+
         $sql_defn = $col['sqltype'];
         if ($col['sql_size'] != '') $sql_defn .= '('. $col['sql_size']. ')';
         if (count(@$col['sql_attribs']) > 0) {
             $sql_defn .= ' '. implode (' ', $col['sql_attribs']);
         }
-        
+
         echo "<tr><td>$id</td>\n";
         echo "<td class=\"mandatory\">\n";
         if (@$col['mandatory']) {
