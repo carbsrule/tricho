@@ -90,18 +90,29 @@ function get_available_collation_mappings () {
         $allowed_charsets = preg_split ('/,\s*/', SQL_CHARSETS);
     }
 
-    static $preferred_mappings = array (
-        'utf8' => array (
+    static $preferred_mappings = [
+        'utf8' => [
             'utf8_unicode_ci',
             'utf8_general_ci',
             'utf8_bin'
-        ),
-        'latin1' => array (
+        ],
+        'utf8mb3' => [
+            'utf8_unicode_ci',
+            'utf8_general_ci',
+            'utf8_bin'
+        ],
+        'utf8mb4' => [
+            'utf8mb4_0900_ai_ci',
+            'utf8mb4_unicode_ci',
+            'utf8mb4_general_ci',
+            'utf8mb4_bin'
+        ],
+        'latin1' => [
             'latin1_general_ci',
             'latin1_general_cs',
             'latin1_bin'
-        )
-    );
+        ],
+    ];
 
     $available_mappings = array ();
     $res = execq("SHOW COLLATION");
@@ -114,6 +125,9 @@ function get_available_collation_mappings () {
     // Put preferred collations first
     $sorted_collations = array ();
     foreach ($preferred_mappings as $charset => $preferred_collations) {
+        if (!isset($available_mappings[$charset])) {
+            continue;
+        }
         if ($available_collations = $available_mappings[$charset]) {
             foreach ($preferred_collations as $wanted_collation) {
                 $key = array_search ($wanted_collation, $available_collations);
@@ -129,7 +143,11 @@ function get_available_collation_mappings () {
     asort ($available_mappings);
     foreach ($available_mappings as $charset => $collations) {
         asort ($collations);
-        $sorted_collations[$charset] = array_merge ((array) $sorted_collations[$charset], $collations);
+        $existing = [];
+        if (isset($sorted_collations[$charset])) {
+            $existing = $sorted_collations[$charset];
+        }
+        $sorted_collations[$charset] = array_merge($existing, $collations);
     }
 
     return $sorted_collations;

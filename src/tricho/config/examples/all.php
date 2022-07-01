@@ -64,7 +64,7 @@ define('SQL_ENGINES', 'InnoDB, MyISAM, ARCHIVE');
 
 // Charsets allowed for use in SQL tables (comma separated list,
 // in order of preference)
-define('SQL_CHARSETS', 'utf8, latin1');
+define('SQL_CHARSETS', 'utf8mb4, utf8mb3, utf8, latin1');
 
 // Default collation to use for new SQL tables
 define('SQL_DEFAULT_COLLATION', 'utf8_unicode_ci');

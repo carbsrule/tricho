@@ -21,7 +21,9 @@ define ('TRICHO_VERSION', '0.1.0-dev');
 // Use standard settings when values haven't been explicitly specified.
 if (!defined ('ADMIN_DIR')) define ('ADMIN_DIR', 'admin/');
 if (!defined ('SQL_ENGINES')) define ('SQL_ENGINES', 'InnoDB, MyISAM, ARCHIVE');
-if (!defined ('SQL_CHARSETS')) define ('SQL_CHARSETS', 'utf8, latin1');
+if (!defined ('SQL_CHARSETS')) {
+    define('SQL_CHARSETS', 'utf8mb4, utf8mb3, utf8, latin1');
+}
 if (!defined ('SQL_DEFAULT_COLLATION')) {
     define ('SQL_DEFAULT_COLLATION', 'utf8_unicode_ci');
 }
