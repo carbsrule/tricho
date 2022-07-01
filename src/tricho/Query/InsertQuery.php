@@ -42,7 +42,7 @@ class InsertQuery extends Query {
     function __toString() {
         $conn = $this->conn;
         if ($conn == null) $conn = ConnManager::get_active();
-        if ($conn instanceof MysqlConn) {
+        if ($conn instanceof MysqlConn && count($this->fields) > 0) {
             $table = $conn->quote_ident($this->table);
             $q = "INSERT INTO {$table} SET";
             $field_num = 0;
