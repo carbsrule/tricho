@@ -382,7 +382,7 @@ class Table implements QueryTable {
         foreach ($actions as $action) {
             $action = strtolower (trim ($action));
             $value = true;
-            if (@$action[0] == '~') {
+            if (isset($action[0]) && $action[0] == '~') {
                 $action = substr($action, 1);
                 $value = false;
             }

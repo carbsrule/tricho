@@ -1028,7 +1028,7 @@ function is_https () {
     // However, when IIS specifies '', that (cryptically) means that HTTPS is on
     // -- This hasn't been tested, it's assumed that $_SERVER['SERVER_SOFTWARE'] contains 'IIS' somewhere
 
-    $https = @$_SERVER['HTTPS'];
+    $https = $_SERVER['HTTPS'] ?? '';
     if ($https == 'on') {
         return true;
     } else if ($https == 'off') {
@@ -1731,7 +1731,7 @@ function validate_session () {
     if (!defined ('SESSION_NEW_AGENT')) define ('SESSION_NEW_AGENT', true);
 
     $ip = $_SERVER['REMOTE_ADDR'];
-    $agent = (string) @$_SERVER['HTTP_USER_AGENT'];
+    $agent = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
     $host_name = null;
     $ip_changed = false;
     $agent_changed = false;
@@ -2144,7 +2144,9 @@ function array_remove($needle, array &$haystack, $strict = false) {
 
 
 function url_append_param($url, $name, $value) {
-    @list($url, $post_hash) = explode('#', $url);
+    $parts = explode('#', $url);
+    $url = $parts[0] ?? '';
+    $post_hash = $parts[1] ?? '';
     if (strpos($url, '?') !== false) {
         $url .= '&';
     } else {

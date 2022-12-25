@@ -849,7 +849,7 @@ function bind_message_params($input, $params) {
     if (count ($params) == 0) return $input;
 
     $bind = function($matches) use ($params) {
-        return bind_message_param($params, $matches[1], @$matches[3]);
+        return bind_message_param($params, $matches[1], $matches[3] ?? '');
     };
 
     $output = preg_replace_callback(

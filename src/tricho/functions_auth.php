@@ -47,7 +47,9 @@ function test_login ($redirect_on_error = true) {
  * @return bool true if logged in, false otherwise
  */
 function test_admin_login ($redirect_on_error = true) {
-    if (@$_SESSION[ADMIN_KEY]['id'] != '') return true;
+    if (!empty($_SESSION[ADMIN_KEY]['id'])) {
+        return true;
+    }
     if ($redirect_on_error) {
         $err = 'You have not logged in, or your session has expired';
         $_SESSION[ADMIN_KEY]['err'] = $err;

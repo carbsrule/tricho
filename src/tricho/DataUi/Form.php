@@ -301,7 +301,7 @@ class Form {
             $this->step = 1;
         }
 
-        $step = @$_SESSION['forms'][$this->id]['step'];
+        $step = $_SESSION['forms'][$this->id]['step'] ?? 0;
         if ($this->step > 1 and $this->step > $step) {
             throw new FormStepException('Step(s) skipped');
         }
@@ -669,12 +669,12 @@ class Form {
         // Session data needs to be retained, otherwise multi-step forms won't
         // work, as only the data entered on the final step will be saved in
         // the DB
-        if (@count($session['values']) > 0) {
+        if (!empty($session['values'])) {
             $db_data = $source_data = $session['values'];
         } else {
-            $db_data = $source_data = array();
+            $db_data = $source_data = [];
         }
-        $errors = array();
+        $errors = [];
 
         if ($this->modifier) {
             $this->modifier->preValidate($this, $source_data, $db_data, $errors);
@@ -719,7 +719,7 @@ class Form {
                     $value = $col->collateInput(@$source[$col->getPostSafeName()], $input);
                 }
 
-                $extant_value = @$session['values'][$col->getName()];
+                $extant_value = $session['values'][$col->getName()] ?? null;
                 if ($col instanceof FileColumn) {
                     $file_fields[] = $col;
                     if ($col->isInputEmpty($value)) {
