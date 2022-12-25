@@ -871,7 +871,7 @@ function parse_access_csv ($filename, $delim = ",", $text_marker = '"') {
                 $new_line = explode ($delim, $line);
                 foreach ($new_line as $key => $value) {
                     $value = trim ($value);
-                    if ($value{0} == $text_marker) {
+                    if ($value[0] == $text_marker) {
                         // remove " from start and end of text field
                         $value = substr ($value, 1, count($value) - 2);
                         // replace "" with "
