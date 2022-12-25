@@ -1739,15 +1739,18 @@ function validate_session () {
     // Whether a new blank session needs to be generated
     $generate_blank_session = false;
 
-    if (@$_SESSION['_tricho']['ip_addr'] != $ip) $ip_changed = true;
-    if (@$_SESSION['_tricho']['user_agent'] != $agent) $agent_changed = true;
+    $session_ip = $_SESSION['_tricho']['ip_addr'] ?? '';
+    $session_agent = $_SESSION['_tricho']['user_agent'] ?? '';
+
+    if ($session_ip != $ip) $ip_changed = true;
+    if ($session_agent != $agent) $agent_changed = true;
 
     // If nothing has changed, there's no need to waste any effort in further processing
     if (!$ip_changed and !$agent_changed) return;
 
 
     // If IP was already set, it has really changed: this is a possible security problem
-    if ($ip_changed and @$_SESSION['_tricho']['ip_addr'] != '') {
+    if ($ip_changed && $session_ip != '') {
         if (SESSION_NEW_IP) {
 
             // At present, a new blank session will not be created for non-admin users,
@@ -1762,7 +1765,7 @@ function validate_session () {
     }
 
     // If agent was already set, it has really changed: this is a possible security problem
-    if ($agent_changed and @$_SESSION['_tricho']['user_agent'] != '') {
+    if ($agent_changed && $session_agent != '') {
         if (SESSION_NEW_AGENT) $generate_blank_session = true;
     }
 

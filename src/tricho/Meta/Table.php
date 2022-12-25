@@ -331,12 +331,12 @@ class Table implements QueryTable {
         $table = new Table($attribs['name']);
         $table->setEngName($attribs['engname']);
         $table->setNameSingle($attribs['name_single']);
-        $table->setComments(@$attribs['comment']);
+        $table->setComments($attribs['comment'] ?? '');
         $table->setDisplay(Meta::toBool($attribs['display']));
-        $table->setMask(@$attribs['mask']);
+        $table->setMask($attribs['mask'] ?? '');
         $table->setCascadeDel(Meta::toBool($attribs['cascade_del']));
-        $table->setStatic(Meta::toBool(@$attribs['static']));
-        $table->setTreeNodeChars(@$attribs['tree_node_chars']);
+        $table->setStatic(Meta::toBool($attribs['static'] ?? ''));
+        $table->setTreeNodeChars($attribs['tree_node_chars'] ?? '');
 
         switch ($attribs['access']) {
             case '':
@@ -362,14 +362,14 @@ class Table implements QueryTable {
                 $table->setDisplayStyle (TABLE_DISPLAY_STYLE_ROWS);
         }
 
-        if (Meta::toNum(@$attribs['tree_top_nodes']) == 0) {
+        if (Meta::toNum($attribs['tree_top_nodes'] ?? '') == 0) {
             $table->setTopNodesEnabled (false);
         } else {
             $table->setTopNodesEnabled ($attribs['tree_top_nodes']);
         }
 
-        if (@$attribs['home'] != '') {
-            $table->addAltPage ('main', $attribs['home']);
+        if (!empty($attribs['home'])) {
+            $table->addAltPage('main', $attribs['home']);
         }
 
 
@@ -401,7 +401,7 @@ class Table implements QueryTable {
         }
         $table->setDisableParentEdit(Meta::toBool($attribs['disable_parent_edit']));
 
-        if (Meta::toBool(@$attribs['joiner'])) $table->setJoiner(true);
+        if (Meta::toBool($attribs['joiner'] ?? '')) $table->setJoiner(true);
         if (isset ($attribs['show_sub_record_count'])) {
             $table->setShowSubRecordCount(Meta::toBoolInherit($attribs['show_sub_record_count']));
         }
@@ -429,7 +429,7 @@ class Table implements QueryTable {
 
 
         // partitioned tree
-        $partition = @$attribs['partition'];
+        $partition = $attribs['partition'] ?? '';
         if ($partition != '') {
             $partition_col = $table->get ($partition);
             if ($partition_col != null) {

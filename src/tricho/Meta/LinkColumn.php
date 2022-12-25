@@ -125,7 +125,7 @@ class LinkColumn extends Column {
         if (!empty($params['type'])) {
             $this->type = $params['type'];
         }
-        if (@$params['parent'] == 'y') {
+        if (isset($params['parent']) && $params['parent'] == 'y') {
             $this->is_parent = true;
         }
     }

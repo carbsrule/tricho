@@ -82,7 +82,7 @@ class FileColumn extends Column {
             $params[$name] = $value;
         }
         $this->setStorageLocation (@$params['storage_location']);
-        if (@$params['max_file_size'] > 0) {
+        if (isset($params['max_file_size']) && $params['max_file_size'] > 0) {
             $this->setMaxFileSize ($params['max_file_size']);
         }
         if (@$params['allow_del'] == 'y') {
@@ -90,7 +90,7 @@ class FileColumn extends Column {
         } else {
             $this->allow_delete = false;
         }
-        if (@$params['types_allowed'] != '') {
+        if (isset($params['types_allowed']) && $params['types_allowed'] != '') {
             $this->types_allowed = preg_split('/,\s*/', $params['types_allowed']);
         }
     }
