@@ -49,7 +49,7 @@ if (is_dir ($skin_dir)) {
         <link rel="stylesheet" type="text/css" href="<?= ROOT_PATH_WEB. $file; ?>">
 <?php
     }
-    
+
     $files = glob ("{$skin_dir}/*.js");
     foreach ($files as $file) {
         $file = substr ($file, strlen (ROOT_PATH_FILE));
@@ -113,28 +113,28 @@ if (@$inline_js != '') {
 <body<?php if (@count ($onload) > 0) echo ' onload="', implode (' ', $onload), '"'; ?>>
 <div id="header">
 <h1>Administration</h1>
-    
+
 <?php
 
 if (test_setup_login (false, SETUP_ACCESS_LIMITED)) {
-    
+
     echo "<p class=\"admin_view_options\">\n";
-    
+
     echo "<strong>View options:</strong>\n";
-    
+
     if (test_setup_login (false, SETUP_ACCESS_FULL)) {
         show_setup_user_option ('Show queries', 'q');
         show_setup_user_option ('Show column names', 'c');
     }
     show_setup_user_option ('Show edit help links', 'h');
-    
+
     echo " &nbsp; <a href=\"", ROOT_PATH_WEB, ADMIN_DIR,
         "sql.php\" class=\"setup_quicklink\">SQL &raquo;</a>\n";
     echo " &nbsp; <a href=\"", ROOT_PATH_WEB, ADMIN_DIR,
         "struct.php\" class=\"setup_quicklink\">Struct &raquo;</a>\n";
     echo " &nbsp; <a href=\"", ROOT_PATH_WEB, ADMIN_DIR,
         "info.php\" class=\"setup_quicklink\">Version &raquo;</a>\n";
-    
+
     echo "</p>\n";
 }
 ?>
@@ -155,7 +155,7 @@ if (@$_GET['p'] != '') {
     $parts = array_pop ($parts);
     $parts = explode ('.', $parts);
     $selected_table = $db->getTable ($parts[0]);
-    
+
 } else {
     // just get the current table
     $selected_table = $db->getTable(@$_GET['t']);
