@@ -48,14 +48,14 @@ if ($column == null) {
             next($file_prim_key_vals);
 
             if ($i++ > 0) $q .= ' AND ';
-            
+
             $junk = '';
             $data = $pk_field->collateInput($var_val, $junk);
             if (count($data) != 1) {
                 throw new LogicException('Wrong type of column for a PK');
             }
             $var_val = sql_enclose(reset($data));
-            
+
             $q .= '`' . $pk_field->getName (). "` = {$var_val}";
         }
         // echo $q;
@@ -82,14 +82,14 @@ if (!$return_404) {
         'html' => 'text/html',
         'flv' => 'video/x-flv'
     );
-    
+
     $res = execq($q);
     if ($row = @fetch_assoc($res)) {
-    
+
         $file_name = $row[$column->getName ()];
         $type = @$file_types[get_file_extension($file_name)];
         if ($type == '') $type = 'application/octet-stream';
-        
+
         $file_loc = $column->getStorageLocation ();
         if ($file_loc != '' and $file_loc{strlen ($file_loc) - 1} != '/') {
             $file_loc .= '/';
@@ -97,7 +97,7 @@ if (!$return_404) {
         $file_loc .= $_GET['f'];
         if (file_exists ($file_loc)) {
             if (is_readable ($file_loc)) {
-                
+
                 // hard set disposition if user agent asks specifically
                 $_GET['dl'] = strtolower(@$_GET['dl']);
                 if ($_GET['dl'] == 'y') {
@@ -112,17 +112,17 @@ if (!$return_404) {
                         case 'image/jpeg':
                             $disposition = 'inline';
                             break;
-                        
+
                         default:
                             $disposition = 'attachment';
                     }
                 }
-                
+
                 // For front-end users, cache images
                 // Admins will want to see their changes instantly, so don't cache for them
                 if ($column instanceof ImageColumn) {
                     list ($cache_length, $cache_scale) = determine_cache_length('7d');
-                    
+
                     if (test_admin_login (false)) {
                         $cache_expiry = time () + ($cache_length * $image_cache_scales[$cache_scale]['seconds']);
                     } else {
@@ -131,7 +131,7 @@ if (!$return_404) {
                     }
                     header ("Expires: ". gmdate ('r', $cache_expiry));
                 }
-                
+
                 header ("Content-type: {$type}");
                 header ("Content-Disposition: {$disposition}; filename={$file_name}");
                 header ("Cache-Control: cache, must-revalidate");
