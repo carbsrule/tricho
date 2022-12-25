@@ -40,17 +40,17 @@ function fetch_row($res) {
  */
 function sql_remove_private ($q) {
     $q = (string) $q;
-    
+
     $parser = new SqlParser();
     $parser->parse ($q);
     $tokens = $parser->getTokens ();
-    
+
     $query = "";
     $in_encrypt = false;
     $num_brackets = 0;
     foreach ($tokens as $token) {
         $str = $token['value'];
-        
+
         if ($token['type'] == SqlParser::QUERY) {
             while (strlen ($str) > 0) {
                 if (preg_match ('/^(MD5|SHA1?)\s*\(/i', $str, $matches)) {
@@ -75,7 +75,7 @@ function sql_remove_private ($q) {
         }
         $query .= $token['value'];
     }
-    
+
     return $query;
 }
 
@@ -99,7 +99,7 @@ function check_query_unoptimised($query) {
     } else {
         $max_unindexed = 1;
     }
-    
+
     $res = execq("EXPLAIN {$query}");
     $explain = array();
     $num_unindexed = 0;
@@ -108,7 +108,7 @@ function check_query_unoptimised($query) {
         if ($row['key']) continue;
         ++$num_unindexed;
     }
-    
+
     $unoptimised = $num_unindexed > $max_unindexed;
     return array($unoptimised, $explain);
 }
@@ -165,7 +165,7 @@ function format_explain(array $explain) {
  */
 function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain) {
     $time_taken = round($time_taken, 3);
-    
+
     // Remove anything from the backtrace after the query itself
     $backtrace = debug_backtrace();
     $db_call_key = -1;
@@ -187,18 +187,18 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
     $top_entry = end($backtrace);
     $line = $top_entry['line'];
     $backtrace = create_backtrace_string($backtrace);
-    
+
     if ($_SERVER['SERVER_NAME'] == '') {
         $uname = posix_uname ();
-        
+
         if ($_SERVER['SCRIPT_NAME'][0] == '/') {
             $file_location = $_SERVER['SCRIPT_NAME'];
         } else {
             $file_location = ($_SERVER['PWD'] != ''? $_SERVER['PWD']. '/': ''). $_SERVER['SCRIPT_NAME'];
         }
-        
+
         $occurred = "This occurred on {$uname['nodename']}, on line {$line} of\n{$file_location}";
-        
+
     } else {
         $proto_host = get_proto_host ();
         $full_url = $proto_host. $_SERVER['REQUEST_URI'];
@@ -206,10 +206,10 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
             $full_url = $proto_host. $_SERVER['SCRIPT_NAME'].
                 ($_SERVER['QUERY_STRING'] != ''? '?'. $_SERVER['QUERY_STRING']: '');
         }
-        
+
         $occurred = "This occurred on line {$line} of\n{$full_url}";
     }
-    
+
     $site_name = Runtime::get('site_name');
     $message = "{$site_name} had the following slow query";
     if ($unoptimised) {
@@ -225,7 +225,7 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
     $message .= "See also: http://dev.mysql.com/doc/refman/5.5/en/using-explain.html\n\n";
     if ($backtrace) $message .= "BACKTRACE:\n{$backtrace}\n\n";
     $message .= get_email_footer_info ();
-    
+
     // Send the email to the developers
     $site_error_emails = preg_split ('/,\s*/', SITE_EMAILS_ERROR);
     $subject = 'Slow query on ' . Runtime::get('site_name');
@@ -237,7 +237,7 @@ function slow_query_email($query, $time_taken, $max_time, $unoptimised, $explain
 
 /**
  * Converts a MySQL date to standard Australian DD/MM/YYYY (Y2K Compliant)
- * 
+ *
  * @param string $date The date to be formatted
  * @param string $s The separator to be used in the output date ('/' by default)
  * @return string The formatted date
@@ -250,7 +250,7 @@ function standardise_mysql_date ($date, $s = '/') {
 
 /**
  * Converts a MySQL date to standard Australian DD/MM/YY (Short format - not Y2K Compliant)
- * 
+ *
  * @param string $date The date to be formatted
  * @param string $s The separator to be used in the output date ('/' by default)
  * @return string The formatted date
@@ -266,11 +266,11 @@ function standardise_mysql_date_short ($date, $s = '/') {
 /**
  * Makes a datum ready for SQL-insertion by adding enclosing single quotes if necessary.
  * Note: this function also escapes the datum
- * 
+ *
  * @author benno, 2007-01-04 initial version
  * @author benno, 2007-06-13 added special handling for QueryFieldLiterals
  * @author benno, 2008-07-15 added detect_numbers parameter
- * 
+ *
  * @param mixed $datum The datum to enclose, if necessary
  * @param bool $detect_numbers Whether or not to check if a string datum is numeric. If true, and the datum is
  *     a string that looks like a number, e.g. '2000' or '3.1415', the datum will not be quoted
@@ -295,16 +295,16 @@ function sql_enclose ($datum, $detect_numbers = true) {
 /**
  * Converts a list of values for an SQL ENUM type into an array containing those values
  * String escaping within the ENUM type declaration should be handled nicely
- * 
+ *
  * @author benno, 2009-07-16
- * 
+ *
  * @param $string The string from which to extract the ENUM values, e.g. "'Value1','It''s value 2'"
  * @return array
  */
 function enum_to_array ($string) {
-    
+
     $array = array ();
-    
+
     $pos = 0;
     $in_str = false;
     $length = strlen ($string);
@@ -342,7 +342,7 @@ function enum_to_array ($string) {
         $pos++;
     }
     if ($in_str) $array[] = $sub_string;
-    
+
     return $array;
 }
 ?>
