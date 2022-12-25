@@ -102,7 +102,7 @@ foreach ($js_files as $js_file) {
 <?php
 }
 
-if (@$inline_js != '') {
+if (!empty($inline_js)) {
 ?>
         <script language="javascript" type="text/javascript"><?= $inline_js; ?></script>
 <?php
@@ -149,7 +149,7 @@ if (test_setup_login (false, SETUP_ACCESS_LIMITED)) {
 $tables = $db->getTables ();
 
 // find selected table
-if (@$_GET['p'] != '') {
+if (!empty($_GET['p'])) {
     // get the last table in the parent chain
     $parts = explode (',', $_GET['p']);
     $parts = array_pop ($parts);

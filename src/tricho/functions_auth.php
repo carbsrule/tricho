@@ -54,7 +54,7 @@ function test_admin_login ($redirect_on_error = true) {
         $err = 'You have not logged in, or your session has expired';
         $_SESSION[ADMIN_KEY]['err'] = $err;
         $url = ROOT_PATH_WEB . ADMIN_DIR . 'login.php';
-        if (count($_POST) == 0) {
+        if (count($_POST) == 0 && !empty($_SERVER['REQUEST_URI'])) {
             $url .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
         }
         redirect ($url);
